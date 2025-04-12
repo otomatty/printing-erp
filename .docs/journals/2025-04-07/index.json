@@ -1,0 +1,48 @@
+{
+  "date": "2025-04-07",
+  "entries": [],
+  "commits": [
+    {
+      "message": "新しいコンポーネントを追加し、IT・デジタルサービスのホームページをさらに充実させました。具体的には、ヒーローセクション、課題セクション、サービス紹介、コストパフォーマンス、メリット、ケーススタディ、選ばれる理由、仕事の流れ、料金プラン、よくある質問、CTAセクションを新設しました。また、関連データを整理し、全体的なコードの構成を見直しました。ユーザーインターフェースの改善も図りました。",
+      "sha": "2a15c63ed833df1008159823bab27b5950f301d2",
+      "date": "2025-04-07T14:59:38Z",
+      "authorName": "otomatty",
+      "authorLogin": "otomatty",
+      "authorAvatar": "https://avatars.githubusercontent.com/u/119780981?u=e59a35c5f24666da2bf38de29b370a8a31654165&v=4",
+      "commitUrl": "https://github.com/otomatty/niinumakikaku/commit/2a15c63ed833df1008159823bab27b5950f301d2",
+      "repoName": "niinumakikaku",
+      "repoOwner": "otomatty",
+      "repoUrl": "https://github.com/otomatty/niinumakikaku",
+      "additions": 3501,
+      "deletions": 0
+    },
+    {
+      "message": "新しいコンポーネントを追加し、IT・デジタルサービスのページをさらに充実させました。具体的には、エンジニア紹介、ケーススタディ、開発原則、機能セクション、料金プランを新設しました。また、依存関係を更新し、ユーザーインターフェースの改善を図りました。不要なコンサルティング関連のコンポーネントを削除し、全体的なコードの整理も行いました。",
+      "sha": "b37dc8a22da13a5e7b9be830e7653faf33022ebc",
+      "date": "2025-04-07T12:52:06Z",
+      "authorName": "otomatty",
+      "authorLogin": "otomatty",
+      "authorAvatar": "https://avatars.githubusercontent.com/u/119780981?u=e59a35c5f24666da2bf38de29b370a8a31654165&v=4",
+      "commitUrl": "https://github.com/otomatty/niinumakikaku/commit/b37dc8a22da13a5e7b9be830e7653faf33022ebc",
+      "repoName": "niinumakikaku",
+      "repoOwner": "otomatty",
+      "repoUrl": "https://github.com/otomatty/niinumakikaku",
+      "additions": 13776,
+      "deletions": 6895
+    },
+    {
+      "message": "新しいコンポーネントを追加し、IT・デジタルサービスのページをさらに充実させました。具体的には、選ばれる理由や開発原則を紹介するセクション、FAQ、料金プラン、システム開発の流れを新設しました。また、比較データや関連データを整理し、ユーザーインターフェースを改善しました。全体的なコードの構成も見直しました。",
+      "sha": "fce6ccac9110fe953060a026a3e8956ae9b3359c",
+      "date": "2025-04-07T02:25:55Z",
+      "authorName": "otomatty",
+      "authorLogin": "otomatty",
+      "authorAvatar": "https://avatars.githubusercontent.com/u/119780981?u=e59a35c5f24666da2bf38de29b370a8a31654165&v=4",
+      "commitUrl": "https://github.com/otomatty/niinumakikaku/commit/fce6ccac9110fe953060a026a3e8956ae9b3359c",
+      "repoName": "niinumakikaku",
+      "repoOwner": "otomatty",
+      "repoUrl": "https://github.com/otomatty/niinumakikaku",
+      "additions": 1342,
+      "deletions": 39
+    }
+  ]
+}

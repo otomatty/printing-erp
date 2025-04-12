@@ -1,0 +1,104 @@
+---
+title: Mastra Client
+description: Mastra Clientの概要と基本的な使い方
+order: 1
+updated: 2024-03-18
+---
+
+# Mastra Client SDK
+
+Mastra Client SDKは、クライアント環境からMastra Serverとやり取りするためのシンプルで型安全なインターフェースを提供します。
+
+## 開発要件
+
+スムーズなローカル開発を確保するために、以下のものが必要です：
+
+- Node.js 18.x以降がインストールされていること
+- TypeScript 4.7+（TypeScriptを使用する場合）
+- Fetch APIをサポートするモダンなブラウザ環境
+- ローカルのMastraサーバーが実行中であること（通常はポート4111）
+
+## インストール
+
+```
+npm install @mastra/client-js
+```
+
+## Mastra Clientの初期化
+
+始めるには、必要なパラメータを使用してMastraClientを初期化する必要があります：
+
+```javascript
+import { MastraClient } from "@mastra/client-js";
+ 
+const client = new MastraClient({
+  baseUrl: "http://localhost:4111", // デフォルトのMastra開発サーバーポート
+});
+```
+
+## 設定オプション
+
+さまざまなオプションでクライアントをカスタマイズできます：
+
+```javascript
+const client = new MastraClient({
+  // 必須
+  baseUrl: "http://localhost:4111",
+ 
+  // 開発用のオプション設定
+  retries: 3,           // 再試行回数
+  backoffMs: 300,       // 初期再試行バックオフ時間
+  maxBackoffMs: 5000,   // 最大再試行バックオフ時間
+  headers: {            // 開発用のカスタムヘッダー
+    "X-Development": "true"
+  }
+});
+```
+
+## 例
+
+MastraClientが初期化されると、型安全なインターフェースを介してクライアント呼び出しを開始できます：
+
+```javascript
+// ローカルエージェントへの参照を取得
+const agent = client.getAgent("dev-agent-id");
+ 
+// レスポンスを生成
+const response = await agent.generate({
+  messages: [
+    {
+      role: "user",
+      content: "Hello, I'm testing the local development setup!"
+    }
+  ]
+});
+```
+
+## 利用可能な機能
+
+Mastraクライアントは、Mastraサーバーが提供するすべてのリソースを公開します：
+
+- **エージェント**: AIエージェントの作成と管理、レスポンスの生成、ストリーミング対話の処理
+- **メモリ**: 会話スレッドとメッセージ履歴の管理
+- **ツール**: エージェントが利用できるツールへのアクセスと実行
+- **ワークフロー**: 自動化されたワークフローの作成と管理
+- **ベクトル**: セマンティック検索と類似性マッチングのためのベクトル操作の処理
+
+## ベストプラクティス
+
+- **エラー処理**: 開発シナリオに適切なエラー処理を実装する
+- **環境変数**: 設定に環境変数を使用する
+- **デバッグ**: 必要に応じて詳細なロギングを有効にする
+
+```javascript
+// エラー処理とロギングの例
+try {
+  const agent = client.getAgent("dev-agent-id");
+  const response = await agent.generate({
+    messages: [{ role: "user", content: "Test message" }]
+  });
+  console.log("Response:", response);
+} catch (error) {
+  console.error("Development error:", error);
+}
+```

@@ -1,0 +1,57 @@
+---
+title: OpenTelemetry 構成
+description: OpenTelemetry を使用して Mastra のワークフローを監視する方法を学びます。
+updated: 2025-04-10
+---
+
+
+# OtelConfig
+
+OtelConfigオブジェクトは、アプリケーション内でのOpenTelemetry計装、トレーシング、エクスポート動作を設定するために使用されます。そのプロパティを調整することで、テレメトリデータ（トレースなど）がどのように収集され、サンプリングされ、エクスポートされるかを制御できます。
+
+MastraでOtelConfigを使用するには、Mastraの初期化時に`telemetry`キーの値として渡します。これにより、Mastraがトレースと計装のためにカスタムOpenTelemetry設定を使用するように構成されます。
+
+
+```javascript
+import { Mastra } from 'mastra';
+ 
+const otelConfig: OtelConfig = {
+  serviceName: 'my-awesome-service',
+  enabled: true,
+  sampling: {
+    type: 'ratio',
+    probability: 0.5,
+  },
+  export: {
+    type: 'otlp',
+    endpoint: 'https://otel-collector.example.com/v1/traces',
+    headers: {
+      Authorization: 'Bearer YOUR_TOKEN_HERE',
+    },
+  },
+};
+```
+
+## プロパティ
+
+**serviceName?:**  
+`string`  
+テレメトリバックエンドでサービスを識別するために使用される人間が読める名前。
+
+**enabled?:**  
+`boolean`  
+テレメトリの収集とエクスポートが有効かどうか。
+
+**sampling?:**  
+`SamplingStrategy`  
+トレースのサンプリング戦略を定義し、収集されるデータ量を制御します。
+- 'ratio' | 'always_on' | 'always_off' | 'parent_based'
+- number (0.0から1.0)
+- object
+
+**export?:**  
+`object`  
+収集されたテレメトリデータをエクスポートするための設定。
+- 'otlp' | 'console'
+- string
+- `Record<string, string>`

@@ -1,0 +1,70 @@
+---
+title: 'TypeError: o[s].split is not a function エラーの調査と対応'
+description: '本番環境で Google 認証時に発生した TypeError とその解決プロセス'
+date: '2025-03-29'
+author: 'Akimasa Sugai'
+tags: ['TypeError', 'JavaScript', 'js-cookie', 'Supabase', '認証', 'デバッグ']
+slug: 'typeerror-split-is-not-a-function-js-cookie' # 英語Slugを追加
+---
+
+# 概要
+
+本番環境において、`LoginDialog` コンポーネントから Google 認証ボタンをクリックした際に、ブラウザのコンソールに `Uncaught TypeError: o[s].split is not a function` というエラーが表示され、認証プロセスが開始されない問題が発生しました。このドキュメントでは、エラーの原因調査、実施した対応、および今後の課題についてまとめます。
+
+# エラーの内容
+
+```
+Uncaught TypeError: o[s].split is not a function
+    at Object.a [as set] (3651-5996f812f0c7e4a6.js:5:64896)
+    at onClick (layout-f9bf1700cf62c949.js:9:25660)
+    // ... (省略) ...
+```
+
+コンソールのスタックトレースから、エラーは Google 認証ボタンの `onClick` イベントハンドラ内で `set` という名前の関数（本番ビルドで難読化されているが、コンテキストから `js-cookie` ライブラリの `Cookies.set` と推測される）を実行中に発生していることがわかりました。
+
+# エラーの原因と調査経緯
+
+`.split()` メソッドは JavaScript において文字列型の値に対して使用されるメソッドです。このエラーは、`.split()` を文字列以外の値（`undefined`, `null`, 数値など）に対して呼び出そうとしたときに発生します。
+
+調査は以下のステップで進めました。
+
+1.  **仮説立案:** スタックトレースから、`Cookies.set` 関数に渡している値が原因である可能性が高いと判断しました。具体的には、`packages/features/auth/src/components/oauth-providers.tsx` 内の以下のコードで、第2引数 `props.paths.returnPath` が文字列ではない値になっていると仮説を立てました。
+    ```typescript
+    // packages/features/auth/src/components/oauth-providers.tsx (onClick内)
+    Cookies.set(REDIRECT_TO_COOKIE, props.paths.returnPath, { /* options */ });
+    ```
+    この `props.paths.returnPath` は、`LoginDialog` コンポーネントが `next/navigation` の `usePathname()` フックから取得した現在のページのパスを渡している想定でした。
+
+2.  **一次対応（型ガード追加）:** 本番環境で `props.paths.returnPath` が予期せず文字列以外になる可能性を考慮し、`Cookies.set` を呼び出す前に `typeof props.paths.returnPath === 'string' && props.paths.returnPath` という型ガードを追加しました。しかし、これでもエラーは解消しませんでした。
+
+3.  **原因の切り分け（コメントアウト）:** エラーが `Cookies.set` の呼び出し自体に起因するのか、それともその周辺のコードにあるのかを明確にするため、**`Cookies.set(...)` の行を一時的にコメントアウト**しました。
+
+4.  **原因特定:** `Cookies.set` をコメントアウトした状態で再度試したところ、**エラーは発生せず、Google 認証画面が正常に表示されました。** これにより、エラーの直接的な原因は `Cookies.set` の呼び出し部分にあり、具体的には第2引数に渡された `props.paths.returnPath` が、`js-cookie` ライブラリ内部で `.split()` を呼び出す際に期待される文字列型ではなかった（おそらく `undefined` など）と特定できました。
+
+    本番環境で `props.paths.returnPath` が期待通り文字列にならなかった理由は、`usePathname` フックの挙動が環境によって異なる可能性、あるいはビルドプロセスや他のコードによる影響などが考えられますが、現時点では断定できていません。
+
+# 実施した対応
+
+1.  **型ガードの追加:** `oauth-providers.tsx` において、`Cookies.set` を呼び出す前に `props.paths.returnPath` が有効な文字列かを確認する `if` 文を追加しました。
+    ```typescript
+    if (typeof props.paths.returnPath === 'string' && props.paths.returnPath) {
+      // ... Cookies.set の呼び出し ...
+    } else {
+      console.warn(...);
+    }
+    ```
+2.  **`Cookies.set` の一時的なコメントアウト:** 原因切り分けのため、上記の `if` 文ブロック内の `Cookies.set(...)` の呼び出しをコメントアウトしました。これにより、認証フロー自体は進むようになりましたが、認証後のリダイレクト先を保存する機能は一時的に無効化されています。
+
+# 今後の対応
+
+エラーの根本原因である「本番環境において `props.paths.returnPath` が期待通り文字列になっていない」問題を解決し、認証後のリダイレクト機能を正しく実装する必要があります。
+
+1.  **`props.paths.returnPath` の値のデバッグ:**
+    *   本番環境（またはステージング環境）で、`LoginDialog` コンポーネントが `usePathname()` から受け取る値、および `OauthProviders` コンポーネントが `props.paths.returnPath` として受け取る値を、コンソールログなどを利用して詳細に調査し、なぜ期待通りの文字列になっていないのかを特定します。
+    *   Next.js の App Router やミドルウェアなど、本番環境特有のルーティング動作が影響していないか確認します。
+2.  **`Cookies.set` の安全な再有効化:**
+    *   `props.paths.returnPath` が確実に有効な文字列として取得できるようになった上で、コメントアウトした `Cookies.set` の呼び出しを元に戻します。
+    *   万が一 `returnPath` が取得できない場合のフォールバック処理として、デフォルトのリダイレクト先（例: `/`）をクッキーに保存するなどの対策も検討します。
+
+これらの対応により、エラーを発生させることなく、OAuth 認証後のリダイレクトに必要な元のパス情報をクッキーに保存できるようになることを目指します。
+

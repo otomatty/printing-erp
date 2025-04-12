@@ -1,0 +1,237 @@
+---
+title: "シンタックスハイライトテスト"
+description: "コードブロックのシンタックスハイライト機能のテスト"
+order: 10
+---
+
+# シンタックスハイライトテスト
+
+このページでは、MDXコンテンツ内のコードブロックのシンタックスハイライト機能をテストします。
+
+## JavaScript
+
+```javascript
+// JavaScriptのコードサンプル
+function greet(name) {
+  console.log(`Hello, ${name}!`);
+  return `Hello, ${name}!`;
+}
+
+// オブジェクト
+const user = {
+  name: 'John',
+  age: 30,
+  isAdmin: true,
+  address: {
+    city: 'Tokyo',
+    country: 'Japan'
+  }
+};
+
+// 配列操作
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map(n => n * 2);
+console.log(doubled); // [2, 4, 6, 8, 10]
+```
+
+## TypeScript
+
+```typescript
+// TypeScriptのコードサンプル
+interface User {
+  name: string;
+  age: number;
+  isAdmin: boolean;
+  address?: {
+    city: string;
+    country: string;
+  };
+}
+
+function greet(user: User): string {
+  return `Hello, ${user.name}!`;
+}
+
+// ジェネリック
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+// 型アサーション
+const someValue: any = "this is a string";
+const strLength: number = (someValue as string).length;
+```
+
+## HTML
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>シンタックスハイライトテスト</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>ドキュメントサイト</h1>
+    <nav>
+      <ul>
+        <li><a href="/">ホーム</a></li>
+        <li><a href="/docs">ドキュメント</a></li>
+        <li><a href="/about">サイトについて</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <article>
+      <h2>シンタックスハイライト</h2>
+      <p>コードブロックのシンタックスハイライト機能のテスト</p>
+    </article>
+  </main>
+  <script src="main.js"></script>
+</body>
+</html>
+```
+
+## CSS
+
+```css
+/* CSSのコードサンプル */
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+nav li {
+  margin-right: 1rem;
+}
+
+nav a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  nav ul {
+    flex-direction: column;
+  }
+  
+  nav li {
+    margin-bottom: 0.5rem;
+  }
+}
+```
+
+## JSON
+
+```json
+{
+  "name": "docs",
+  "version": "1.0.0",
+  "description": "ドキュメントサイト",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^13.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "mdx-bundler": "^9.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.0",
+    "@types/react": "^18.0.0",
+    "@types/node": "^18.0.0"
+  }
+}
+```
+
+## Bash
+
+```bash
+# シェルスクリプトのサンプル
+#!/bin/bash
+
+# 変数の定義
+NAME="World"
+CURRENT_DIR=$(pwd)
+
+# 条件分岐
+if [ -d "./node_modules" ]; then
+  echo "node_modules directory exists"
+else
+  echo "Installing dependencies..."
+  npm install
+fi
+
+# ループ
+for i in {1..5}; do
+  echo "Count: $i"
+done
+
+# 関数
+function greet() {
+  echo "Hello, $1!"
+}
+
+# 関数の呼び出し
+greet $NAME
+
+# コマンドの実行結果を変数に格納
+FILES=$(ls -la)
+echo "Files in current directory: $FILES"
+
+# 終了ステータス
+exit 0
+```
+
+## 行のハイライト
+
+```typescript {3-5}
+// 特定の行をハイライト
+function calculateTotal(items: Item[]): number {
+  // この行はハイライトされます
+  const total = items.reduce((sum, item) => sum + item.price, 0);
+  // この行もハイライトされます
+  return total;
+}
+```
+
+## 単語のハイライト
+
+```typescript /Item/ /price/
+// 特定の単語をハイライト
+interface Item {
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+function calculateTotal(items: Item[]): number {
+  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+}
+``` 

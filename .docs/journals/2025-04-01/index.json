@@ -1,0 +1,33 @@
+{
+  "date": "2025-04-01",
+  "entries": [
+    {
+      "id": "next-js-app-router-data-fetching-client-vs-server",
+      "title": "Next.js App Routerにおけるデータフェッチ：クライアントサイドとサーバーサイドの選択",
+      "description": "",
+      "tags": [
+        "Next.js",
+        "App Router",
+        "データフェッチ",
+        "クライアントサイド",
+        "サーバーサイド"
+      ]
+    }
+  ],
+  "commits": [
+    {
+      "message": "feat: 新しいAI機能と管理者向けコンポーネントの追加\n\n- Next.js App Routerにおけるデータフェッチに関する新しいエントリーを追加\n- AI関連の絵文字提案機能を実装し、エクスポート用モジュールを作成\n- 管理者向けのアクションやフックを追加し、機能を強化\n- 不要なコンポーネントを削除し、コードの整理を実施\n- スキル管理用の新しいServer Actionsを追加し、関連するエクスポートを更新",
+      "sha": "ca7fe9b02f2703aa8f83b8c87207e9a9e09c36fe",
+      "date": "2025-04-01T05:07:09Z",
+      "authorName": "otomatty",
+      "authorLogin": "otomatty",
+      "authorAvatar": "https://avatars.githubusercontent.com/u/119780981?u=e59a35c5f24666da2bf38de29b370a8a31654165&v=4",
+      "commitUrl": "https://github.com/otomatty/saedgewell/commit/ca7fe9b02f2703aa8f83b8c87207e9a9e09c36fe",
+      "repoName": "saedgewell",
+      "repoOwner": "otomatty",
+      "repoUrl": "https://github.com/otomatty/saedgewell",
+      "additions": 2278,
+      "deletions": 2754
+    }
+  ]
+}

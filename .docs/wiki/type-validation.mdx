@@ -1,0 +1,304 @@
+---
+title: '型バリデーション'
+description: '型の検証とは何か'
+date: '2025-03-30'
+author: 'Akimasa Sugai'
+tags: ['型バリデーション', 'Type Validation', 'TypeScript', 'JavaScript', 'Zod']
+---
+
+# 型バリデーション
+
+## 型バリデーションとは
+
+型バリデーション（Type Validation）とは、プログラム内のデータが特定の型や構造、制約に適合しているかを検証するプロセスです。特にTypeScriptやJavaScriptのような環境では、外部からのデータ（APIレスポンス、ユーザー入力など）が期待した形式であることを確認する重要な役割を果たします。
+
+## 静的型チェックとランタイム型バリデーションの違い
+
+### 静的型チェック
+
+静的型チェックは、コードが実行される前にコンパイル時に行われる型の検証です。
+
+**特徴:**
+- コンパイル時に型の不一致を検出
+- 実行前にエラーを発見できる
+- コード実行時にはすでに型情報が消去されている
+- TypeScriptのコンパイラによって提供される
+
+**限界:**
+- 外部データ（API、ユーザー入力など）の型を保証できない
+- 実行時に型が変わる可能性がある
+- `any`や型アサーションを使用すると回避できてしまう
+
+```typescript
+// 静的型チェックの例
+type User = {
+  id: number;
+  name: string;
+  age: number;
+};
+
+// コンパイル時にエラーが検出される
+const invalidUser: User = {
+  id: "1", // エラー: string型をnumber型に代入できない
+  name: "田中",
+  age: 30
+};
+```
+
+### ランタイム型バリデーション
+
+ランタイム型バリデーションは、プログラムの実行中に動的にデータの型や構造を検証するプロセスです。
+
+**特徴:**
+- 実行時にデータの構造や型を検証
+- 外部から取得したデータの安全性を保証できる
+- エラーメッセージをカスタマイズできる
+- スキーマベースのバリデーションが可能
+
+**ユースケース:**
+- APIからのレスポンスデータの検証
+- フォーム入力値の検証
+- ファイルから読み込んだデータの検証
+- 設定ファイルの検証
+
+```typescript
+// ランタイム型バリデーションの例（素朴な実装）
+function validateUser(data: unknown): data is User {
+  if (typeof data !== 'object' || data === null) return false;
+  
+  const user = data as any;
+  return (
+    typeof user.id === 'number' &&
+    typeof user.name === 'string' &&
+    typeof user.age === 'number' && 
+    user.age >= 0
+  );
+}
+
+// 使用例
+const userData: unknown = JSON.parse('{"id": 1, "name": "田中", "age": "30"}');
+if (validateUser(userData)) {
+  // この中ではuserDataはUser型として扱える
+  console.log(`${userData.name}さんは${userData.age}歳です`);
+} else {
+  console.error('無効なユーザーデータです');
+}
+```
+
+## なぜランタイム型バリデーションが必要か
+
+TypeScriptの静的型チェックは強力ですが、以下の理由からランタイム型バリデーションも必要になります：
+
+1. **外部データの検証**: APIからのレスポンスやユーザー入力など、外部から取得したデータは静的型チェックの対象外
+2. **型安全性の確保**: TypeScriptの型は実行時に消去されるため、実行時のデータ構造を保証できない
+3. **より詳細な検証**: 数値の範囲チェックやパターンマッチングなど、単純な型チェック以上の検証が可能
+4. **エラーメッセージのカスタマイズ**: ユーザーフレンドリーなエラーメッセージを提供できる
+5. **ビジネスロジックの実装**: 特定のビジネスルールに基づくデータ検証が可能
+
+## 主要な型バリデーションライブラリ
+
+TypeScript/JavaScriptエコシステムでは、いくつかの優れた型バリデーションライブラリが存在します：
+
+### Zod
+
+最近人気を集めているモダンな型バリデーションライブラリです。TypeScriptと緊密に統合されており、スキーマから型を自動的に推論できます。
+
+**特徴:**
+- TypeScriptファーストの設計
+- スキーマから型を自動的に推論（`z.infer<typeof schema>`）
+- 宣言的なAPI
+- エラーメッセージのカスタマイズが容易
+- 複雑なバリデーションルールのサポート
+
+**基本的な使用例:**
+
+```typescript
+import { z } from "zod";
+
+// ユーザースキーマの定義
+const userSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1, "名前は必須です"),
+  age: z.number().min(0).max(120, "有効な年齢を入力してください"),
+  email: z.string().email("有効なメールアドレスを入力してください"),
+  role: z.enum(["admin", "user", "guest"]),
+  metadata: z.object({
+    lastLogin: z.date().optional(),
+    preferences: z.record(z.string()).optional()
+  }).optional()
+});
+
+// スキーマから型を生成
+type User = z.infer<typeof userSchema>;
+
+// バリデーション実行
+function validateUserData(data: unknown): User {
+  const result = userSchema.safeParse(data);
+  if (result.success) {
+    return result.data; // 型安全なデータ
+  } else {
+    throw new Error(`バリデーションエラー: ${result.error.message}`);
+  }
+}
+
+// 使用例
+try {
+  const validatedUser = validateUserData({
+    id: 1,
+    name: "田中太郎",
+    age: 35,
+    email: "tanaka@example.com",
+    role: "user"
+  });
+  console.log(validatedUser);
+} catch (error) {
+  console.error(error);
+}
+```
+
+### その他のライブラリ
+
+- **Yup**: ReactやFormikと組み合わせて使われることが多いバリデーションライブラリです。
+- **io-ts**: 関数型プログラミングスタイルを好む開発者向けのライブラリです。fp-tsと組み合わせて使用します。
+- **Joi**: Node.jsエコシステムで長年使われてきた堅牢なバリデーションライブラリです。
+- **AJV**: JSONスキーマに基づく高速なバリデーションライブラリです。
+
+## 実装パターン
+
+### APIレスポンスの検証
+
+外部APIからのレスポンスを安全に処理する例：
+
+```typescript
+import { z } from "zod";
+import axios from "axios";
+
+// APIレスポンスのスキーマ
+const userApiResponseSchema = z.object({
+  users: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      email: z.string().email(),
+    })
+  ),
+  total: z.number(),
+  page: z.number(),
+  limit: z.number(),
+});
+
+// 型の推論
+type UserApiResponse = z.infer<typeof userApiResponseSchema>;
+
+// APIからデータを取得して検証する関数
+async function fetchUsers(page: number = 1): Promise<UserApiResponse> {
+  try {
+    const response = await axios.get(`https://api.example.com/users?page=${page}`);
+    const result = userApiResponseSchema.safeParse(response.data);
+    
+    if (result.success) {
+      return result.data;
+    } else {
+      console.error("API応答の形式が不正:", result.error);
+      throw new Error("APIレスポンスの形式が期待と異なります");
+    }
+  } catch (error) {
+    console.error("ユーザー取得エラー:", error);
+    throw error;
+  }
+}
+```
+
+### フォームバリデーション
+
+ユーザー入力フォームのバリデーション例：
+
+```typescript
+import { z } from "zod";
+
+// 登録フォームのスキーマ
+const registrationFormSchema = z.object({
+  username: z.string()
+    .min(3, "ユーザー名は3文字以上で入力してください")
+    .max(20, "ユーザー名は20文字以内で入力してください"),
+  email: z.string()
+    .email("有効なメールアドレスを入力してください"),
+  password: z.string()
+    .min(8, "パスワードは8文字以上で入力してください")
+    .regex(/[A-Z]/, "大文字を1文字以上含める必要があります")
+    .regex(/[a-z]/, "小文字を1文字以上含める必要があります")
+    .regex(/[0-9]/, "数字を1文字以上含める必要があります"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "パスワードが一致しません",
+  path: ["confirmPassword"],
+});
+
+// フォームデータの検証
+function validateForm(formData: unknown) {
+  const result = registrationFormSchema.safeParse(formData);
+  if (result.success) {
+    // フォーム送信処理
+    submitForm(result.data);
+  } else {
+    // エラーメッセージの表示
+    displayErrors(result.error.format());
+  }
+}
+```
+
+### 条件付きバリデーション
+
+データの一部の値に基づいて、他のフィールドの検証ルールを変更する例：
+
+```typescript
+import { z } from "zod";
+
+// 支払い方法に応じて必要なフィールドが変わるスキーマ
+const paymentSchema = z.object({
+  amount: z.number().positive("金額は0より大きい値を入力してください"),
+  method: z.enum(["credit_card", "bank_transfer", "paypal"]),
+}).and(
+  z.discriminatedUnion("method", [
+    // クレジットカードの場合
+    z.object({
+      method: z.literal("credit_card"),
+      cardNumber: z.string()
+        .regex(/^\d{16}$/, "16桁の数字を入力してください"),
+      expiryDate: z.string()
+        .regex(/^\d{2}\/\d{2}$/, "MM/YY形式で入力してください"),
+      cvv: z.string()
+        .regex(/^\d{3,4}$/, "3桁または4桁の数字を入力してください"),
+    }),
+    // 銀行振込の場合
+    z.object({
+      method: z.literal("bank_transfer"),
+      accountName: z.string(),
+      accountNumber: z.string(),
+      bankName: z.string(),
+    }),
+    // PayPalの場合
+    z.object({
+      method: z.literal("paypal"),
+      email: z.string().email("有効なメールアドレスを入力してください"),
+    }),
+  ])
+);
+
+type Payment = z.infer<typeof paymentSchema>;
+```
+
+## ベストプラクティス
+
+1. **型とバリデーションスキーマの一元管理**: 型定義とバリデーションスキーマは同じ場所で管理し、一貫性を保ちましょう
+2. **エラーメッセージの明確化**: ユーザーにわかりやすいエラーメッセージを設定しましょう
+3. **複雑なバリデーションの分割**: 大きなスキーマは小さな部分に分割して再利用しましょう
+4. **APIの境界でのバリデーション**: 外部データは必ずAPIの境界でバリデーションを行いましょう
+5. **適切なエラーハンドリング**: バリデーションエラーを適切に処理し、ユーザーにフィードバックを提供しましょう
+
+## まとめ
+
+型バリデーションは現代のWebアプリケーション開発において不可欠な要素です。TypeScriptの静的型チェックと組み合わせることで、より安全で堅牢なコードを書くことができます。特にZodのようなモダンなバリデーションライブラリを使用することで、型の定義とバリデーションロジックを統合し、より宣言的でメンテナンスしやすいコードを実現できます。
+
+外部データを扱う際や、ユーザー入力を処理する際には、必ず適切なバリデーションを実装し、アプリケーションの安全性と品質を確保しましょう。
+

@@ -1,0 +1,189 @@
+---
+title: 実績管理のデータベース
+description: 実績管理のデータベースの実装方法を説明します。
+---
+
+以下のクエリを使用してSupabaseを調べた
+
+```sql
+
+SELECT
+    table_name,          -- テーブル名
+    column_name,         -- カラム名
+    ordinal_position,    -- カラムの順序
+    data_type,           -- データ型
+    is_nullable,         -- NULL許容か (YES/NO)
+    column_default       -- デフォルト値
+FROM
+    information_schema.columns
+WHERE
+    table_schema = 'public'  -- publicスキーマを対象 (Supabaseのデフォルト)
+    AND (table_name = 'works' OR table_name LIKE 'work_%')
+ORDER BY
+    table_name,
+    ordinal_position;
+
+```
+
+## データベーススキーマ
+
+以下は `works` テーブルおよび `work_` プレフィックスを持つ関連テーブルのスキーマ情報です。
+
+### `works`
+
+実績の基本情報を格納するテーブル。
+
+| カラム名        | データ型                    | NULL許容 | デフォルト値          | 説明                                             |
+| --------------- | --------------------------- | -------- | --------------------- | ------------------------------------------------ |
+| id              | uuid                        | NO       | gen_random_uuid()     | 主キー                                           |
+| slug            | text                        | NO       | NULL                  | 実績識別のためのスラッグ                         |
+| title           | text                        | NO       | NULL                  | 実績のタイトル                                   |
+| description     | text                        | NO       | NULL                  | 実績の概要説明                                   |
+| thumbnail_url   | text                        | NO       | NULL                  | サムネイル画像のURL                              |
+| work_category_id| uuid                        | YES      | NULL                  | `work_categories.id` への外部キー (通常は NOT NULL) |
+| github_url      | text                        | YES      | NULL                  | GitHubリポジトリのURL (任意)                   |
+| website_url     | text                        | YES      | NULL                  | 公開ウェブサイトのURL (任意)                     |
+| status          | USER-DEFINED (`work_status`) | NO       | 'draft'::work_status | 実績の状態 (例: draft, published)                |
+| published_at    | timestamp with time zone    | YES      | NULL                  | 公開日時                                         |
+| created_at      | timestamp with time zone    | YES      | now()                 | 作成日時                                         |
+| updated_at      | timestamp with time zone    | YES      | now()                 | 更新日時                                         |
+
+### `work_categories`
+
+実績のカテゴリを管理するテーブル。
+
+| カラム名        | データ型                    | NULL許容 | デフォルト値          | 説明                                |
+| --------------- | --------------------------- | -------- | --------------------- | ----------------------------------- |
+| id              | uuid                        | NO       | gen_random_uuid()     | 主キー                              |
+| name            | text                        | NO       | NULL                  | カテゴリ名                          |
+| slug            | text                        | NO       | NULL                  | カテゴリ識別のためのスラッグ        |
+| description     | text                        | YES      | NULL                  | カテゴリの説明 (任意)              |
+| created_at      | timestamp with time zone    | YES      | now()                 | 作成日時                            |
+| updated_at      | timestamp with time zone    | YES      | now()                 | 更新日時                            |
+
+### `work_challenges`
+
+実績における課題を格納するテーブル。
+
+| カラム名        | データ型                    | NULL許容 | デフォルト値          | 説明                                 |
+| --------------- | --------------------------- | -------- | --------------------- | ------------------------------------ |
+| id              | uuid                        | NO       | gen_random_uuid()     | 主キー                               |
+| work_id         | uuid                        | NO       | NULL                  | `works.id` への外部キー             |
+| title           | text                        | NO       | NULL                  | 課題のタイトル                       |
+| description     | text                        | NO       | NULL                  | 課題の詳細説明                       |
+| sort_order      | integer                     | NO       | 0                     | 表示順序                             |
+| created_at      | timestamp with time zone    | YES      | now()                 | 作成日時                             |
+| updated_at      | timestamp with time zone    | YES      | now()                 | 更新日時                             |
+
+### `work_details`
+
+実績の詳細情報（役割、期間など）を格納するテーブル。
+
+| カラム名        | データ型                    | NULL許容 | デフォルト値          | 説明                             |
+| --------------- | --------------------------- | -------- | --------------------- | -------------------------------- |
+| id              | uuid                        | NO       | gen_random_uuid()     | 主キー                           |
+| work_id         | uuid                        | NO       | NULL                  | `works.id` への外部キー          |
+| overview        | text                        | NO       | NULL                  | 実績概要                         |
+| role            | text                        | NO       | NULL                  | 担当した役割                     |
+| period          | text                        | NO       | NULL                  | 開発期間                         |
+| team_size       | text                        | NO       | NULL                  | チーム規模                       |
+| created_at      | timestamp with time zone    | YES      | now()                 | 作成日時                         |
+| updated_at      | timestamp with time zone    | YES      | now()                 | 更新日時                         |
+
+### `work_images`
+
+実績に関連する画像を格納するテーブル。
+
+| カラム名        | データ型                    | NULL許容 | デフォルト値          | 説明                               |
+| --------------- | --------------------------- | -------- | --------------------- | ---------------------------------- |
+| id              | uuid                        | NO       | gen_random_uuid()     | 主キー                             |
+| work_id         | uuid                        | NO       | NULL                  | `works.id` への外部キー           |
+| url             | text                        | NO       | NULL                  | 画像のURL                          |
+| alt             | text                        | NO       | NULL                  | 画像の代替テキスト                 |
+| caption         | text                        | YES      | NULL                  | 画像のキャプション (任意)          |
+| sort_order      | integer                     | NO       | 0                     | 表示順序                           |
+| created_at      | timestamp with time zone    | YES      | now()                 | 作成日時                           |
+| updated_at      | timestamp with time zone    | YES      | now()                 | 更新日時                           |
+
+### `work_responsibilities`
+
+実績における担当業務を格納するテーブル。
+
+| カラム名        | データ型                    | NULL許容 | デフォルト値          | 説明                             |
+| --------------- | --------------------------- | -------- | --------------------- | -------------------------------- |
+| id              | uuid                        | NO       | gen_random_uuid()     | 主キー                           |
+| work_id         | uuid                        | NO       | NULL                  | `works.id` への外部キー          |
+| description     | text                        | NO       | NULL                  | 担当業務の詳細説明               |
+| sort_order      | integer                     | NO       | 0                     | 表示順序                         |
+| created_at      | timestamp with time zone    | YES      | now()                 | 作成日時                         |
+| updated_at      | timestamp with time zone    | YES      | now()                 | 更新日時                         |
+
+### `work_results`
+
+実績によって得られた成果を格納するテーブル。
+
+| カラム名        | データ型                    | NULL許容 | デフォルト値          | 説明                             |
+| --------------- | --------------------------- | -------- | --------------------- | -------------------------------- |
+| id              | uuid                        | NO       | gen_random_uuid()     | 主キー                           |
+| work_id         | uuid                        | NO       | NULL                  | `works.id` への外部キー          |
+| description     | text                        | NO       | NULL                  | 成果の詳細説明                   |
+| sort_order      | integer                     | NO       | 0                     | 表示順序                         |
+| created_at      | timestamp with time zone    | YES      | now()                 | 作成日時                         |
+| updated_at      | timestamp with time zone    | YES      | now()                 | 更新日時                         |
+
+### `work_technologies`
+
+実績で使用された技術要素（中間テーブル）。実績と技術(`technologies`)を紐付けます。
+
+| カラム名        | データ型                    | NULL許容 | デフォルト値 | 説明                                             |
+| --------------- | --------------------------- | -------- | ------------ | ------------------------------------------------ |
+| work_id         | uuid                        | NO       | NULL         | `works.id` への外部キー (複合主キーの一部)    |
+| technology_id   | uuid                        | NO       | NULL         | `technologies.id` への外部キー (複合主キーの一部) |
+| created_at      | timestamp with time zone    | YES      | now()        | 作成日時                                         |
+
+**注記:** このテーブルは `work_id` と `technology_id` の複合主キーを持ち、それぞれ `works` と `technologies` テーブルへの外部キー制約が設定されます。
+
+### `work_skills`
+
+実績で使用したスキルや技術、およびそれに関連する特記事項を格納するテーブル。実績とスキル(`skills`)を紐付けます。
+
+| カラム名        | データ型                    | NULL許容 | デフォルト値          | 説明                                      |
+| --------------- | --------------------------- | -------- | --------------------- | ----------------------------------------- |
+| id              | uuid                        | NO       | gen_random_uuid()     | 主キー                                    |
+| work_id         | uuid                        | NO       | NULL                  | `works.id` への外部キー                  |
+| skill_id        | uuid                        | NO       | NULL                  | `skills.id` への外部キー                 |
+| description     | text                        | YES      | NULL                  | スキルに関する実績固有の説明（任意）     |
+| highlights      | ARRAY                       | YES      | NULL                  | スキルに関するハイライト (配列, 型要確認, 任意) |
+| created_at      | timestamp with time zone    | YES      | now()                 | 作成日時                                  |
+| updated_at      | timestamp with time zone    | YES      | now()                 | 更新日時                                  |
+
+**注記:** `work_id` と `skill_id` はそれぞれ `works` と `skills` テーブルへの外部キー制約が設定されます。`highlights` の具体的な配列型 (`text[]` など) も確認が必要です。
+
+### `work_solutions`
+
+実績における課題に対する解決策を格納するテーブル。
+
+| カラム名        | データ型                    | NULL許容 | デフォルト値          | 説明                                           |
+| --------------- | --------------------------- | -------- | --------------------- | ---------------------------------------------- |
+| id              | uuid                        | NO       | gen_random_uuid()     | 主キー                                         |
+| work_id         | uuid                        | NO       | NULL                  | `works.id` への外部キー                       |
+| challenge_id    | uuid                        | YES      | NULL                  | `work_challenges.id` への外部キー (任意?) |
+| title           | text                        | NO       | NULL                  | 解決策のタイトル                               |
+| description     | text                        | NO       | NULL                  | 解決策の詳細説明                               |
+| sort_order      | integer                     | NO       | 0                     | 表示順序                                       |
+| created_at      | timestamp with time zone    | YES      | now()                 | 作成日時                                       |
+| updated_at      | timestamp with time zone    | YES      | now()                 | 更新日時                                       |
+
+**注記:** `challenge_id` が NULL 許容になっています。関連先のテーブルや仕様を確認してください。
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,537 @@
+
+
+# Makerkit ガイドライン
+
+あなたは、以下の専門知識を持つ熟練したプログラミングアシスタントです。
+
+- 専門知識: React, Supabase, TypeScript, Next.js 15, Shadcn UI, Tailwind CSS を用いた Turborepo プロジェクト
+- 重視: コードの明確さ、可読性、ベストプラクティス、保守性
+- スタイル: エキスパートレベル、事実に基づいた、問題解決志向
+- ライブラリ: TypeScript, React Hook Form, React Query, Zod, Lucide React
+
+## アプリケーションスコープ
+
+<ここにあなたのアプリケーションスコープを挿入してください>
+
+## プロジェクト構成
+
+以下は Makerkit の Next.js App Router 構成です。
+
+```
+- apps
+-- web
+--- app
+---- home        # 保護されたルート
+------ (user)    # ユーザーワークスペース
+------ [account] # チームワークスペース
+---- (marketing) # マーケティングページ
+---- auth        # 認証ページ
+--- components   # グローバルコンポーネント
+--- config       # グローバル設定
+--- lib          # グローバルユーティリティ
+--- content      # markdoc コンテンツ
+--- styles
+--- supabase     # supabase ルート
+```
+
+## 設定
+
+- ユーザーワークスペースにパスを追加する場合は、`apps/web/config/personal-account-navigation.config.tsx` ファイルを更新してください。
+- チームワークスペースにパスを追加する場合は、`apps/web/config/team-account-navigation.config.tsx` ファイルを更新してください。
+
+## データベース
+
+- Supabase は Postgres を使用
+- 安全で堅牢、かつ高性能なスキーマの作成を目指します
+- アカウントは、Supabase Auth のユーザーと同じ ID を持つ（個人）ユーザーアカウントの一般的な概念です。チームアカウントまたは個人アカウントのいずれかになります。
+- 一般的に言って、他のテーブルはアカウントに関連するデータを格納するために使用されます。たとえば、`notes` テーブルは、アカウントにリンクするための外部キー `account_id` を持ちます。
+- RLS を使用する場合、アカウントの所有者のみがデータにアクセスできるようにする必要があります。常に安全な RLS ポリシーを作成し、ポリシーが確実に適用されるようにしてください。
+- 特に指定がない限り、テーブルを作成する際は常に RLS を有効にしてください。データの安全性を確保するための必要な RLS ポリシーを提案してください。
+- データの整合性のために必要な制約とトリガーが常に設定されていることを考慮してください
+- 常に、行う必要のある妥協点と、私が情報に基づいた決定を下せるようにそれらを説明することを考慮してください。考慮事項をフォローアップし、それらを説明してください。
+- データのセキュリティを常に考慮し、データのセキュリティ上の意味合いを説明してください。
+- 常に Postgres スキーマを明示的に使用してください（例：`public.accounts`）
+- データ型は、`@kit/supabase/database` からの `Database` 型を使用して常に推論する必要があります
+
+```tsx
+import type { Tables } from '@kit/supabase/database';
+type Bookmark = Tables<'bookmarks'>;
+```
+
+## 個人アカウントコンテキスト
+
+アプリケーションのユーザー/個人アカウントコンテキストは、パス `app/home/(user)` の下に存在します。このコンテキストでは、Supabase Auth を使用してユーザーを識別します。
+
+`requireUserInServerComponent` を使用して、相対的な Supabase User オブジェクトを取得し、ユーザーを識別できます。
+
+### クライアントコンポーネント
+
+クライアントコンポーネントでは、`UserWorkspaceContext` にアクセスし、`user` オブジェクトを使用してユーザーを識別できます。
+
+以下のように使用できます。
+
+```tsx
+import { useUserWorkspace } from '@kit/accounts/hooks/use-user-workspace';
+```
+
+## チームアカウントコンテキスト
+
+アプリケーションのチームアカウントコンテキストは、パス `app/home/[account]` の下に存在します。`[account]` セグメントはチームアカウントのスラッグであり、これからチームを識別できます。
+
+### クライアントコンポーネントでアカウントワークスペースデータにアクセスする
+
+アカウントワークスペース API からフェッチされたデータは、チームコンテキストで利用可能です。useAccountWorkspace フックを使用してこのデータにアクセスできます。
+
+```tsx
+'use client';
+
+import { useTeamAccountWorkspace } from '@kit/team-accounts/hooks/use-team-account-workspace';
+
+export default function SomeComponent() {
+  const { account, user, accounts } = useTeamAccountWorkspace();
+  // account, user, accounts を使用
+}
+```
+
+useTeamAccountWorkspace フックは、loadTeamWorkspace 関数と同じデータ構造を返します。
+
+注意: このフックはサーバーコンポーネントでは使用できず、クライアントコンポーネントでのみ使用できます。さらに、これは `/home/[account]` レイアウト下のページでのみ利用可能です。
+
+### チームページ
+
+これらのページはチームアカウント専用であり、チームメンバーのみがアクセスできます。これらのページにアクセスするには、ユーザーは認証済みであり、チームに所属している必要があります。
+
+## UI コンポーネント
+
+再利用可能な UI コンポーネントは、"@kit/ui" パッケージという名前の "packages/ui" パッケージで定義されています。
+コンポーネントを "exports" フィールドからエクスポートすることにより、"@kit/ui/{component-name}" 形式を使用してインポートできます。
+
+### コード標準
+
+- ファイル
+  - 常に kebab-case を使用
+- 命名
+  - 関数/変数: camelCase
+  - 定数: UPPER_SNAKE_CASE
+  - 型/クラス: PascalCase
+- TypeScript
+  - インターフェースよりも型を優先
+  - 可能な限り型推論を使用
+  - any, any[], unknown、またはその他の一般的な型は避ける
+  - 可読性を向上させるためにコードブロック間にスペースを使用
+
+### スタイリング
+
+- スタイリングは Tailwind CSS を使用して行われます。クラス名を生成するために "@kit/ui/utils" パッケージの "cn" 関数を使用します。
+- "bg-gray-500" などの固定クラスは避けてください。代わりに、"bg-background"、"text-secondary-foreground"、"text-muted-foreground" などの Shadcn クラスを使用してください。
+
+### データフェッチ
+
+- サーバーコンポーネントコンテキストでは、データフェッチに Supabase クライアントを直接使用してください
+- クライアントコンポーネントコンテキストでは、"@tanstack/react-query" パッケージの `useQuery` フックを使用してください
+
+データフローは次の方法で機能します。
+
+1. サーバーコンポーネントは Supabase クライアントを使用してデータをフェッチします。
+2. データはサーバーコンポーネントでレンダリングされるか、クライアントコンポーネントを絶対に使用する必要がある場合にクライアントコンポーネントに渡されます（例：React Hooks または DOM とのインタラクションを使用する場合）。
+
+```tsx
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
+
+async function ServerComponent() {
+  const client = getSupabaseServerClient();
+  const { data, error } = await client.from('notes').select('*');
+
+  // data を使用
+}
+```
+
+または、データをクライアントコンポーネントに渡します。
+
+```tsx
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
+
+export default function ServerComponent() {
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase.from('notes').select('*');
+
+  if (error) {
+    return <SomeErrorComponent error={error} />;
+  }
+
+  return <SomeClientComponent data={data} />;
+}
+```
+
+#### Supabase クライアント
+
+- サーバーコンポーネントコンテキストでは、"@kit/supabase/server-client" パッケージの `getSupabaseServerClient` 関数を使用してください。
+- クライアントコンポーネントコンテキストでは、"@kit/supabase/hooks/use-supabase" パッケージの `useSupabase` フックを使用してください。
+
+##### 管理者アクション
+
+`@kit/supabase/server-admin-client` パッケージから RLS をバイパスする必要がある場合は、まれなケースでのみ管理者クライアント `getSupabaseServerAdminClient` の使用を提案してください。
+
+#### React Query
+
+`useQuery` を使用する場合は、データフェッチフックを必ず定義してください。データをフェッチするコンポーネントとデータを表示するコンポーネントの 2 つを作成します。
+
+## サーバーアクション
+
+- クライアントコンポーネントからのデータ変更には、常にサーバーアクションを使用してください
+- サーバーアクションファイルの名前は常に "server-actions.ts" にしてください
+- エクスポートされたサーバーアクションの名前は常に "Action" をサフィックスとして付けてください。例： "createPostAction"
+- 常に "@kit/supabase/actions" パッケージの `enhanceAction` 関数を使用してください。
+
+```tsx
+'use server';
+
+import { z } from 'zod';
+
+import { enhanceAction } from '@kit/next/actions';
+
+const ZodSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+
+export const myServerAction = enhanceAction(
+  async function (data, user) {
+    // 1. "data" は既に有効な ZodSchema であり、安全に使用できます
+    // 2. "user" は認証済みユーザーです
+
+    // ... ここにあなたのコード
+    return {
+      success: true,
+    };
+  },
+  {
+    auth: true,
+    schema: ZodSchema,
+  },
+);
+```
+
+## ルートハンドラー / API ルート
+
+- クライアントコンポーネントからデータフェッチする場合は、ルートハンドラーを使用してください
+- API ルート (route.ts) を作成するには、常に "@kit/supabase/routes" パッケージの `enhanceRouteHandler` 関数を使用してください。
+
+```tsx
+import { NextResponse } from 'next/server';
+
+import { z } from 'zod';
+
+import { enhanceRouteHandler } from '@kit/next/routes';
+
+const ZodSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+
+export const POST = enhanceRouteHandler(
+  async function ({ body, user, request }) {
+    // 1. "body" は既に有効な ZodSchema であり、安全に使用できます
+    // 2. "user" は認証済みユーザーです
+    // 3. "request" は NextRequest です
+    // ... ここにあなたのコード
+    return NextResponse.json({
+      success: true,
+    });
+  },
+  {
+    schema: ZodSchema,
+  },
+);
+
+// 認証されていないルートの例 (注意！)
+export const GET = enhanceRouteHandler(
+  async function ({ user, request }) {
+    // 1. "auth" が false で認証が不要なため、"user" は null です
+    // 2. "request" は NextRequest です
+    // ... ここにあなたのコード
+    return NextResponse.json({
+      success: true,
+    });
+  },
+  {
+    auth: false,
+  },
+);
+```
+
+サーバーアクションとルートハンドラーの両方でログにコンテキストを提供するために、`@kit/shared/logger` パッケージを使用して、構造化された方法で非同期リクエストのログ記録を検討してください。
+
+```tsx
+const ctx = {
+  name: 'my-server-action', // 意味のある名前を使用
+  userId: user.id, // 認証済みユーザーの ID を使用
+};
+
+logger.info(ctx, 'リクエスト開始...');
+
+const { data, error } = await supabase.from('notes').select('*');
+
+if (error) {
+  logger.error(ctx, 'リクエスト失敗...');
+  // エラー処理
+} else {
+  logger.info(ctx, 'リクエスト成功...');
+  // data を使用
+}
+```
+
+### 関連 API
+
+必要な場合は、次の API を使用してください。
+
+1. 個人アカウント API:
+
+```tsx
+import { createAccountsApi } from '@kit/accounts/api';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
+
+async function ServerComponent() {
+  const client = getSupabaseServerClient();
+  const api = createAccountsApi(client);
+  // api を使用
+}
+```
+
+2. チームアカウント API:
+
+```tsx
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
+import { createTeamAccountsApi } from '@kit/team-accounts/api';
+
+async function ServerComponent() {
+  const client = getSupabaseServerClient();
+  const api = createTeamAccountsApi(client);
+  // api を使用
+}
+```
+
+3. 認証 API:
+
+```tsx
+import { redirect } from 'next/navigation';
+
+import { requireUser } from '@kit/supabase/require-user';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
+
+async function ServerComponent() {
+  const client = getSupabaseServerClient();
+  const auth = await requireUser(client);
+  // ユーザーがリダイレクトを必要とするかどうかを確認
+  if (auth.error) {
+    redirect(auth.redirectTo);
+  }
+  // ユーザーは認証済み！
+  const user = auth.data;
+}
+```
+
+4. 請求 API:
+
+```tsx
+import { createBillingGatewayService } from '@kit/billing-gateway';
+
+const service = createBillingGatewayService('stripe');
+```
+
+## ページの作成
+
+新しいページを作成するときは、以下を確認してください。
+
+1. ページが i18n を有効にするために `withI18n` を使用してエクスポートされていること。
+2. ページに `metadata` または `generateMetadata` 関数を使用して、必要な正しいメタデータがあること。
+3. 認証については心配しないでください。自動的に処理されます。
+
+```tsx
+import { Metadata } from 'next';
+
+import { withI18n } from '~/lib/i18n/with-i18n';
+
+export const metadata: Metadata = {
+  title: 'ページタイトル',
+  description: 'ページの説明',
+};
+
+function Page() {
+  // ...
+}
+
+export default withI18n(Page);
+```
+
+## フォーム
+
+- フォームの検証と送信には React Hook Form を使用してください。
+- フォームの検証には Zod を使用してください。
+- Zod スキーマをフォームに解決するには `zodResolver` 関数を使用してください。
+
+以下の例に従って、すべてのフォームを作成してください。
+
+### スキーマを定義する
+
+Zod スキーマは `schema` フォルダで定義し、エクスポートする必要があります。これにより、サーバーアクションとクライアント側のフォーム間で再利用できます。
+
+```tsx
+// _lib/schema/create-note.schema.ts
+import { z } from 'zod';
+
+export const CreateNoteSchema = z.object({
+  title: z.string().min(1),
+  content: z.string().min(1),
+});
+```
+
+### サーバーアクションを作成する
+
+```tsx
+// _lib/server/server-actions.ts
+'use server';
+
+import { z } from 'zod';
+import { enhanceAction } from '@kit/next/actions';
+import { CreateNoteSchema } from '../schema/create-note.schema';
+
+const CreateNoteSchema = z.object({
+  title: z.string().min(1),
+  content: z.string().min(1),
+});
+
+export const createNoteAction = enhanceAction(
+  async function (data, user) {
+    // 1. "data" は Zod スキーマに対して検証済みであり、安全に使用できます
+    // 2. "user" は認証済みユーザーです
+
+    // ... ここにあなたのコード
+    return {
+      success: true,
+    };
+  },
+  {
+    auth: true,
+    schema: CreateNoteSchema,
+  },
+);
+```
+
+次に、フォーム送信を処理するクライアントコンポーネントを作成します。
+
+```tsx
+// _components/create-note-form.tsx
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@kit/ui/form';
+
+import { CreateNoteSchema } from '../_lib/schema/create-note.schema';
+
+export function CreateNoteForm() {
+  const [pending, startTransition] = useTransition();
+
+  const form = useForm({
+    resolver: zodResolver(CreateNoteSchema),
+    defaultValues: {
+      title: '',
+      content: '',
+    },
+  });
+
+  const onSubmit = (data) => {
+    startTransition(async () => {
+      try {
+        await createNoteAction(data);
+      } catch {
+        // エラー処理
+      }
+    });
+  };
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <Form {...form}>
+        <FormField
+          name={'title'}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <span className={'text-sm font-medium'}>タイトル</span>
+              </FormLabel>
+
+              <FormControl>
+                <input
+                  type={'text'}
+                  className={'w-full'}
+                  placeholder={'タイトル'}
+                  {...field}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name={'content'}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <span className={'text-sm font-medium'}>コンテンツ</span>
+              </FormLabel>
+
+              <FormControl>
+                <textarea
+                  className={'w-full'}
+                  placeholder={'コンテンツ'}
+                  {...field}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <button disabled={pending} type={'submit'} className={'w-full'}>
+          送信
+        </button>
+      </Form>
+    </form>
+  );
+}
+```
+
+フォームの UI を記述するには、常に `@kit/ui` を使用してください。
+
+## エラー処理
+
+- `@kit/shared/logger` パッケージを使用したログ記録
+- エラーを隠蔽せず、常に適切に処理してください
+- Promise と async/await を適切に処理してください
+- エラーが発生する場合を考慮し、適切にエラー処理してください
+- 機密データを含まないコンテキスト
+
+## 翻訳
+
+- 文字列を翻訳するには、`@kit/ui/trans` パッケージの `Trans` コンポーネントを使用してください。
+- 翻訳は `apps/web/public/locales/{language}/{namespace}.json` パスに配置されます。
+- 新しい言語を追加するには、`apps/web/lib/i18n/i18n.settings.ts` ファイルの `languages` 配列を更新してください。
+- 新しい機能/ページには新しい名前空間を追加することを検討してください。
+
+---
+
+翻訳は以上になります。内容をご確認いただき、もし修正点やご不明な点がございましたら、お気軽にお申し付けください。

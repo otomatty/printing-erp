@@ -1,0 +1,114 @@
+{
+  "date": "2025-03-30",
+  "entries": [
+    {
+      "id": "client-communication-system-requirements-document",
+      "title": "クライアント向けコミュニケーションシステム要件定義書",
+      "description": "",
+      "tags": [
+        "要件定義書",
+        "コミュニケーションシステム",
+        "クライアント",
+        "システム開発",
+        "ドキュメント"
+      ]
+    },
+    {
+      "id": "otp-vs-magic-link-differences-and-benefits",
+      "title": "OTPとマジックリンク：違いと利点",
+      "description": "Supabaseを活用したパスワードレス認証の実装方法と選択指針",
+      "tags": [
+        "OTP",
+        "マジックリンク",
+        "認証",
+        "セキュリティ",
+        "Supabase",
+        "パスワードレス認証"
+      ]
+    },
+    {
+      "id": "state-management-migration-zustand-to-jotai",
+      "title": "状態管理ライブラリ移行: ZustandからJotaiへの移行戦略",
+      "description": "",
+      "tags": [
+        "状態管理",
+        "Zustand",
+        "Jotai",
+        "移行",
+        "ライブラリ"
+      ]
+    }
+  ],
+  "commits": [
+    {
+      "message": "feat: 新しいドキュメントとコンポーネントの追加\n\n- クライアントコミュニケーションシステムの要件文書を新規作成\n- OTPとマジックリンクの違いと利点に関する文書を追加\n- ZustandからJotaiへの状態管理移行に関する文書を作成\n- 型検証に関する新しいWikiページを追加\n- Circleアプリケーションの各種設定ファイルとコンポーネントを新規作成\n- 新しいアイコンと画像を追加し、アプリケーションのビジュアルを強化\n- 各種スタイルシートを追加し、全体のデザインを向上",
+      "sha": "ebe2ce8e81dc9ac18e85e956e82d13523305dc92",
+      "date": "2025-03-30T10:57:17Z",
+      "authorName": "otomatty",
+      "authorLogin": "otomatty",
+      "authorAvatar": "https://avatars.githubusercontent.com/u/119780981?u=e59a35c5f24666da2bf38de29b370a8a31654165&v=4",
+      "commitUrl": "https://github.com/otomatty/saedgewell/commit/ebe2ce8e81dc9ac18e85e956e82d13523305dc92",
+      "repoName": "saedgewell",
+      "repoOwner": "otomatty",
+      "repoUrl": "https://github.com/otomatty/saedgewell",
+      "additions": 19695,
+      "deletions": 1
+    },
+    {
+      "message": "feat: ニュース記事のサムネイル画像アップロード機能の追加\n\n- ニュース作成および更新時にサムネイル画像をアップロードする機能を実装しました。\n- 画像のバリデーションを追加し、ファイルサイズやタイプをチェックします。\n- 画像のプレビュー表示を実装し、ユーザーが選択した画像を確認できるようにしました。\n- 新しいUIコンポーネントとして、画像アップロードフィールドを追加しました。\n- 既存のサムネイル画像を削除する機能も実装し、更新時に古い画像を適切に管理します。",
+      "sha": "980e9e0a8f5291bdaea2fe8543aac6f601caa1dc",
+      "date": "2025-03-30T10:21:43Z",
+      "authorName": "otomatty",
+      "authorLogin": "otomatty",
+      "authorAvatar": "https://avatars.githubusercontent.com/u/119780981?u=e59a35c5f24666da2bf38de29b370a8a31654165&v=4",
+      "commitUrl": "https://github.com/otomatty/abeya/commit/980e9e0a8f5291bdaea2fe8543aac6f601caa1dc",
+      "repoName": "abeya",
+      "repoOwner": "otomatty",
+      "repoUrl": "https://github.com/otomatty/abeya",
+      "additions": 731,
+      "deletions": 56
+    },
+    {
+      "message": "feat: プレビュー機能の追加とレイアウトの改善\n\n- プレビュー用の新しいレイアウトコンポーネントを追加し、ユーザーがプレビューを確認できるようにしました。\n- プレビュー表示のためのリッチコンポーネント（詳細、リスト、トップセクション）を実装しました。\n- ユーザーが管理者でない場合のリダイレクト処理を追加しました。\n- next.config.tsに新しいホスト設定を追加しました。\n- システムレイアウトの最小高さを調整し、コンテンツエリアのスタイルを改善しました。",
+      "sha": "c67d71393c2dfdabf36e94011e81bba3569ba248",
+      "date": "2025-03-30T08:25:29Z",
+      "authorName": "otomatty",
+      "authorLogin": "otomatty",
+      "authorAvatar": "https://avatars.githubusercontent.com/u/119780981?u=e59a35c5f24666da2bf38de29b370a8a31654165&v=4",
+      "commitUrl": "https://github.com/otomatty/abeya/commit/c67d71393c2dfdabf36e94011e81bba3569ba248",
+      "repoName": "abeya",
+      "repoOwner": "otomatty",
+      "repoUrl": "https://github.com/otomatty/abeya",
+      "additions": 1016,
+      "deletions": 139
+    },
+    {
+      "message": "feat: ニュース管理機能の強化と新しいコンポーネントの追加\n\n- ニュース記事の作成、編集、削除機能を実装\n- カテゴリ一覧を取得する新しいAPIエンドポイントを追加\n- フォームバリデーションのためにZodスキーマを導入\n- プレビュー機能を追加し、リアルタイムでの内容確認を可能に\n- 新しいUIコンポーネント（ボタン、カレンダー、タブなど）を追加し、ユーザーインターフェースを改善\n- 依存関係に@radix-uiのコンポーネントを追加し、バージョンを更新",
+      "sha": "c41700ebc39411e301b4ba822492772d4c548911",
+      "date": "2025-03-30T06:15:15Z",
+      "authorName": "otomatty",
+      "authorLogin": "otomatty",
+      "authorAvatar": "https://avatars.githubusercontent.com/u/119780981?u=e59a35c5f24666da2bf38de29b370a8a31654165&v=4",
+      "commitUrl": "https://github.com/otomatty/abeya/commit/c41700ebc39411e301b4ba822492772d4c548911",
+      "repoName": "abeya",
+      "repoOwner": "otomatty",
+      "repoUrl": "https://github.com/otomatty/abeya",
+      "additions": 1530,
+      "deletions": 289
+    },
+    {
+      "message": "feat: 新しいコンポーネントと機能の追加、依存関係の更新\n\n- 新しいミドルウェアを追加し、認証が必要なパスを定義\n- 商品、カテゴリ、在庫管理に関するマイグレーション機能を実装\n- 新しいUIコンポーネント（Avatar、Checkbox、Dialog、DropdownMenuなど）を追加\n- 依存関係に@radix-uiのコンポーネントを追加し、バージョンを更新\n- 不要なファイルを削除し、コードベースを整理\n- 新しいドキュメントを追加し、データベース設計に関する情報を提供",
+      "sha": "618a4586134bbefb3d898e09c986623b490c262e",
+      "date": "2025-03-30T04:14:46Z",
+      "authorName": "otomatty",
+      "authorLogin": "otomatty",
+      "authorAvatar": "https://avatars.githubusercontent.com/u/119780981?u=e59a35c5f24666da2bf38de29b370a8a31654165&v=4",
+      "commitUrl": "https://github.com/otomatty/abeya/commit/618a4586134bbefb3d898e09c986623b490c262e",
+      "repoName": "abeya",
+      "repoOwner": "otomatty",
+      "repoUrl": "https://github.com/otomatty/abeya",
+      "additions": 7403,
+      "deletions": 1662
+    }
+  ]
+}

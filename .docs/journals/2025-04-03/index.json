@@ -1,0 +1,34 @@
+{
+  "date": "2025-04-03",
+  "entries": [
+    {
+      "id": "concierge-chat-error-cause-solution",
+      "title": "コンシェルジュチャット機能におけるエラー原因特定と解決策",
+      "description": "",
+      "tags": [
+        "コンシェルジュ",
+        "チャット",
+        "エラー",
+        "原因特定",
+        "解決策",
+        "トラブルシューティング"
+      ]
+    }
+  ],
+  "commits": [
+    {
+      "message": "feat: 管理者ダッシュボードに新機能を追加し、スキルページを改善\n\n- 管理者ダッシュボードに新しい統計情報取得機能を追加し、関連するSQL関数を作成\n- スキルページのレイアウトを更新し、スキル詳細表示コンポーネントを追加\n- スキルデータの構造を見直し、関連リンクや得意な領域を表示する機能を実装\n- 不要なファイルを削除し、コードベースを整理\n- スキル情報の取得ロジックを改善し、ユーザーインターフェースのパフォーマンスを向上",
+      "sha": "6e1c14b2c06a747033a1c45a1860c1473fe73c38",
+      "date": "2025-04-03T13:02:06Z",
+      "authorName": "otomatty",
+      "authorLogin": "otomatty",
+      "authorAvatar": "https://avatars.githubusercontent.com/u/119780981?u=e59a35c5f24666da2bf38de29b370a8a31654165&v=4",
+      "commitUrl": "https://github.com/otomatty/saedgewell/commit/6e1c14b2c06a747033a1c45a1860c1473fe73c38",
+      "repoName": "saedgewell",
+      "repoOwner": "otomatty",
+      "repoUrl": "https://github.com/otomatty/saedgewell",
+      "additions": 7876,
+      "deletions": 1417
+    }
+  ]
+}

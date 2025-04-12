@@ -1,0 +1,89 @@
+---
+title: '商品一覧ページネーション不具合'
+description: ''
+date: '2025-03-29'
+author: 'Akimasa Sugai'
+
+tags: ['ページネーション', '不具合', '商品一覧', 'abeya']
+---
+
+### 1. 問題の概要
+
+商品一覧ページ (`/shop/products`) において、ページネーションのリンク（例: 2ページ目、3ページ目）をクリックすると、ブラウザの URL は正しく更新される (`?page=2` など) ものの、表示される商品リストが更新されず、常に1ページ目の内容が表示されてしまう問題が発生しました。カテゴリやソート順を適用した状態でも同様の現象が見られました。
+
+### 2. 原因分析
+
+デバッグログ (`console.log`) を追加して調査した結果、以下の点が明らかになりました。
+
+*   **根本原因:** ページネーションリンクをクリックして URL が変更された後も、サーバーサイドでレンダリングされるページコンポーネント (`app/(shop)/shop/products/page.tsx`) が、**新しい URL のクエリパラメータ (`page=2` など) を Props として正しく受け取れていませんでした。**
+*   **詳細:**
+    *   サーバーログを確認すると、`GET /shop/products?page=2` のようなリクエストはサーバーに到達していました。
+    *   しかし、そのリクエストによって実行される `ProductsPage` コンポーネントのログ (`[ProductsPage] searchParams received:`) では、`searchParams` が常に `{}` (空のオブジェクト) または初期表示時のパラメータしか含まれていない状態でした。
+    *   これにより、`currentPage` が常に `1` として計算され、データ取得アクション (`getProducts`) には常に `1` ページ目を要求する引数が渡されていました。
+*   **試行錯誤:**
+    *   当初、Props の受け取り方を個別のパラメータ (`page`, `category`, `sort`) に変更しましたが、問題は解決しませんでした。
+    *   次に、`export const dynamic = 'force-dynamic';` を `page.tsx` に追加してキャッシュを無効化しましたが、それでも `searchParams` が更新されないという状況が続きました。（根本原因はキャッシュだけではなかったようです）
+    *   最終的に、Props の受け取り方を Next.js App Router で推奨される `searchParams` オブジェクトを直接受け取る形式に戻したところ、問題が解決しました。
+
+### 3. 解決策
+
+以下の手順で修正を行いました。
+
+1.  **`app/(shop)/shop/products/page.tsx` の修正:**
+    *   ページコンポーネントの Props 定義を、個別のパラメータではなく `searchParams` オブジェクトを直接受け取るように変更しました。
+        ```typescript:40:44:app/(shop)/shop/products/page.tsx
+        export default async function ProductsPage({
+          searchParams,
+        }: {
+          searchParams?: { [key: string]: string | string[] | undefined };
+        }) {
+        ```
+    *   コンポーネント内で、`searchParams` オブジェクトから `page`, `category`, `sort` の値を取り出すようにロジックを修正しました。
+        ```typescript:50:55:app/(shop)/shop/products/page.tsx
+          const currentPage = Number(searchParams?.page ?? '1') || 1;
+          const selectedCategorySlug =
+            typeof searchParams?.category === 'string'
+              ? searchParams.category
+              : undefined;
+          const sortBy =
+            typeof searchParams?.sort === 'string' ? searchParams.sort : undefined;
+        ```
+    *   子コンポーネント `Pagination` には、Props で受け取った `searchParams` オブジェクトをそのまま渡すようにしました。
+        ```typescript:152:157:app/(shop)/shop/products/page.tsx
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  baseUrl="/shop/products"
+                  searchParams={searchParams || {}} // Props の searchParams を渡す
+                />
+        ```
+
+2.  **`app/(shop)/shop/products/_components/Pagination.tsx` の修正:**
+    *   `PaginationProps` の `searchParams` の型定義を、`page.tsx` から渡される型 (`{ [key: string]: string | string[] | undefined }`) に合わせました。
+        ```typescript:7:7:app/(shop)/shop/products/_components/Pagination.tsx
+          searchParams: { [key: string]: string | string[] | undefined };
+        ```
+    *   URL 生成関数 (`createPageUrl`) 内で、`searchParams` の値が文字列配列 (`string[]`) である可能性を考慮し、配列の場合は最初の要素を使用するように修正しました。
+        ```typescript:28:33:app/(shop)/shop/products/_components/Pagination.tsx
+              if (value !== undefined) {
+                const paramValue = Array.isArray(value) ? value[0] : value;
+                if (paramValue !== undefined) {
+                   params.set(key, paramValue);
+                }
+              }
+        ```
+
+3.  **`export const dynamic = 'force-dynamic';` の維持:**
+    *   キャッシュ問題を回避するために `page.tsx` に追加したこの設定は、今回の問題解決に直接寄与したかは断定できませんが、商品一覧のような動的なデータ表示を行うページでは設定しておくことが推奨されるため、維持しました。
+
+### 4. 再発防止策 / ベストプラクティス
+
+*   Next.js App Router のサーバーコンポーネントで URL クエリパラメータを扱う際は、**Props として `searchParams` オブジェクトを直接受け取る** 方法を基本とします。
+*   `searchParams` オブジェクトの値は `string` だけでなく `string[]` になる可能性があるため、型定義と値の処理において**配列の場合を考慮**します。
+*   ページネーションやフィルタリングなど、既存のクエリパラメータを維持しつつ一部を更新する必要がある場合は、`URLSearchParams` API を活用して新しいクエリ文字列を安全に構築します。
+*   キャッシュを無効化して常に最新のデータを表示したいルートセグメントには `export const dynamic = 'force-dynamic';` の設定を検討します。
+
+---
+
+このドキュメントが、今回の問題解決の記録として役立つことを願っています。他に何かお手伝いできることがあれば、お気軽にお知らせください。
+
