@@ -1,5 +1,5 @@
 // メインページ
-import DashboardQuickAccess from './_components/dashboard/quick-access';
+import { DashboardQuickAccess } from './_components/dashboard/quick-access';
 import DashboardStats from './_components/dashboard/stats';
 import DashboardRecentOrders from './_components/dashboard/recent-orders';
 import DashboardScheduledTasks from './_components/dashboard/scheduled-tasks';
