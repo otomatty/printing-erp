@@ -1,100 +1,117 @@
-import type { Metadata } from "next";
+import React from 'react';
+import type { Metadata } from 'next';
+import PageHero from '~/components/custom/page-hero'; // ページタイトル表示用に流用
 
 export const metadata: Metadata = {
-	title: "プライバシーポリシー | Saedgewell Portfolio",
-	description:
-		"Saedgewell Portfolioのプライバシーポリシーについて説明しています。",
+  title: 'プライバシーポリシー | ニイヌマ企画印刷',
+  description:
+    'ニイヌマ企画印刷のプライバシーポリシー（個人情報保護方針）について説明します。',
 };
 
-export default function PrivacyPolicyPage() {
-	return (
-		<div className="container mx-auto px-4 py-8 max-w-4xl">
-			<h1 className="text-3xl font-bold mb-8">プライバシーポリシー</h1>
+const PrivacyPolicyPage = () => {
+  return (
+    <div className="bg-gray-50">
+      <PageHero title="プライバシーポリシー" subtitle="個人情報保護方針" />
 
-			<div className="space-y-6">
-				<section>
-					<h2 className="text-2xl font-semibold mb-4">
-						1. 個人情報の収集について
-					</h2>
-					<p className="text-gray-700">
-						当サイトでは、以下の場合に個人情報を収集する場合があります：
-					</p>
-					<ul className="list-disc ml-6 mt-2 space-y-2">
-						<li>お問い合わせフォームの利用時</li>
-						<li>Googleアカウントを使用したログイン時</li>
-						<li>メールの送受信時</li>
-					</ul>
-				</section>
+      <section className="container mx-auto px-4 py-16">
+        <div className="max-w-3xl mx-auto bg-white p-8">
+          <div className="text-gray-700 leading-relaxed">
+            <h2 className="text-2xl font-semibold text-primary mt-8 mb-4 border-b pb-2">
+              1. 個人情報の取得について
+            </h2>
+            <p className="mb-6">
+              当社は、偽りその他不正の手段によらず適正に個人情報を取得致します。お客様から個人情報をご提供いただく場合、その利用目的をあらかじめ明示し、お客様の同意を得た上で取得します。
+            </p>
 
-				<section>
-					<h2 className="text-2xl font-semibold mb-4">2. 収集する情報</h2>
-					<p className="text-gray-700">
-						収集する個人情報には以下が含まれます：
-					</p>
-					<ul className="list-disc ml-6 mt-2 space-y-2">
-						<li>氏名</li>
-						<li>メールアドレス</li>
-						<li>プロフィール情報</li>
-						<li>IPアドレス</li>
-						<li>利用端末の情報</li>
-					</ul>
-				</section>
+            <h2 className="text-2xl font-semibold text-primary mt-10 mb-4 border-b pb-2">
+              2. 個人情報の利用目的
+            </h2>
+            <p className="mb-4">
+              当社は、個人情報を以下の利用目的の達成に必要な範囲内で利用致します。以下に定めのない目的で個人情報を利用する場合、あらかじめご本人の同意を得た上で行ないます。
+            </p>
+            <ul className="list-disc list-outside pl-5 space-y-2 mb-6">
+              <li>
+                ご注文いただいた商品の発送、および関連するアフターサービス
+              </li>
+              <li>
+                お見積りのご依頼・ご相談・お問い合わせに対する回答及び資料送付
+              </li>
+              <li>各種商品・サービスに関する情報提供、アンケート調査</li>
+              <li>当社サービスの改善・開発</li>
+              <li>（その他、具体的な利用目的があれば追記）</li>
+            </ul>
 
-				<section>
-					<h2 className="text-2xl font-semibold mb-4">3. 個人情報の利用目的</h2>
-					<p className="text-gray-700">
-						収集した個人情報は、以下の目的で利用します：
-					</p>
-					<ul className="list-disc ml-6 mt-2 space-y-2">
-						<li>お問い合わせへの回答</li>
-						<li>サービスの提供・運営</li>
-						<li>ユーザー認証</li>
-						<li>サービスの改善・新機能の開発</li>
-						<li>不正アクセスの防止</li>
-					</ul>
-				</section>
+            <h2 className="text-2xl font-semibold text-primary mt-10 mb-4 border-b pb-2">
+              3. 個人情報の安全管理について
+            </h2>
+            <p className="mb-6">
+              当社は、取り扱う個人情報の漏洩、滅失またはき損の防止その他の個人情報の安全管理のために必要かつ適切な措置を講じます。
+            </p>
 
-				<section>
-					<h2 className="text-2xl font-semibold mb-4">
-						4. 個人情報の第三者提供
-					</h2>
-					<p className="text-gray-700">
-						当サイトでは、以下の場合を除き、収集した個人情報を第三者に提供することはありません：
-					</p>
-					<ul className="list-disc ml-6 mt-2 space-y-2">
-						<li>ユーザーの同意がある場合</li>
-						<li>法令に基づく場合</li>
-						<li>人の生命、身体または財産の保護のために必要がある場合</li>
-					</ul>
-				</section>
+            <h2 className="text-2xl font-semibold text-primary mt-10 mb-4 border-b pb-2">
+              4. 個人情報の委託について
+            </h2>
+            <p className="mb-6">
+              当社は、個人情報の取り扱いの全部または一部を第三者に委託する場合は、当該第三者について厳正な調査を行い、取り扱いを委託された個人情報の安全管理が図られるよう当該第三者に対する必要かつ適切な監督を行います。（例：商品の配送業務を運送業者に委託する場合など）
+            </p>
 
-				<section>
-					<h2 className="text-2xl font-semibold mb-4">5. セキュリティ対策</h2>
-					<p className="text-gray-700">
-						個人情報の漏洩、滅失、き損の防止、その他の個人情報の安全管理のために必要かつ適切な措置を講じています。
-					</p>
-				</section>
+            <h2 className="text-2xl font-semibold text-primary mt-10 mb-4 border-b pb-2">
+              5. 個人情報の第三者提供について
+            </h2>
+            <p className="mb-6">
+              当社は、個人情報保護法等の法令に定めのある場合を除き、個人情報をあらかじめご本人の同意を得ることなく、第三者に提供致しません。
+            </p>
 
-				<section>
-					<h2 className="text-2xl font-semibold mb-4">
-						6. プライバシーポリシーの変更
-					</h2>
-					<p className="text-gray-700">
-						本プライバシーポリシーの内容は、法令その他本プライバシーポリシーに別段の定めのある事項を除いて、ユーザーに通知することなく変更することができるものとします。変更後のプライバシーポリシーは、本ウェブサイトに掲載したときから効力を生じるものとします。
-					</p>
-				</section>
+            <h2 className="text-2xl font-semibold text-primary mt-10 mb-4 border-b pb-2">
+              6. 個人情報の開示・訂正等について
+            </h2>
+            <p className="mb-6">
+              当社は、ご本人から自己の個人情報についての開示の請求がある場合、速やかに開示を致します。その際、ご本人であることが確認できない場合には、開示に応じません。
+              個人情報の内容に誤りがあり、ご本人から訂正・追加・削除の請求がある場合、調査の上、速やかにこれらの請求に対応致します。その際、ご本人であることが確認できない場合には、これらの請求に応じません。
+              当社の個人情報の取り扱いにつきまして、上記の請求・お問い合わせ等ございましたら、下記までご連絡くださいますようお願い申し上げます。
+            </p>
 
-				<section>
-					<h2 className="text-2xl font-semibold mb-4">7. お問い合わせ</h2>
-					<p className="text-gray-700">
-						本プライバシーポリシーに関するお問い合わせは、お問い合わせフォームよりご連絡ください。
-					</p>
-				</section>
+            <h2 className="text-2xl font-semibold text-primary mt-10 mb-4 border-b pb-2">
+              7. Cookie（クッキー）その他の技術の利用
+            </h2>
+            <p className="mb-6">
+              当サイトでは、サービスの利便性向上や利用状況の把握、広告配信等のためにCookieを使用する場合があります。Cookieを無効化されたいユーザーは、ウェブブラウザの設定を変更することによりCookieを無効化することができます。但し、Cookieを無効化すると、当サイトの一部の機能をご利用いただけなくなる場合があります。
+              {/* TODO: Google Analytics などを使用している場合は、その旨とオプトアウト方法について記載 */}
+            </p>
 
-				<div className="mt-8 text-sm text-gray-500">
-					<p>最終更新日: 2024年2月17日</p>
-				</div>
-			</div>
-		</div>
-	);
-}
+            <h2 className="text-2xl font-semibold text-primary mt-10 mb-4 border-b pb-2">
+              8. プライバシーポリシーの変更
+            </h2>
+            <p className="mb-6">
+              本ポリシーの内容は、法令その他本ポリシーに別段の定めのある事項を除いて、ユーザーに通知することなく、変更することができるものとします。
+              当社が別途定める場合を除いて、変更後のプライバシーポリシーは、本ウェブサイトに掲載したときから効力を生じるものとします。
+            </p>
+
+            <h2 className="text-2xl font-semibold text-primary mt-10 mb-4 border-b pb-2">
+              9. お問い合わせ窓口
+            </h2>
+            <div className="mb-6">
+              <p>
+                本ポリシーに関するお問い合わせは、下記の窓口までお願いいたします。
+                <br />
+                事業者名称: ニイヌマ企画印刷
+                <br />
+                所在地: 〒022-0003 岩手県大船渡市盛町字みどり町4-12
+                <br />
+                電話番号: 0192-26-2160
+                <br />
+                Eメールアドレス: nkikaku@crocus.ocn.ne.jp
+              </p>
+            </div>
+            <p className="text-sm text-gray-500">
+              制定日: {new Date().toLocaleDateString('ja-JP')}
+              {/* TODO: 正式な制定日を設定 */}
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default PrivacyPolicyPage;

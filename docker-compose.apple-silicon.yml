@@ -9,7 +9,7 @@ services:
       # Apple Silicon向けの最適化フラグ
       - BUN_RUNTIME=--smol
   
-  docs:
+  system:
     deploy:
       resources:
         limits:
@@ -17,12 +17,3 @@ services:
     environment:
       # Apple Silicon向けの最適化フラグ
       - BUN_RUNTIME=--smol
-  
-  admin:
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-    environment:
-      # Apple Silicon向けの最適化フラグ
-      - BUN_RUNTIME=--smol 

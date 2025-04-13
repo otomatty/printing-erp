@@ -205,7 +205,7 @@ function FactorsTable({
               </TableCell>
 
               <TableCell>
-                <Badge variant={'info'} className={'inline-flex uppercase'}>
+                <Badge variant={'default'} className={'inline-flex uppercase'}>
                   {factor.factor_type}
                 </Badge>
               </TableCell>
@@ -213,7 +213,7 @@ function FactorsTable({
               <td>
                 <Badge
                   className={'inline-flex capitalize'}
-                  variant={factor.status === 'verified' ? 'success' : 'outline'}
+                  variant={factor.status === 'verified' ? 'default' : 'outline'}
                 >
                   {factor.status}
                 </Badge>

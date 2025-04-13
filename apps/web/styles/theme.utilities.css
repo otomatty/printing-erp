@@ -94,6 +94,175 @@
     background-size: 400% 400%;
     animation: aurora-gradient 6s ease-in-out infinite;
   }
+
+  /* テーマカラー関連ユーティリティ */
+  
+  /* 背景色のバリエーション */
+  .bg-background-light {
+    background-color: color-mix(in srgb, var(--background) 70%, white);
+  }
+  
+  .bg-background-lighter {
+    background-color: color-mix(in srgb, var(--background) 40%, white);
+  }
+  
+  .bg-background-dark {
+    background-color: color-mix(in srgb, var(--background) 70%, black);
+  }
+  
+  .bg-background-darker {
+    background-color: color-mix(in srgb, var(--background) 40%, black);
+  }
+  
+  /* 背景色のパターン */
+  .bg-background-grid {
+    background-image: 
+      linear-gradient(to right, color-mix(in srgb, var(--primary) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--primary) 10%, transparent) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .bg-background-dots {
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--primary) 15%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 15px 15px;
+  }
+  
+  .bg-background-stripes {
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--background),
+      var(--background) 10px,
+      color-mix(in srgb, var(--background) 80%, var(--primary)) 10px,
+      color-mix(in srgb, var(--background) 80%, var(--primary)) 20px
+    );
+  }
+  
+  /* プライマリカラーのバリエーション */
+  .bg-primary-light {
+    background-color: color-mix(in srgb, var(--primary) 70%, white);
+  }
+  
+  .bg-primary-lighter {
+    background-color: color-mix(in srgb, var(--primary) 40%, white);
+  }
+  
+  .bg-primary-dark {
+    background-color: color-mix(in srgb, var(--primary) 70%, black);
+  }
+  
+  .bg-primary-darker {
+    background-color: color-mix(in srgb, var(--primary) 40%, black);
+  }
+  
+  .text-primary-light {
+    color: color-mix(in srgb, var(--primary) 70%, white);
+  }
+  
+  .text-primary-lighter {
+    color: color-mix(in srgb, var(--primary) 40%, white);
+  }
+  
+  .text-primary-dark {
+    color: color-mix(in srgb, var(--primary) 70%, black);
+  }
+  
+  .text-primary-darker {
+    color: color-mix(in srgb, var(--primary) 40%, black);
+  }
+  
+  /* アクセントカラーのバリエーション */
+  .bg-accent-light {
+    background-color: color-mix(in srgb, var(--accent) 70%, white);
+  }
+  
+  .bg-accent-lighter {
+    background-color: color-mix(in srgb, var(--accent) 40%, white);
+  }
+  
+  .bg-accent-dark {
+    background-color: color-mix(in srgb, var(--accent) 70%, black);
+  }
+  
+  .bg-accent-darker {
+    background-color: color-mix(in srgb, var(--accent) 40%, black);
+  }
+  
+  .text-accent-light {
+    color: color-mix(in srgb, var(--accent) 70%, white);
+  }
+  
+  .text-accent-lighter {
+    color: color-mix(in srgb, var(--accent) 40%, white);
+  }
+  
+  .text-accent-dark {
+    color: color-mix(in srgb, var(--accent) 70%, black);
+  }
+  
+  .text-accent-darker {
+    color: color-mix(in srgb, var(--accent) 40%, black);
+  }
+  
+  /* 印刷関連テーマユーティリティ */
+  .print-texture {
+    background-image: 
+      linear-gradient(45deg, var(--primary) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--primary) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--primary) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--primary) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    opacity: 0.05;
+  }
+  
+  /* テーマ対応ボーダー */
+  .border-theme {
+    border-color: var(--primary);
+  }
+  
+  .border-theme-light {
+    border-color: color-mix(in srgb, var(--primary) 50%, white);
+  }
+  
+  .border-theme-lighter {
+    border-color: color-mix(in srgb, var(--primary) 25%, white);
+  }
+  
+  /* テーマ対応シャドウ */
+  .shadow-theme-sm {
+    box-shadow: 0 1px 2px 0 color-mix(in srgb, var(--primary) 10%, black);
+  }
+  
+  .shadow-theme {
+    box-shadow: 0 1px 3px 0 color-mix(in srgb, var(--primary) 10%, black),
+                0 1px 2px -1px color-mix(in srgb, var(--primary) 10%, black);
+  }
+  
+  .shadow-theme-md {
+    box-shadow: 0 4px 6px -1px color-mix(in srgb, var(--primary) 10%, black),
+                0 2px 4px -2px color-mix(in srgb, var(--primary) 10%, black);
+  }
+  
+  .shadow-theme-lg {
+    box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--primary) 10%, black),
+                0 4px 6px -4px color-mix(in srgb, var(--primary) 10%, black);
+  }
+  
+  /* テーマ対応グラデーション */
+  .bg-theme-gradient {
+    background: linear-gradient(135deg, 
+                var(--primary), 
+                color-mix(in srgb, var(--primary) 60%, var(--secondary)));
+  }
+  
+  .bg-theme-gradient-subtle {
+    background: linear-gradient(135deg, 
+                color-mix(in srgb, var(--primary) 70%, white), 
+                color-mix(in srgb, var(--primary) 30%, white));
+  }
 }
 
 @keyframes aurora-gradient {

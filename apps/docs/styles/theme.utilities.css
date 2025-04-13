@@ -1,7 +1,0 @@
-/* theme utilities styles */
-
-@utility container {
-  margin-inline: auto;
-
-  @apply xl:max-w-[80rem] px-8;
-}

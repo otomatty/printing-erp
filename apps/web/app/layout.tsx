@@ -3,32 +3,29 @@ import type { Metadata } from 'next';
 
 import { Toaster } from '@kit/ui/sonner';
 import { cn } from '@kit/ui/utils';
-import { getAuthState } from '@kit/next/actions';
 
 import { RootProviders } from '~/components/root-providers';
-import { heading, sans } from '~/lib/fonts';
+import {
+  heading,
+  sans,
+  noto,
+  zenGothic,
+  mincho,
+  maruGothic,
+} from '~/lib/fonts';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { Header } from '../components/layout/header';
 import { Footer } from '../components/layout/footer';
-// AuthDebugBarは正しいパスでインポートできなかったためコメントアウト
-// import { AuthDebugBar } from 'packages/shared/ui/components/auth-debug-bar';
+import type { ColorTheme } from '~/components/color-theme-provider';
+import { ThemeSettingsFab } from '~/components/custom/theme-settings-fab';
 
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
-  title: {
-    default: 'Saedgewell | 菅井瑛正',
-    template: ' Saedgewell | 菅井瑛正',
-  },
-  description: 'プロダクトエンジニア 菅井瑛正のポートフォリオサイトです。',
-  keywords: [
-    'プロダクトエンジニア',
-    'Web開発',
-    'Next.js',
-    'React',
-    'TypeScript',
-    'ポートフォリオ',
-  ],
+  title: 'ニイヌマ企画印刷 | 確かな技術と対応力の総合印刷',
+  description:
+    'ニイヌマ企画印刷は、各種印刷・製本、編集・デザインなど、印刷にかかわることなら何でもお受けします。1985年創業の印刷会社です。',
+  keywords: ['印刷', '製本', '編集', 'デザイン', '印刷会社'],
 };
 
 export default async function RootLayout({
@@ -38,27 +35,18 @@ export default async function RootLayout({
 }) {
   const { language } = await createI18nServerInstance();
   const theme = await getTheme();
-  const className = getClassName(theme);
-
-  let profile = null;
-  try {
-    const authState = await getAuthState();
-    profile = authState.profile;
-  } catch (error) {
-    console.error('認証状態の取得に失敗しました:', error);
-    console.log('認証状態: 未認証です（エラーが発生しました）');
-  }
+  const colorTheme = await getColorTheme();
+  const fontFamily = await getFontFamily();
+  const className = getClassName(theme, colorTheme, fontFamily);
 
   return (
-    
     <html lang={language} className={className}>
       <body suppressHydrationWarning>
-        <RootProviders theme={theme} lang={language}>
-          <Header profile={profile} />
+        <RootProviders theme={theme} lang={language} colorTheme={colorTheme}>
+          <Header />
           <main className="flex-1">{children}</main>
           <Footer />
-          {/* AuthDebugBarは正しいパスでインポートできなかったためコメントアウト */}
-          {/* {process.env.NODE_ENV !== 'production' && <AuthDebugBar />} */}
+          <ThemeSettingsFab />
         </RootProviders>
 
         <Toaster richColors={true} theme={theme} position="top-center" />
@@ -67,24 +55,60 @@ export default async function RootLayout({
   );
 }
 
-function getClassName(theme?: string) {
+function getClassName(
+  theme?: string,
+  colorTheme?: ColorTheme,
+  fontFamily?: string
+) {
   const dark = theme === 'dark';
   const light = !dark;
 
-  const font = [sans.variable, heading.variable].reduce<string[]>(
-    (acc, curr) => {
-      if (acc.includes(curr)) return acc;
+  const font = [
+    sans.variable,
+    heading.variable,
+    noto.variable,
+    zenGothic.variable,
+    mincho.variable,
+    maruGothic.variable,
+  ].reduce<string[]>((acc, curr) => {
+    if (acc.includes(curr)) return acc;
 
-      acc.push(curr);
-      return acc;
-    },
-    []
+    acc.push(curr);
+    return acc;
+  }, []);
+
+  // フォントクラスの取得
+  let fontClass = '';
+  if (fontFamily) {
+    switch (fontFamily) {
+      case 'noto-sans':
+        fontClass = 'font-noto-sans';
+        break;
+      case 'zen-gothic':
+        fontClass = 'font-zen-gothic';
+        break;
+      case 'mincho':
+        fontClass = 'font-mincho';
+        break;
+      case 'rounded':
+        fontClass = 'font-rounded';
+        break;
+      default:
+        fontClass = '';
+    }
+  }
+
+  // クライアントサイドでcolorThemeクラスを管理するため、
+  // ここではdarkやlightなど基本的なクラスのみ適用する
+  return cn(
+    'bg-background min-h-screen antialiased',
+    font.join(' '),
+    fontClass,
+    {
+      dark,
+      light,
+    }
   );
-
-  return cn('bg-background min-h-screen antialiased', font.join(' '), {
-    dark,
-    light,
-  });
 }
 
 async function getTheme() {
@@ -92,4 +116,12 @@ async function getTheme() {
   return cookiesStore.get('theme')?.value as 'light' | 'dark' | 'system';
 }
 
-// generateRootMetadataを使用する代わりに、直接メタデータを定義しました
+async function getColorTheme() {
+  const cookiesStore = await cookies();
+  return (cookiesStore.get('color-theme')?.value || 'default') as ColorTheme;
+}
+
+async function getFontFamily() {
+  const cookiesStore = await cookies();
+  return cookiesStore.get('font-family')?.value || 'default';
+}

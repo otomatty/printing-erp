@@ -94,7 +94,13 @@ export default config;
  */
 function getRemotePatterns() {
   /** @type {import('next').NextConfig['remotePatterns']} */
-  const remotePatterns = [];
+  const remotePatterns = [
+    // プレースホルダー画像サービスを常に許可
+    {
+      protocol: 'https',
+      hostname: 'via.placeholder.com',
+    },
+  ];
 
   // SupabaseのURLが設定されている場合、そのホスト名を許可リストに追加
   if (SUPABASE_URL) {
@@ -110,6 +116,7 @@ function getRemotePatterns() {
   return IS_PRODUCTION
     ? remotePatterns
     : [
+        ...remotePatterns,
         {
           protocol: 'http',
           hostname: '127.0.0.1',

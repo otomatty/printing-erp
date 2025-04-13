@@ -33,9 +33,18 @@
     "app",
     "../../packages/features/auth/src/components/login-dialog.tsx",
     "../../packages/ui/src/custom/theme-toggle.tsx",
-    "../admin/lib/server/gemini/skills.ts",
-    "../admin/components/gmail",
-    "types/estimate.ts"
+    "../system/lib/server/gemini/skills.ts",
+    "../system/components/gmail",
+    "types/estimate.ts",
+    "../web/instrumentation.ts",
+    "(marketing)/robots.ts",
+    "(marketing)/not-found.tsx",
+    "(marketing)/layout.tsx",
+    "(marketing)/global-error.tsx",
+    "(marketing)/error.tsx",
+    "(marketing)/_sample",
+    "(marketing)",
+    "../system/system"
   ],
   "exclude": ["node_modules", ".next"]
 }

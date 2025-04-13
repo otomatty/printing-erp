@@ -13,15 +13,5 @@ export * from './date';
 export * from './string';
 // フォーマットユーティリティ
 export * from './format';
-// 絵文字ユーティリティ
-export * from './emoji';
 // エラーハンドリングユーティリティ
 export * from './error';
-// フォーカスユーティリティ
-export * from './focus';
-
-// TODO: 今後追加予定のユーティリティモジュール
-// export * from "./validation";
-// export * from "./number";
-// export * from "./array";
-// export * from "./object";

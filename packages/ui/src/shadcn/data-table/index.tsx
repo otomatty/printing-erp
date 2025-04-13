@@ -114,7 +114,7 @@ interface DataTableProps<TData, TValue> {
  *
  * @example
  * ```tsx
- * import { DataTable } from "@/components/ui/data-table";
+ * import { DataTable } from "@kit/ui/data-table";
  * import { columns } from "./columns";
  *
  * export default function Page() {

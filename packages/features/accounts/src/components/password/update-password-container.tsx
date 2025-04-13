@@ -34,7 +34,7 @@ export function UpdatePasswordFormContainer(
 
 function WarnCannotUpdatePasswordAlert() {
   return (
-    <Alert variant={'warning'}>
+    <Alert variant={'default'}>
       ソーシャルログインを使用しているため、パスワードを更新できません。
     </Alert>
   );

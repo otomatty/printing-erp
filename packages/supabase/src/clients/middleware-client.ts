@@ -84,25 +84,29 @@ export function createMiddlewareClient<GenericSchema = Database>(
     const url = keys.url;
 
     // ホスト名からドメイン設定を決定
-    const host = request.headers.get('host') || '';
+    const host = request.headers.get('host') || ''; // e.g., "localhost:2121"
     let domain = undefined;
 
-    // 開発環境の場合
-    if (host.includes('saedgewell.test')) {
+    // localhostの場合を明示的に処理
+    if (host.startsWith('localhost')) {
+      domain = 'localhost'; // ポートなし、ドットなし
+    }
+    // 開発環境の場合 (.saedgewell.test)
+    else if (host.includes('saedgewell.test')) {
       domain = '.saedgewell.test';
     }
-    // 本番環境の場合: saedgewell.netドメインの検出
+    // 本番環境の場合 (.saedgewell.net)
     else if (host.includes('saedgewell.net')) {
       domain = '.saedgewell.net';
     }
-    // その他のドメインの場合: トップレベルドメインを抽出（example.comなど）
+    // その他のドメインの場合: トップレベルドメインを抽出
     else if (host.includes('.')) {
       const parts = host.split('.');
       if (parts.length >= 2) {
         domain = `.${parts.slice(-2).join('.')}`;
       }
     }
-    // 環境変数によるドメイン設定の上書き
+    // 環境変数によるドメイン設定の上書き (コメントアウトされたまま)
     /*
     if (process.env.AUTH_COOKIE_DOMAIN) {
       domain = process.env.AUTH_COOKIE_DOMAIN;
@@ -140,8 +144,11 @@ export function createMiddlewareClient<GenericSchema = Database>(
                 ...(domain ? { domain } : {}),
                 // SameSite属性を常に'none'に設定して、サードパーティCookie制限に対応
                 sameSite: 'none' as const,
-                // 'none'を使用する場合はsecureが必須
-                secure: true,
+                // 'none'を使用する場合はsecureが必須だが、開発環境(HTTP)ではfalseにする
+                // NODE_ENVが'production'でない場合、または localhost でない場合は true を推奨
+                secure:
+                  process.env.NODE_ENV === 'production' ||
+                  !host.startsWith('localhost'),
               };
 
               response.cookies.set(name, value, cookieOptions);

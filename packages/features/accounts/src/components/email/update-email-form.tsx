@@ -58,7 +58,7 @@ export function UpdateEmailForm({ user, callbackPath }: UpdateEmailFormProps) {
 
   if (!user.email) {
     return (
-      <Alert variant="warning">
+      <Alert variant={'default'}>
         <AlertTitle>メールアドレスが設定されていません</AlertTitle>
         <AlertDescription>
           アカウントにメールアドレスが設定されていません。設定を行ってください。

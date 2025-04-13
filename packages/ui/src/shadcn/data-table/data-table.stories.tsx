@@ -19,7 +19,7 @@ import { DataTableColumnHeader } from './column-header';
  *
  * ## 使用例
  * ```tsx
- * import { DataTable } from "@/components/ui/data-table";
+ * import { DataTable } from "@kit/ui/data-table";
  * import { columns } from "./columns";
  *
  * export default function Page() {

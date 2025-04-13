@@ -5,6 +5,10 @@ import { useMemo } from 'react';
 import dynamic from 'next/dynamic';
 
 import { ThemeProvider } from '~/components/theme-provider';
+import {
+  ColorThemeProvider,
+  type ColorTheme,
+} from '~/components/color-theme-provider';
 
 import { CaptchaProvider } from '@kit/auth/captcha/client';
 import { I18nProvider } from '@kit/i18n/provider';
@@ -37,10 +41,12 @@ const CaptchaTokenSetter = dynamic(async () => {
 export function RootProviders({
   lang,
   theme = appConfig.theme,
+  colorTheme = 'default',
   children,
 }: React.PropsWithChildren<{
   lang: string;
   theme?: string;
+  colorTheme?: ColorTheme;
 }>) {
   const i18nSettings = useMemo(() => getI18nSettings(lang), [lang]);
 
@@ -58,7 +64,9 @@ export function RootProviders({
               defaultTheme={theme}
               enableColorScheme={false}
             >
-              {children}
+              <ColorThemeProvider initialColorTheme={colorTheme}>
+                {children}
+              </ColorThemeProvider>
             </ThemeProvider>
           </AuthProvider>
         </CaptchaProvider>

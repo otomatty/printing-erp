@@ -181,7 +181,7 @@ function SuccessAlert() {
 
 function NeedsReauthenticationAlert() {
   return (
-    <Alert variant={'warning'}>
+    <Alert variant={'default'}>
       <ExclamationTriangleIcon className={'h-4'} />
 
       <AlertTitle>再認証が必要です</AlertTitle>

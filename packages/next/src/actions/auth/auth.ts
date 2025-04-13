@@ -3,48 +3,19 @@
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { revalidatePath } from 'next/cache';
 import type { UserRole } from '@kit/types/auth';
-import type { ProfileWithRole } from '@kit/types/profile';
 
 /**
- * 現在のユーザーのロールを取得します
+ * ProfileWithRole型の定義
  */
-export async function getCurrentUserRole(): Promise<UserRole | null> {
-  const supabase = await getSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return null;
-  }
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('roles (name)')
-    .eq('id', user.id)
-    .single();
-
-  return (profile?.roles?.[0]?.name as UserRole) ?? 'user';
-}
-
-/**
- * ユーザープロフィールを作成または更新します
- */
-export async function upsertProfile(userId: string, email: string) {
-  const supabase = await getSupabaseServerClient();
-
-  // トランザクションを開始
-  const { error: transactionError } = await supabase.rpc('handle_new_user', {
-    p_user_id: userId,
-    p_email: email,
-  });
-
-  if (transactionError) {
-    throw transactionError;
-  }
-
-  revalidatePath('/', 'layout');
-}
+type ProfileWithRole = {
+  id: string;
+  email: string | null;
+  fullName: string | null;
+  avatarUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+  isAdmin: boolean;
+};
 
 /**
  * 現在のユーザーが管理者かどうかを確認します
@@ -94,7 +65,7 @@ export async function getAuthState() {
     const { data: profileOnly, error: profileOnlyError } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('auth_user_id', user.id)
       .single();
 
     if (profileOnlyError || !profileOnly) {
@@ -104,50 +75,18 @@ export async function getAuthState() {
       };
     }
 
-    // ユーザーロールの存在確認
-    const { data: userRolesData } = await supabase
-      .from('user_roles')
-      .select('*, roles(name)')
-      .eq('user_id', user.id);
-
-    const hasUserRoles = userRolesData && userRolesData.length > 0;
-
     // 管理者権限を確認
     const { data: isAdmin } = await supabase.rpc('check_is_admin');
-
-    // ロール情報を処理
-    const userRoles: UserRole[] = ['user'];
-
-    // ユーザーロールがある場合は取得する
-    if (hasUserRoles) {
-      try {
-        userRolesData.forEach((ur, index) => {
-          if (ur?.roles?.name) {
-            const roleName = ur.roles.name;
-            if (roleName === 'user' || roleName === 'client') {
-              userRoles[index] = roleName as UserRole;
-            }
-          }
-        });
-      } catch (e) {
-        console.error('ロール変換エラー:', e);
-      }
-    }
-
-    // デフォルトロールを設定（最初のロールをメインロールとして使用）
-    const defaultRole = userRoles[0] ?? 'user';
 
     // ProfileWithRole型に変換
     const profileWithRole: ProfileWithRole = {
       id: profileOnly.id,
-      email: profileOnly.email,
+      email: profileOnly.email ?? null,
       fullName: profileOnly.full_name ?? null,
       avatarUrl: profileOnly.avatar_url ?? null,
       createdAt: profileOnly.created_at,
       updatedAt: profileOnly.updated_at,
-      role: defaultRole,
       isAdmin: !!isAdmin,
-      roles: userRoles,
     };
 
     return {

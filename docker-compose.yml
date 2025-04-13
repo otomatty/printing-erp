@@ -10,8 +10,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - web
-      - docs
-      - admin
+      - system
     networks:
       - saedgewell_net
     deploy:
@@ -58,12 +57,12 @@ services:
         limits:
           memory: 4G
 
-  docs:
+  system:
     build:
       context: .
-      dockerfile: ./docker/docs/Dockerfile
+      dockerfile: ./docker/system/Dockerfile
       cache_from:
-        - saedgewell/docs:dev
+        - saedgewell/system:dev
       args:
         BUILDKIT_INLINE_CACHE: 1
     ports:
@@ -81,7 +80,7 @@ services:
       - SUPABASE_AUTH_COOKIE_SECURE=true
       - SUPABASE_AUTH_COOKIE_SAME_SITE=none
       - SUPABASE_AUTH_COOKIE_DOMAIN=.saedgewell.test
-      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_DOCS_URL}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SYSTEM_URL}
       - COOKIE_DOMAIN=.saedgewell.test
       - AUTH_COOKIE_DOMAIN=.saedgewell.test
       - DOCKER_DEBUG=${DOCKER_DEBUG:-true}
@@ -99,47 +98,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  admin:
-    build:
-      context: .
-      dockerfile: ./docker/admin/Dockerfile
-      cache_from:
-        - saedgewell/admin:dev
-      args:
-        BUILDKIT_INLINE_CACHE: 1
-    ports:
-      - '7512:3000'
-    volumes:
-      - .:/app:cached
-      - node_modules:/app/node_modules
-      - turbo_cache:/app/.turbo
-      - bun_cache:/app/.bun-cache
-    environment:
-      - NODE_ENV=development
-      - DOCKER_ENV=true
-      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      - SUPABASE_AUTH_COOKIE_SECURE=true
-      - SUPABASE_AUTH_COOKIE_SAME_SITE=none
-      - SUPABASE_AUTH_COOKIE_DOMAIN=.saedgewell.test
-      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_ADMIN_URL}
-      - COOKIE_DOMAIN=.saedgewell.test
-      - AUTH_COOKIE_DOMAIN=.saedgewell.test
-      - DOCKER_DEBUG=${DOCKER_DEBUG:-true}
-    networks:
-      - saedgewell_net
-    restart: always
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 2G
-        reservations:
-          cpus: '0.5'
-          memory: 1G
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    
+
 networks:
   saedgewell_net:
     driver: bridge

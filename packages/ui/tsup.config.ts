@@ -7,6 +7,29 @@ import {
   utilEntries,
 } from './config/tsup/entries';
 
+// エントリーポイントの種類を対応付ける
+const entriesMap = {
+  shadcn: shadcnEntries,
+  makerkit: makerkitEntries,
+  magicui: magicuiEntries,
+  custom: customEntries,
+  utils: utilEntries,
+};
+
+// コマンドライン引数からエントリーポイントを取得
+const entryPoint = process.env.ENTRY_POINT || '';
+
+console.log(`Building with entry point: ${entryPoint}`);
+
+// 対応するエントリーポイント配列を取得
+const selectedEntries = entriesMap[entryPoint as keyof typeof entriesMap];
+
+if (!selectedEntries) {
+  console.error(`Invalid entry point: ${entryPoint}`);
+  console.error(`Valid entry points: ${Object.keys(entriesMap).join(', ')}`);
+  process.exit(1);
+}
+
 const baseConfig = {
   format: ['esm', 'cjs'] as Format[],
   dts: true,
@@ -42,31 +65,8 @@ const baseConfig = {
   workers: 2,
 };
 
-// エントリーポイントを分割してビルドする
-export default defineConfig([
-  {
-    ...baseConfig,
-    entry: shadcnEntries,
-    clean: true, // 最初のビルドでのみtrueに設定
-  },
-  {
-    ...baseConfig,
-    entry: makerkitEntries,
-    clean: false, // 後続のビルドではfalseに設定
-  },
-  {
-    ...baseConfig,
-    entry: magicuiEntries,
-    clean: false,
-  },
-  {
-    ...baseConfig,
-    entry: customEntries,
-    clean: false,
-  },
-  {
-    ...baseConfig,
-    entry: utilEntries,
-    clean: false,
-  },
-]);
+// 単一のエントリーポイントセットでビルド
+export default defineConfig({
+  ...baseConfig,
+  entry: selectedEntries,
+});

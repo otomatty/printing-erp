@@ -36,7 +36,7 @@ export type HandleCallbackResult =
  * @param host リクエストのホスト名 (例: 'web.saedgewell.test', 'saedgewell.net', 'localhost')
  * @returns Cookieに設定するドメイン文字列。localhostの場合はホスト名をそのまま返す。
  */
-function getCookieDomain(host: string): string {
+function getCookieDomain(host: string): string | undefined {
   // 環境変数で明示的に設定されている場合はそれを使用
   if (process.env.COOKIE_DOMAIN) {
     console.log(
@@ -56,9 +56,9 @@ function getCookieDomain(host: string): string {
   // localhost の場合 (ポート番号が含まれる可能性も考慮)
   if (host === 'localhost' || host.startsWith('localhost:')) {
     console.log(
-      `[getCookieDomain] Localhost detected: ${host}, returning host directly.`
+      `[getCookieDomain] Localhost detected: ${host}, returning undefined to skip domain attribute.`
     );
-    return host; // ドメイン属性を設定しない
+    return undefined; // ドメイン属性を設定しない
   }
 
   const parts = host.split('.');
@@ -111,18 +111,31 @@ export async function handleAuthCallback(
   // ホスト名から適切なCookieドメインを取得
   const cookieDomain = getCookieDomain(host);
   console.log(
-    `[handleAuthCallback] Setting cookies for domain: ${cookieDomain}, host: ${host}`
+    `[handleAuthCallback] Setting cookies for domain: ${cookieDomain ? cookieDomain : 'none (implicit)'}, host: ${host}`
   );
+
+  // 開発環境のHTTP接続か判定（本番ではHTTPSを強制）
+  const isLocalhost = host === 'localhost' || host.startsWith('localhost:');
+  const isDevelopment = isLocalhost || process.env.NODE_ENV !== 'production';
+  const shouldSecure = !isLocalhost; // localhostではsecure=falseにする
 
   // Cookie オプションを定義 (これがサブドメイン共有の鍵！)
   const cookieOptions: CookieOptions = {
-    domain: cookieDomain,
+    ...(cookieDomain ? { domain: cookieDomain } : {}), // domainがundefinedの場合は設定しない
     path: '/',
-    secure: true, // HTTPS必須
+    secure: shouldSecure, // localhostではfalse、それ以外はtrue
     sameSite: 'none', // クロスサイト送信許可
     httpOnly: true, // JavaScriptからのアクセス防止
     maxAge: 60 * 60 * 24 * 7, // 例: 7日間
   };
+
+  console.log(
+    `[handleAuthCallback] Cookie options: ${JSON.stringify({
+      domain: cookieDomain || 'not set',
+      secure: shouldSecure,
+      sameSite: 'none',
+    })}`
+  );
 
   // createServerClient (新しい推奨シグネチャを使用)
   const supabaseClient = createServerClient(keys.url, keys.anonKey, {

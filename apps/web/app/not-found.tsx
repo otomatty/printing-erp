@@ -2,7 +2,6 @@ import Link from 'next/link';
 
 import { ArrowLeft } from 'lucide-react';
 
-import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { Button } from '@kit/ui/button';
 import { Heading } from '@kit/ui/heading';
 
@@ -17,12 +16,6 @@ export const generateMetadata = async () => {
 };
 
 const NotFoundPage = async () => {
-  const client = getSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await client.auth.getUser();
-
   return (
     <div className={'flex h-screen flex-1 flex-col'}>
       <div
@@ -51,7 +44,7 @@ const NotFoundPage = async () => {
             <Button asChild variant={'outline'}>
               <Link href={'/'}>
                 <ArrowLeft className={'mr-2 h-4'} />
-                ホームに戻る
+                トップページに戻る
               </Link>
             </Button>
           </div>

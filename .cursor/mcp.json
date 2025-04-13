@@ -6,7 +6,7 @@
         "-y",
         "@supabase/mcp-server-supabase@latest",
         "--access-token",
-        "sbp_920fbd45ce55e24cf342e6152efeb8f3096022fe"
+        "sbp_ad2f96ae974dcd1e8b051eaa8d62258bb28f7bb2"
       ]
     },
     "mastra": {
