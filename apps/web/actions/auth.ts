@@ -1,6 +1,6 @@
 'use server';
 
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { createClient } from '@supabase/supabase-js';
@@ -62,7 +62,7 @@ export async function signInWithOTP(formData: FormData) {
   const email = formData.get('email') as string;
   const redirectTo = (formData.get('redirectTo') as string) || '/';
 
-  const supabase = await createServerSupabaseClient();
+  const supabase = await getSupabaseServerClient();
 
   const { error } = await supabase.auth.signInWithOtp({
     email,
@@ -87,7 +87,7 @@ export async function verifyOTP(formData: FormData) {
   const token = formData.get('token') as string;
   const redirectTo = (formData.get('redirectTo') as string) || '/';
 
-  const supabase = await createServerSupabaseClient();
+  const supabase = await getSupabaseServerClient();
 
   const { error } = await supabase.auth.verifyOtp({
     email,
@@ -129,7 +129,7 @@ async function createServiceRoleClient() {
  * サービスロールで存在確認してから挿入する
  */
 async function ensureCustomerProfile() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await getSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -181,7 +181,7 @@ async function ensureCustomerProfile() {
  * サインアウトアクション
  */
 export async function signOut() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await getSupabaseServerClient();
   await supabase.auth.signOut();
   redirect('/');
 }
@@ -260,7 +260,7 @@ async function ensureAdminCustomerProfile(
  * UserMenu などで利用することを想定
  */
 export async function getCurrentUserForMenu() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await getSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -272,11 +272,12 @@ export async function getCurrentUserForMenu() {
   // 並行して customer と admin_user 情報を取得
   const [customerResult, adminResult] = await Promise.allSettled([
     supabase
-      .from('customers')
+      .from('user_accounts')
       .select('first_name, last_name') // customerからは名前情報のみ取得
       .eq('auth_user_id', user.id)
       .single(),
     supabase
+      .schema('system')
       .from('admin_users')
       .select('is_active, first_name, last_name') // adminからは状態と名前を取得
       .eq('id', user.id)
@@ -359,7 +360,7 @@ export async function getCurrentUserForMenu() {
  * 現在ログイン中のユーザーの情報を取得 (ECサイト顧客情報含む)
  */
 export async function getCurrentUser() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await getSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -368,7 +369,7 @@ export async function getCurrentUser() {
 
   // customersテーブルから追加情報を取得
   const { data: customer } = await supabase
-    .from('customers')
+    .from('user_accounts')
     .select('*') // 必要に応じてカラムを絞る
     .eq('auth_user_id', user.id)
     .single();
@@ -382,6 +383,7 @@ export async function getCurrentUser() {
   } | null = null;
   try {
     const { data: adminUser, error: adminError } = await supabase
+      .schema('system')
       .from('admin_users')
       .select('id, is_active, first_name, last_name')
       .eq('id', user.id)

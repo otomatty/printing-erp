@@ -13,6 +13,7 @@ export type CategoryId =
   | 'design'
   | 'production'
   | 'shipping'
+  | 'website'
   | 'admin';
 
 /**
@@ -59,6 +60,13 @@ export const categories: Record<CategoryId, CategoryInfo> = {
     icon: 'text-amber-600',
     hover: 'hover:bg-amber-200',
   },
+  website: {
+    id: 'website',
+    name: 'ホームページ管理',
+    bg: 'bg-indigo-100',
+    icon: 'text-indigo-600',
+    hover: 'hover:bg-indigo-200',
+  },
   admin: {
     id: 'admin',
     name: '管理',
@@ -77,6 +85,7 @@ export const categoryOrder: CategoryId[] = [
   'design',
   'production',
   'shipping',
+  'website',
   'admin',
 ];
 
@@ -92,5 +101,6 @@ export const categoryColors: Record<
   制作デザイン: categories.design,
   製造印刷: categories.production,
   出荷請求: categories.shipping,
+  ホームページ管理: categories.website,
   管理: categories.admin,
 };

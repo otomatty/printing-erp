@@ -1,0 +1,353 @@
+# お知らせ機能データベース設計
+
+## 概要
+
+印刷会社のホームページに掲載するお知らせ情報を管理するためのデータベース設計です。
+以下の3種類の情報を主に扱います：
+
+1. 会社情報・ニュース
+2. 新サービス・新製品の案内
+3. キャンペーン・イベント情報
+
+## テーブル構造
+
+### `public.news` - お知らせテーブル
+
+お知らせの主要情報を格納するテーブルです。
+
+| カラム名 | データ型 | NULL許容 | デフォルト値 | 説明 |
+|---------|---------|----------|-------------|-----|
+| `id` | UUID | No | `gen_random_uuid()` | 主キー |
+| `title` | TEXT | No | - | お知らせのタイトル |
+| `content` | TEXT | No | - | お知らせの本文（HTML形式） |
+| `summary` | TEXT | Yes | - | 一覧表示用の概要 |
+| `slug` | TEXT | No | - | URL用の識別子（一意） |
+| `published_at` | TIMESTAMPTZ | Yes | - | 公開日時 |
+| `created_at` | TIMESTAMPTZ | No | `now()` | 作成日時 |
+| `updated_at` | TIMESTAMPTZ | No | `now()` | 更新日時 |
+| `status` | TEXT | No | `'draft'` | 状態（'draft', 'published', 'archived'） |
+| `is_featured` | BOOLEAN | No | `false` | トップページなどで特集として表示するか |
+| `category_id` | UUID | Yes | - | カテゴリID（外部キー） |
+| `thumbnail_url` | TEXT | Yes | - | サムネイル画像のURL |
+| `author_id` | UUID | Yes | - | 作成者ID（user_accountsテーブル参照） |
+| `publish_end_date` | TIMESTAMPTZ | Yes | - | 公開終了日時（キャンペーン情報など） |
+
+**インデックス**:
+- `news_published_at_idx` - `published_at DESC` に対するインデックス（降順）
+- `news_slug_idx` - `slug` に対するインデックス
+- `news_category_id_idx` - `category_id` に対するインデックス
+
+**トリガー**:
+- `news_updated_at` - レコード更新時に `updated_at` を現在時刻に更新
+
+### `public.news_categories` - お知らせカテゴリテーブル
+
+お知らせのカテゴリ情報を格納するテーブルです。
+
+| カラム名 | データ型 | NULL許容 | デフォルト値 | 説明 |
+|---------|---------|----------|-------------|-----|
+| `id` | UUID | No | `gen_random_uuid()` | 主キー |
+| `name` | TEXT | No | - | カテゴリ名 |
+| `slug` | TEXT | No | - | URL用の識別子（一意） |
+| `description` | TEXT | Yes | - | カテゴリの説明 |
+| `created_at` | TIMESTAMPTZ | No | `now()` | 作成日時 |
+| `updated_at` | TIMESTAMPTZ | No | `now()` | 更新日時 |
+| `display_order` | INTEGER | No | `0` | 表示順序 |
+
+**トリガー**:
+- `news_categories_updated_at` - レコード更新時に `updated_at` を現在時刻に更新
+
+**初期データ**:
+```sql
+INSERT INTO public.news_categories (name, slug, description, display_order)
+VALUES 
+  ('会社情報・ニュース', 'company', '当社に関する重要なお知らせや最新情報', 1),
+  ('新サービス・新製品', 'new-services', '新しく追加されたサービスや製品の案内', 2),
+  ('キャンペーン・イベント', 'campaigns', '期間限定のキャンペーンやイベント情報', 3);
+```
+
+### `public.news_attachments` - お知らせ添付ファイルテーブル
+
+お知らせに添付するファイル（PDF資料など）を管理するテーブルです。
+
+| カラム名 | データ型 | NULL許容 | デフォルト値 | 説明 |
+|---------|---------|----------|-------------|-----|
+| `id` | UUID | No | `gen_random_uuid()` | 主キー |
+| `news_id` | UUID | No | - | お知らせID（外部キー） |
+| `file_name` | TEXT | No | - | ファイル名 |
+| `file_path` | TEXT | No | - | ファイルパス |
+| `file_type` | TEXT | No | - | ファイルタイプ（MIME） |
+| `file_size` | INTEGER | No | - | ファイルサイズ（バイト） |
+| `created_at` | TIMESTAMPTZ | No | `now()` | 作成日時 |
+
+## リレーションシップ
+
+- `public.news.category_id` → `public.news_categories.id`  
+  お知らせがどのカテゴリに属するかを示します。
+
+- `public.news.author_id` → `public.user_accounts.id`  
+  お知らせを作成した管理ユーザーを示します。
+
+- `public.news_attachments.news_id` → `public.news.id`  
+  添付ファイルがどのお知らせに属するかを示します（ON DELETE CASCADE）。
+
+## 行レベルセキュリティ（RLS）ポリシー
+
+### `public.news` テーブル
+
+- **Admin users can do all**:  
+  `system.admin_users` テーブルに登録されている有効な管理者のみが、すべての操作（作成、読取、更新、削除）を実行できます。
+
+  ```sql
+  CREATE POLICY "Admin users can do all" ON public.news
+    FOR ALL
+    TO authenticated
+    USING (
+      EXISTS (
+        SELECT 1 FROM system.admin_users
+        WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+      )
+    )
+    WITH CHECK (
+      EXISTS (
+        SELECT 1 FROM system.admin_users
+        WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+      )
+    );
+  ```
+
+- **Public can only view published news**:  
+  匿名ユーザーおよび認証済みユーザーは、公開済みのお知らせのみ閲覧できます。
+
+  ```sql
+  CREATE POLICY "Public can only view published news" ON public.news
+    FOR SELECT
+    TO anon, authenticated
+    USING (
+      status = 'published' 
+      AND published_at <= now() 
+      AND (publish_end_date IS NULL OR publish_end_date > now())
+    );
+  ```
+
+### `public.news_categories` テーブル
+
+- **Admin users can do all**:  
+  `system.admin_users` テーブルに登録されている有効な管理者のみがカテゴリの作成、更新、削除を実行できます。
+
+  ```sql
+  CREATE POLICY "Admin users can do all" ON public.news_categories
+    FOR ALL
+    TO authenticated
+    USING (
+      EXISTS (
+        SELECT 1 FROM system.admin_users
+        WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+      )
+    )
+    WITH CHECK (
+      EXISTS (
+        SELECT 1 FROM system.admin_users
+        WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+      )
+    );
+  ```
+
+- **Public can view all categories**:  
+  全ユーザーがカテゴリ一覧を閲覧できます。
+
+  ```sql
+  CREATE POLICY "Public can view all categories" ON public.news_categories
+    FOR SELECT
+    TO anon, authenticated
+    USING (true);
+  ```
+
+### `public.news_attachments` テーブル
+
+- **Admin users can do all**:  
+  `system.admin_users` テーブルに登録されている有効な管理者のみが添付ファイルの操作を実行できます。
+
+  ```sql
+  CREATE POLICY "Admin users can do all" ON public.news_attachments
+    FOR ALL
+    TO authenticated
+    USING (
+      EXISTS (
+        SELECT 1 FROM system.admin_users
+        WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+      )
+    )
+    WITH CHECK (
+      EXISTS (
+        SELECT 1 FROM system.admin_users
+        WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+      )
+    );
+  ```
+
+- **Public can view attachments of published news**:  
+  全ユーザーが公開済みお知らせの添付ファイルのみ閲覧できます。
+
+  ```sql
+  CREATE POLICY "Public can view attachments of published news" ON public.news_attachments
+    FOR SELECT
+    TO anon, authenticated
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.news 
+        WHERE 
+          news.id = news_attachments.news_id 
+          AND news.status = 'published'
+          AND news.published_at <= now()
+          AND (news.publish_end_date IS NULL OR news.publish_end_date > now())
+      )
+    );
+  ```
+
+## 完全なSQL定義
+
+以下はすべてのテーブル、インデックス、ポリシー、トリガーの完全なSQL定義です：
+
+```sql
+-- お知らせテーブル
+CREATE TABLE public.news (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  summary TEXT,
+  slug TEXT UNIQUE NOT NULL,
+  published_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  status TEXT NOT NULL DEFAULT 'draft',
+  is_featured BOOLEAN DEFAULT false,
+  category_id UUID REFERENCES public.news_categories(id),
+  thumbnail_url TEXT,
+  author_id UUID REFERENCES public.user_accounts(id),
+  publish_end_date TIMESTAMPTZ
+);
+
+-- 効率的な取得のためのインデックス
+CREATE INDEX news_published_at_idx ON public.news(published_at DESC);
+CREATE INDEX news_slug_idx ON public.news(slug);
+CREATE INDEX news_category_id_idx ON public.news(category_id);
+
+-- カテゴリテーブル
+CREATE TABLE public.news_categories (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  display_order INTEGER DEFAULT 0
+);
+
+-- 添付ファイルテーブル
+CREATE TABLE public.news_attachments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  news_id UUID REFERENCES public.news(id) ON DELETE CASCADE,
+  file_name TEXT NOT NULL,
+  file_path TEXT NOT NULL,
+  file_type TEXT NOT NULL,
+  file_size INTEGER NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- RLS設定
+ALTER TABLE public.news ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.news_categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.news_attachments ENABLE ROW LEVEL SECURITY;
+
+-- ポリシー設定
+CREATE POLICY "Admin users can do all" ON public.news
+  FOR ALL
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM system.admin_users
+      WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM system.admin_users
+      WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+    )
+  );
+
+CREATE POLICY "Public can only view published news" ON public.news
+  FOR SELECT
+  TO anon, authenticated
+  USING (
+    status = 'published' 
+    AND published_at <= now() 
+    AND (publish_end_date IS NULL OR publish_end_date > now())
+  );
+
+CREATE POLICY "Admin users can do all" ON public.news_categories
+  FOR ALL
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM system.admin_users
+      WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM system.admin_users
+      WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+    )
+  );
+
+CREATE POLICY "Public can view all categories" ON public.news_categories
+  FOR SELECT
+  TO anon, authenticated
+  USING (true);
+
+CREATE POLICY "Admin users can do all" ON public.news_attachments
+  FOR ALL
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM system.admin_users
+      WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM system.admin_users
+      WHERE admin_users.auth_user_id = auth.uid() AND admin_users.is_active = true
+    )
+  );
+
+CREATE POLICY "Public can view attachments of published news" ON public.news_attachments
+  FOR SELECT
+  TO anon, authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.news 
+      WHERE 
+        news.id = news_attachments.news_id 
+        AND news.status = 'published'
+        AND news.published_at <= now()
+        AND (news.publish_end_date IS NULL OR news.publish_end_date > now())
+    )
+  );
+
+-- トリガー設定
+CREATE TRIGGER news_updated_at BEFORE UPDATE 
+  ON public.news FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
+
+CREATE TRIGGER news_categories_updated_at BEFORE UPDATE 
+  ON public.news_categories FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
+
+-- カテゴリの初期データ
+INSERT INTO public.news_categories (name, slug, description, display_order)
+VALUES 
+  ('会社情報・ニュース', 'company', '当社に関する重要なお知らせや最新情報', 1),
+  ('新サービス・新製品', 'new-services', '新しく追加されたサービスや製品の案内', 2),
+  ('キャンペーン・イベント', 'campaigns', '期間限定のキャンペーンやイベント情報', 3);
+```
