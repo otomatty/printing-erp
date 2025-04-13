@@ -4,15 +4,28 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { ja } from 'date-fns/locale';
-import { newsItems } from '../news/_components/newsData';
-import Container from '~/components/custom/container';
 import { motion } from 'framer-motion';
+import Container from '~/components/custom/container';
+import type { News } from '~/types/news';
 
-export default function NewsSection() {
-  // 最新の4件のみを表示
-  const recentNews = [...newsItems]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 4);
+/**
+ * お知らせセクションのプロパティ
+ */
+interface NewsSectionProps {
+  latestNews: News[];
+  featuredNews?: News[];
+}
+
+/**
+ * ホームページのお知らせセクション
+ * データベースから取得した最新記事を表示
+ */
+export default function NewsSection({
+  latestNews,
+  featuredNews,
+}: NewsSectionProps) {
+  // 表示用の記事データ（最大4件）
+  const displayNews = latestNews.slice(0, 4);
 
   // アニメーション設定
   const container = {
@@ -29,6 +42,11 @@ export default function NewsSection() {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
+
+  // 表示するものがなければセクションを表示しない
+  if (displayNews.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-16">
@@ -68,7 +86,7 @@ export default function NewsSection() {
             viewport={{ once: true, amount: 0.1 }}
           >
             <div className="divide-y divide-gray-200">
-              {recentNews.map((news) => (
+              {displayNews.map((news) => (
                 <motion.div
                   key={news.id}
                   className="p-4 hover:bg-gray-50 transition-colors"
@@ -76,16 +94,16 @@ export default function NewsSection() {
                   whileHover={{ backgroundColor: 'rgba(243, 244, 246, 0.7)' }}
                 >
                   <Link
-                    href={`/news/${news.id}`}
+                    href={`/news/${news.slug}`}
                     className="flex flex-col md:flex-row md:items-center gap-2"
                   >
                     <span className="text-gray-500 md:w-32">
-                      {format(parseISO(news.date), 'yyyy.MM.dd', {
+                      {format(parseISO(news.published_at || ''), 'yyyy.MM.dd', {
                         locale: ja,
                       })}
                     </span>
                     <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-md md:w-28 inline-block text-center">
-                      {news.category}
+                      {news.category?.name || '未分類'}
                     </span>
                     <span className="font-medium">{news.title}</span>
                   </Link>

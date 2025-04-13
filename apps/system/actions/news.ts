@@ -4,74 +4,14 @@ import { revalidatePath } from 'next/cache';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
-
-/**
- * お知らせフォームデータのバリデーションスキーマ
- */
-export const newsFormSchema = z.object({
-  title: z.string().min(1, 'タイトルは必須です'),
-  content: z.string().min(1, '本文は必須です'),
-  summary: z.string().optional(),
-  slug: z
-    .string()
-    .min(1, 'スラッグは必須です')
-    .regex(/^[a-z0-9-]+$/, 'スラッグは小文字英数字とハイフンのみ使用可能です'),
-  published_at: z.string().optional(),
-  status: z.enum(['draft', 'published', 'archived']).default('draft'),
-  is_featured: z.boolean().default(false),
-  category_id: z.string().uuid().nullable(),
-  thumbnail_url: z.string().nullable().optional(),
-  publish_end_date: z.string().nullable().optional(),
-});
-
-/**
- * お知らせフォームデータの型
- */
-export type NewsFormData = z.infer<typeof newsFormSchema>;
-
-/**
- * カテゴリフォームデータのバリデーションスキーマ
- */
-export const categoryFormSchema = z.object({
-  name: z.string().min(1, '名前は必須です'),
-  slug: z
-    .string()
-    .min(1, 'スラッグは必須です')
-    .regex(/^[a-z0-9-]+$/, 'スラッグは小文字英数字とハイフンのみ使用可能です'),
-  description: z.string().optional(),
-  display_order: z.number().int().default(0),
-});
-
-/**
- * カテゴリフォームデータの型
- */
-export type CategoryFormData = z.infer<typeof categoryFormSchema>;
-
-/**
- * 添付ファイルのメタデータ型
- */
-export interface AttachmentMetadata {
-  id: string;
-  news_id: string;
-  file_name: string;
-  file_path: string;
-  file_type: string;
-  file_size: number;
-  created_at: string;
-}
-
-/**
- * お知らせ検索パラメータの型
- */
-export interface NewsSearchParams {
-  page?: number;
-  limit?: number;
-  status?: 'draft' | 'published' | 'archived' | 'all';
-  categoryId?: string;
-  query?: string;
-  orderBy?: 'created_at' | 'updated_at' | 'published_at';
-  order?: 'asc' | 'desc';
-}
+import {
+  type NewsFormData,
+  newsFormSchema,
+  type CategoryFormData,
+  categoryFormSchema,
+  type NewsSearchParams,
+  AttachmentMetadata,
+} from '~/types/news';
 
 /**
  * 管理者かどうかを確認する
@@ -88,14 +28,18 @@ async function ensureAdmin() {
     return { isAdmin: false, error: 'ログインが必要です' };
   }
 
-  const { data: adminUser, error } = await supabase
-    .schema('system')
-    .from('admin_users')
-    .select('is_active')
-    .eq('id', user.id)
-    .single();
+  // check_is_admin RPCを呼び出して管理者かどうかを確認
+  const { data, error } = await supabase.rpc('check_is_admin');
 
-  if (error || !adminUser || !adminUser.is_active) {
+  if (error) {
+    console.error('管理者確認中にエラーが発生しました:', error);
+    return {
+      isAdmin: false,
+      error: '管理者権限の確認中にエラーが発生しました',
+    };
+  }
+
+  if (!data) {
     return { isAdmin: false, error: '管理者権限がありません' };
   }
 
@@ -409,10 +353,7 @@ export async function unpublishNews(id: string) {
 }
 
 /**
- * 添付ファイルをアップロードする
- * 注：Server Actionでのファイルアップロードは直接処理できないため、
- * APIルートと併用するか、クライアントコンポーネントでのアップロード後に
- * このアクションでメタデータを保存する形が適切
+ * 添付ファイルのメタデータを保存する
  */
 export async function saveAttachmentMetadata(
   newsId: string,
@@ -461,8 +402,7 @@ export async function saveAttachmentMetadata(
 }
 
 /**
- * 添付ファイルのアップロードURLを生成する
- * クライアント側でこのURLに直接アップロードする
+ * 添付ファイルのアップロードURLを取得する
  */
 export async function getAttachmentUploadUrl(
   newsId: string,
@@ -610,10 +550,34 @@ export async function createCategory(formData: CategoryFormData) {
       };
     }
 
-    // カテゴリ作成
+    // 現在の最大表示順を取得
+    const { data: categories, error: orderError } = await supabase
+      .from('news_categories')
+      .select('display_order')
+      .order('display_order', { ascending: false })
+      .limit(1);
+
+    if (orderError) {
+      console.error('Error fetching max display order:', orderError);
+      return { success: false, error: orderError.message };
+    }
+
+    // 最大表示順 + 1 を新しいカテゴリの表示順とする
+    const maxDisplayOrder =
+      categories &&
+      categories.length > 0 &&
+      categories[0]?.display_order !== null
+        ? categories[0]?.display_order
+        : -1;
+    const newDisplayOrder = (maxDisplayOrder ?? -1) + 1;
+
+    // カテゴリ作成（表示順を自動設定）
     const { data, error } = await supabase
       .from('news_categories')
-      .insert(validatedData)
+      .insert({
+        ...validatedData,
+        display_order: newDisplayOrder,
+      })
       .select()
       .single();
 
@@ -780,7 +744,7 @@ export async function deleteCategory(id: string) {
 }
 
 /**
- * お知らせ検索（管理者用、すべてのステータスを含む）
+ * お知らせを検索する
  */
 export async function searchNews({
   page = 1,
@@ -860,7 +824,7 @@ export async function searchNews({
 }
 
 /**
- * カテゴリ一覧を取得する（管理者用）
+ * カテゴリ一覧を取得する
  */
 export async function getCategories() {
   // 管理者確認
@@ -893,7 +857,7 @@ export async function getCategories() {
 }
 
 /**
- * お知らせ詳細を取得する（管理者用、すべてのステータスを含む）
+ * お知らせを取得する
  */
 export async function getNewsById(id: string) {
   // 管理者確認
@@ -926,6 +890,53 @@ export async function getNewsById(id: string) {
     return {
       news: null,
       error: 'お知らせの取得中にエラーが発生しました',
+    };
+  }
+}
+
+/**
+ * カテゴリの表示順を更新する
+ */
+export async function updateCategoryOrder(
+  categoryOrders: { id: string; display_order: number }[]
+) {
+  // 管理者確認
+  const { isAdmin, error: authError } = await ensureAdmin();
+  if (!isAdmin) {
+    return { success: false, error: authError };
+  }
+
+  try {
+    const supabase = await getSupabaseServerClient();
+
+    // 一括更新用の処理
+    const updates = categoryOrders.map(({ id, display_order }) => ({
+      id,
+      display_order,
+    }));
+
+    for (const update of updates) {
+      const { error } = await supabase
+        .from('news_categories')
+        .update({ display_order: update.display_order })
+        .eq('id', update.id);
+
+      if (error) {
+        console.error('Error updating category order:', error);
+        return { success: false, error: error.message };
+      }
+    }
+
+    // キャッシュを更新
+    revalidatePath('/website/news');
+    revalidatePath('/website/news/categories');
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating category order:', error);
+    return {
+      success: false,
+      error: 'カテゴリの順序更新中にエラーが発生しました',
     };
   }
 }

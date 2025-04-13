@@ -4,14 +4,14 @@ import Container from '~/components/custom/container';
 // Remove unnecessary imports like icons
 
 // Import section components
-import IntroductionSection from './_components/IntroductionSection';
-import BenefitsSection from './_components/BenefitsSection';
-import StrengthsSection from './_components/StrengthsSection';
-import SubsidiesSection from './_components/SubsidiesSection';
-import CaseStudiesSection from './_components/CaseStudiesSection';
-import PrecautionsSection from './_components/PrecautionsSection';
-import CtaSection from './_components/CtaSection';
-import RelatedTopicLink from '@kit/ui/RelatedTopicLink';
+import IntroductionSection from './_components/introduction';
+import BenefitsSection from './_components/benefits';
+import StrengthsSection from './_components/strengths';
+import SubsidiesSection from './_components/subsidies';
+import CaseStudiesSection from './_components/case-studies';
+import PrecautionsSection from './_components/precautions';
+import CtaSection from './_components/cta';
+import RelatedTopicLink from '~/components/custom/related-topic-link';
 
 // TODO: Set metadata (title, description)
 export const metadata = {

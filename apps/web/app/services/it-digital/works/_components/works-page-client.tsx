@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import Container from '~/components/custom/container';
 import PageHero from '~/components/custom/page-hero';
 import CtaSection from '~/components/custom/cta-section';
-import WorksFilter from './WorksFilter';
-import WorksList from './WorksList';
-import ServiceCTA from '@/components/shared/ServiceCTA';
-import { works } from '@/data/works';
+import WorksFilter from './works-filter';
+import WorksList from './works-list';
+import ServiceCTA from '~/components/services/service-cta';
+import { works } from '~/data/works';
 
 const WorksPageClient = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');

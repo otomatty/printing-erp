@@ -81,8 +81,8 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    label: '会社概要',
-    href: '/company',
+    label: '私たちについて',
+    href: '/about',
   },
 ];
 
@@ -157,7 +157,7 @@ export function Header() {
         <div className="hidden lg:flex items-center space-x-6">
           <a
             href={telLink}
-            className="flex items-center text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary"
+            className="flex items-center font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary"
           >
             <Phone size={16} className="mr-1.5" />
             {phoneNumber}

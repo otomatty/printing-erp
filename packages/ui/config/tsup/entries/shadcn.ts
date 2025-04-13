@@ -13,6 +13,7 @@ export const shadcnEntries = [
   'src/shadcn/calendar/index.tsx',
   'src/shadcn/card/index.tsx',
   'src/shadcn/checkbox/index.tsx',
+  'src/shadcn/carousel/index.tsx',
   'src/shadcn/collapsible/index.tsx',
   'src/shadcn/command/index.tsx',
   'src/shadcn/data-table/index.tsx',

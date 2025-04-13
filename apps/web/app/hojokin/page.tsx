@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Container from '~/components/custom/container';
 import PageHero from '~/components/custom/page-hero'; // 必要に応じて汎用的なヒーローコンポーネントを使用
-import { topics as allTopics } from '@/app/(marketing)/topics/page'; // topicsデータをインポートし、別名をつける
+import { topics as allTopics } from '../topics/page'; // topicsデータをインポートし、別名をつける
 import { CheckCircle, ArrowRight } from 'lucide-react'; // メリット表示用アイコンとArrowRightを追加
 
 // topics配列の要素の型を定義 (topics/page.tsx の内容から推測)

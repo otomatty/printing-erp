@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import PageHero from '~/components/custom/page-hero';
 import Container from '~/components/custom/container';
-import TopicSections from './_components/TopicListClient';
-import { RecommendedTopicsCarousel } from './_components/RecommendedTopicsCarousel';
+import TopicSections from './_components/topic-list-client';
+import { RecommendedTopicsCarousel } from './_components/recommended-topics-carousel';
 
 // カテゴリ定義
 const categories = [

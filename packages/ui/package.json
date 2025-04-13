@@ -212,6 +212,7 @@
     "./skeleton": "./src/shadcn/skeleton/index.tsx",
     "./sidebar": "./src/shadcn/sidebar/index.tsx",
     "./collapsible": "./src/shadcn/collapsible/index.tsx",
+    "./carousel": "./src/shadcn/carousel/index.tsx",
     "./utils": "./src/lib/utils/index.ts"
   },
   "typesVersions": {

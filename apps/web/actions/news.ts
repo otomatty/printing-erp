@@ -1,40 +1,7 @@
 'use server';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
-
-/**
- * お知らせ一覧の取得パラメータ
- */
-export interface NewsListParams {
-  /** ページ番号 (1から開始) */
-  page?: number;
-  /** 1ページあたりの件数 */
-  limit?: number;
-  /** カテゴリスラッグによるフィルタリング */
-  categorySlug?: string;
-}
-
-/**
- * お知らせの型定義
- */
-export interface News {
-  id: string;
-  title: string;
-  summary: string | null;
-  slug: string;
-  published_at: string;
-  status: string;
-  is_featured: boolean;
-  category_id: string | null;
-  thumbnail_url: string | null;
-  publish_end_date: string | null;
-  created_at: string;
-  updated_at: string;
-  category?: {
-    name: string;
-    slug: string;
-  };
-}
+import type { News, NewsListParams, NewsCategory } from '~/types/news';
 
 /**
  * 公開済みのお知らせ一覧を取得する
