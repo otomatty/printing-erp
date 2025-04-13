@@ -51,7 +51,7 @@
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:reset": "supabase db reset",
-    "supabase:typegen": "supabase gen types typescript --project-id utqwsibqiealdgvocyie --schema public > packages/supabase/src/database.types.ts",
+    "supabase:typegen": "supabase gen types typescript --project-id utqwsibqiealdgvocyie --schema public,system > packages/supabase/src/database.types.ts",
     "supabase:migration:new": "supabase migration new",
     "supabase:migration:up": "supabase migration up",
     "version:check": "bun run tooling/scripts/version-manager/cli.ts check",

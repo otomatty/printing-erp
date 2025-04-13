@@ -74,7 +74,9 @@ export async function getAuthState() {
     }
 
     // 管理者権限を確認
-    const { data: isAdmin } = await supabase.rpc('check_is_admin');
+    const { data: isAdmin } = await supabase
+      .schema('system')
+      .rpc('check_is_admin');
 
     // ProfileWithRole型に変換
     const profileWithRole: ProfileWithRole = {

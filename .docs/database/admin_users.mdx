@@ -11,7 +11,7 @@
 現在の構造:
 
 ```sql
-CREATE TABLE public.admin_users (
+CREATE TABLE system.admin_users (
   id UUID NOT NULL DEFAULT gen_random_uuid(),
   auth_user_id UUID NOT NULL,
   email TEXT,
@@ -48,9 +48,9 @@ CREATE TABLE public.admin_users (
 パフォーマンスとクエリ最適化のために以下のインデックスを設定しています：
 
 ```sql
-CREATE INDEX idx_admin_users_auth_user_id ON public.admin_users USING btree (auth_user_id);
-CREATE INDEX idx_admin_users_email ON public.admin_users USING btree (email);
-CREATE INDEX idx_admin_users_role ON public.admin_users USING btree (role);
+CREATE INDEX idx_admin_users_auth_user_id ON system.admin_users USING btree (auth_user_id);
+CREATE INDEX idx_admin_users_email ON system.admin_users USING btree (email);
+CREATE INDEX idx_admin_users_role ON system.admin_users USING btree (role);
 ```
 
 ## 制約
@@ -69,12 +69,12 @@ Row Level Security（RLS）を有効化し、JWT権限に基づいた以下の�
 
 ```sql
 -- RLSを有効化
-ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.admin_users FORCE ROW LEVEL SECURITY;
+ALTER TABLE system.admin_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE system.admin_users FORCE ROW LEVEL SECURITY;
 
 -- JWT権限を持つ管理者はフルアクセス可能
 CREATE POLICY "JWT admins can do anything"
-ON public.admin_users
+ON system.admin_users
 FOR ALL
 TO authenticated
 USING (
@@ -83,13 +83,13 @@ USING (
 
 -- ユーザーは自分自身のレコードを閲覧可能
 CREATE POLICY "Users can view own record"
-ON public.admin_users
+ON system.admin_users
 FOR SELECT
 TO authenticated
 USING (auth.uid() = auth_user_id);
 
 -- サービスロールにアクセス権を付与
-GRANT ALL ON TABLE public.admin_users TO service_role;
+GRANT ALL ON TABLE system.admin_users TO service_role;
 ```
 
 ## 自動更新トリガー
@@ -108,7 +108,7 @@ $$ LANGUAGE plpgsql;
 
 -- トリガーの作成
 CREATE TRIGGER admin_users_updated_at
-BEFORE UPDATE ON public.admin_users
+BEFORE UPDATE ON system.admin_users
 FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 ```
 

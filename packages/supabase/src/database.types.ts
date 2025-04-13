@@ -9,42 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      admin_users: {
-        Row: {
-          auth_user_id: string
-          created_at: string
-          email: string | null
-          first_name: string | null
-          id: string
-          is_active: boolean
-          last_name: string | null
-          role: Database["public"]["Enums"]["admin_role"]
-          updated_at: string
-        }
-        Insert: {
-          auth_user_id: string
-          created_at?: string
-          email?: string | null
-          first_name?: string | null
-          id?: string
-          is_active?: boolean
-          last_name?: string | null
-          role?: Database["public"]["Enums"]["admin_role"]
-          updated_at?: string
-        }
-        Update: {
-          auth_user_id?: string
-          created_at?: string
-          email?: string | null
-          first_name?: string | null
-          id?: string
-          is_active?: boolean
-          last_name?: string | null
-          role?: Database["public"]["Enums"]["admin_role"]
-          updated_at?: string
-        }
-        Relationships: []
-      }
       user_accounts: {
         Row: {
           address: Json | null
@@ -114,6 +78,148 @@ export type Database = {
     }
     Enums: {
       admin_role: "admin" | "staff"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+  system: {
+    Tables: {
+      admin_quick_access: {
+        Row: {
+          admin_user_id: string
+          created_at: string | null
+          display_order: number
+          id: string
+          is_visible: boolean | null
+          item_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          admin_user_id: string
+          created_at?: string | null
+          display_order: number
+          id?: string
+          is_visible?: boolean | null
+          item_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          admin_user_id?: string
+          created_at?: string | null
+          display_order?: number
+          id?: string
+          is_visible?: boolean | null
+          item_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_quick_access_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_quick_access_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "quick_access_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_users: {
+        Row: {
+          auth_user_id: string
+          created_at: string
+          email: string | null
+          first_name: string | null
+          id: string
+          is_active: boolean
+          last_name: string | null
+          role: Database["public"]["Enums"]["admin_role"]
+          updated_at: string
+        }
+        Insert: {
+          auth_user_id: string
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          is_active?: boolean
+          last_name?: string | null
+          role?: Database["public"]["Enums"]["admin_role"]
+          updated_at?: string
+        }
+        Update: {
+          auth_user_id?: string
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          is_active?: boolean
+          last_name?: string | null
+          role?: Database["public"]["Enums"]["admin_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      quick_access_items: {
+        Row: {
+          category_id: string
+          created_at: string | null
+          description: string
+          display_order: number
+          href: string
+          icon: string
+          id: string
+          is_default: boolean | null
+          is_enabled: boolean | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category_id: string
+          created_at?: string | null
+          description: string
+          display_order: number
+          href: string
+          icon: string
+          id?: string
+          is_default?: boolean | null
+          is_enabled?: boolean | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category_id?: string
+          created_at?: string | null
+          description?: string
+          display_order?: number
+          href?: string
+          icon?: string
+          id?: string
+          is_default?: boolean | null
+          is_enabled?: boolean | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      check_is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+    }
+    Enums: {
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -231,5 +337,8 @@ export const Constants = {
     Enums: {
       admin_role: ["admin", "staff"],
     },
+  },
+  system: {
+    Enums: {},
   },
 } as const
