@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@kit/ui/card';
-import { ProcessSettings } from './ProcessSettings';
-import { EquipmentSettings } from './EquipmentSettings';
+import { ProcessSettings } from './process';
+import { EquipmentSettings } from './equipment';
 
 export function ProductionSettings() {
   return (

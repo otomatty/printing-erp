@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@kit/ui/card';
-import { CompanyInfo } from './CompanyInfo';
+import { CompanyInfo } from './company-info';
 
 export function CompanySettings() {
   return (

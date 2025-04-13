@@ -181,8 +181,8 @@ export function ProcessSettings() {
     if (index === 0) return;
     const newProcesses = [...processes];
     [newProcesses[index - 1], newProcesses[index]] = [
-      newProcesses[index],
-      newProcesses[index - 1],
+      newProcesses[index] as Process,
+      newProcesses[index - 1] as Process,
     ];
     // 順序を更新
     newProcesses.forEach((p, i) => {
@@ -195,8 +195,8 @@ export function ProcessSettings() {
     if (index === processes.length - 1) return;
     const newProcesses = [...processes];
     [newProcesses[index], newProcesses[index + 1]] = [
-      newProcesses[index + 1],
-      newProcesses[index],
+      newProcesses[index + 1] as Process,
+      newProcesses[index] as Process,
     ];
     // 順序を更新
     newProcesses.forEach((p, i) => {

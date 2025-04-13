@@ -16,11 +16,11 @@ import {
 } from '@kit/ui/card';
 import { Button } from '@kit/ui/button';
 
-import { InquirySettings } from './_components/inquiry/InquirySettings';
-import { GeneralSettings } from './_components/general/GeneralSettings';
-import { UserSettings } from './_components/users/UserSettings';
-import { CompanySettings } from './_components/company/CompanySettings';
-import { ProductionSettings } from './_components/production/ProductionSettings';
+import { InquirySettings } from './_components/inquiry/inquiry-settings';
+import { GeneralSettings } from './_components/general/general';
+import { UserSettings } from './_components/users/user-settings';
+import { CompanySettings } from './_components/company/company-settings';
+import { ProductionSettings } from './_components/production/production';
 
 export default function SettingsPage() {
   return (

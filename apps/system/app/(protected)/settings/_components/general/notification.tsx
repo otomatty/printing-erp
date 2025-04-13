@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@kit/ui/select';
-import { BellIcon, Bell, AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 
 export function NotificationSettings() {
   const [emailNotifications, setEmailNotifications] = useState(true);

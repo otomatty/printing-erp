@@ -1,12 +1,12 @@
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
-import { InquiryDashboard } from './InquiryDashboard';
-import { InquiryAutomation } from './InquiryAutomation';
-import { InquiryCategories } from './InquiryCategories';
-import { ResponseTemplates } from './ResponseTemplates';
-import { ResponseTimeSettings } from './ResponseTimeSettings';
-import { InquiryAnalytics } from './InquiryAnalytics';
+import { InquiryDashboard } from './inquiry-dashboard';
+import { InquiryAutomation } from './inquiry-automation';
+import { InquiryCategories } from './inquiry-categories';
+import { ResponseTemplates } from './response-templates';
+import { ResponseTimeSettings } from './response-time-settings';
+import { InquiryAnalytics } from './inquiry-analytics';
 import {
   Card,
   CardContent,

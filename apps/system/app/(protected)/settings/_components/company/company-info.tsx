@@ -17,7 +17,7 @@ import {
   SegmentedControl,
   SegmentedControlContent,
   type SegmentOption,
-} from '../ui/SegmentedControl';
+} from '../ui/segmented-control';
 
 export function CompanyInfo() {
   const [activeSegment, setActiveSegment] = useState('basic');

@@ -38,7 +38,7 @@ import {
 import {
   SegmentedControl,
   SegmentedControlContent,
-} from '../ui/SegmentedControl';
+} from '../ui/segmented-control';
 
 interface User {
   id: number;

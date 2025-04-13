@@ -2,10 +2,10 @@ import { ArrowLeft, Printer, Share, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@kit/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
-import { ProductionInfo } from './_components/ProductionInfo';
-import { ProcessTimeline } from './_components/ProcessTimeline';
-import { ProductionNotes } from './_components/ProductionNotes';
-import { ProductionFiles } from './_components/ProductionFiles';
+import { ProductionInfo } from './_components/info';
+import { ProcessTimeline } from './_components/timeline';
+import { ProductionNotes } from './_components/notes';
+import { ProductionFiles } from './_components/files';
 import type { ProductionJob } from '../_data';
 import { fetchProductionJobById } from '../_data';
 

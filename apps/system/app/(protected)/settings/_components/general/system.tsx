@@ -22,7 +22,7 @@ import { Wrench, Sliders } from 'lucide-react';
 import {
   SegmentedControl,
   SegmentedControlContent,
-} from '../ui/SegmentedControl';
+} from '../ui/segmented-control';
 
 export function SystemSettings() {
   const [timezone, setTimezone] = useState('Asia/Tokyo');

@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@kit/ui/card';
 import type { ProductionJob } from '../_data';
-import { DelayedJobsHeader } from './_components/DelayedJobsHeader';
-import { DelayedJobsFilter } from './_components/DelayedJobsFilter';
-import { DelayedJobsTable } from './_components/DelayedJobsTable';
+import { DelayedJobsHeader } from './_components/delayed-jobs-header';
+import { DelayedJobsFilter } from './_components/delayed-jobs-filter';
+import { DelayedJobsTable } from './_components/delayed-jobs-table';
 
 export default function DelayedJobsPage() {
   // 遅延ジョブのステート

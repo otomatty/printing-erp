@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@kit/ui/card';
 import { addDays, subDays } from 'date-fns';
-import { ScheduleHeader } from './_components/ScheduleHeader';
-import { ProcessFilter } from './_components/ProcessFilter';
-import { ScheduleTable } from './_components/ScheduleTable';
+import { ScheduleHeader } from './_components/schedule-header';
+import { ProcessFilter } from './_components/process-filter';
+import { ScheduleTable } from './_components/schedule-table';
 import { useEffect } from 'react';
 import type { ProductionJob, Equipment } from '../_data';
 

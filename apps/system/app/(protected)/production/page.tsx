@@ -5,13 +5,13 @@ import {
   fetchProcessSchedules,
 } from './_data';
 
-import { Header } from './_components/Header';
-import { StatCards } from './_components/StatCards';
-import { DelayedJobsAlert } from './_components/DelayedJobsAlert';
-import { JobsTab } from './_components/JobsTab';
-import { EquipmentTab } from './_components/EquipmentTab';
-import { ProcessTab } from './_components/ProcessTab';
-import { Pagination } from './_components/Pagination';
+import { Header } from './_components/header';
+import { StatCards } from './_components/stats-cards';
+import { DelayedJobsAlert } from './_components/delayed-jobs-alert';
+import { JobsTab } from './_components/jobs-tab';
+import { EquipmentTab } from './_components/equipment-tab';
+import { ProcessTab } from './_components/process-tab';
+import { Pagination } from './_components/pagination';
 
 export default async function ProductionPage() {
   // データ取得
