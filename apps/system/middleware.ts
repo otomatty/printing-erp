@@ -17,9 +17,6 @@ import { checkIsAdmin } from '@kit/next/actions';
 import appConfig from '~/config/app.config';
 import pathsConfig from '~/config/paths.config';
 
-// import { checkRequiresMultiFactorAuthentication } from '@kit/supabase/check-requires-mfa';
-// import createNextIntlMiddleware from 'next-intl/middleware'; // コメントアウト
-
 // CSRFトークンを保存するCookie名
 const CSRF_SECRET_COOKIE = 'csrfSecret';
 // Next.jsのサーバーアクションを識別するためのヘッダー名

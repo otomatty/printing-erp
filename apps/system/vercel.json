@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../.. && bun run build:admin:vercel",
+  "buildCommand": "cd ../.. && bun run build:system:vercel",
   "installCommand": "bun install",
   "framework": "nextjs",
   "outputDirectory": ".next"

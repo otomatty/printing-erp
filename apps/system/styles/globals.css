@@ -38,9 +38,32 @@
 @variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  /* ベースフォント設定 */
+  html {
+    font-family: var(--font-sans);
+  }
+  
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: inherit;
+  }
+
+  /* フォントクラスのグローバル適用 */
+  .font-noto-sans {
+    font-family: var(--font-noto) !important;
+  }
+  
+  .font-zen-gothic {
+    font-family: var(--font-zen-gothic) !important;
+  }
+  
+  .font-mincho {
+    font-family: var(--font-mincho) !important;
+  }
+  
+  .font-rounded {
+    font-family: var(--font-maru-gothic) !important;
   }
 
   *,
