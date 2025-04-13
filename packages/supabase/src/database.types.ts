@@ -18,7 +18,7 @@ export type Database = {
           id: string
           is_active: boolean
           last_name: string | null
-          role: string
+          role: Database["public"]["Enums"]["admin_role"]
           updated_at: string
         }
         Insert: {
@@ -29,7 +29,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           last_name?: string | null
-          role?: string
+          role?: Database["public"]["Enums"]["admin_role"]
           updated_at?: string
         }
         Update: {
@@ -40,80 +40,65 @@ export type Database = {
           id?: string
           is_active?: boolean
           last_name?: string | null
-          role?: string
+          role?: Database["public"]["Enums"]["admin_role"]
           updated_at?: string
         }
         Relationships: []
       }
-      customers: {
+      user_accounts: {
         Row: {
+          address: Json | null
           auth_user_id: string
+          avatar_url: string | null
           company_name: string | null
           created_at: string
           email: string | null
           first_name: string | null
+          full_name: string | null
           id: string
           is_guest: boolean
           last_name: string | null
+          metadata: Json | null
           phone_number: string | null
+          preferences: Json | null
           updated_at: string
+          visibility_flags: Json | null
         }
         Insert: {
+          address?: Json | null
           auth_user_id: string
+          avatar_url?: string | null
           company_name?: string | null
           created_at?: string
           email?: string | null
           first_name?: string | null
+          full_name?: string | null
           id?: string
           is_guest?: boolean
           last_name?: string | null
+          metadata?: Json | null
           phone_number?: string | null
+          preferences?: Json | null
           updated_at?: string
+          visibility_flags?: Json | null
         }
         Update: {
+          address?: Json | null
           auth_user_id?: string
+          avatar_url?: string | null
           company_name?: string | null
           created_at?: string
           email?: string | null
           first_name?: string | null
+          full_name?: string | null
           id?: string
           is_guest?: boolean
           last_name?: string | null
+          metadata?: Json | null
           phone_number?: string | null
+          preferences?: Json | null
           updated_at?: string
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          auth_user_id: string
-          avatar_url: string | null
-          created_at: string
-          email: string | null
-          full_name: string | null
-          id: string
-          name: string | null
-          updated_at: string
-        }
-        Insert: {
-          auth_user_id: string
-          avatar_url?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          name?: string | null
-          updated_at?: string
-        }
-        Update: {
-          auth_user_id?: string
-          avatar_url?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          name?: string | null
-          updated_at?: string
+          visibility_flags?: Json | null
         }
         Relationships: []
       }
@@ -128,7 +113,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      admin_role: "admin" | "staff"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -243,6 +228,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      admin_role: ["admin", "staff"],
+    },
   },
 } as const

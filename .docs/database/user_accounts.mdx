@@ -1,0 +1,181 @@
+# user_accounts テーブル設計
+
+## 概要
+
+`user_accounts` テーブルは、アプリケーションの一般ユーザー（顧客）情報を一元管理するための主要テーブルです。Supabaseの認証システム（`auth.users`）と連携し、ユーザープロフィール情報と顧客情報を統合して管理します。
+
+以前は `customers` テーブルと `profiles` テーブルに分かれていた情報を、データの整合性とメンテナンス性向上のために統合しました。
+
+管理者やスタッフのユーザーについては `admin_users` テーブルで別途管理しており、このテーブルは一般ユーザー（顧客）の情報のみを保持します。
+
+## テーブル構造
+
+```sql
+CREATE TABLE public.user_accounts (
+  id UUID NOT NULL DEFAULT gen_random_uuid(),
+  auth_user_id UUID NOT NULL,
+  email TEXT,
+  first_name TEXT,
+  last_name TEXT,
+  full_name TEXT, -- 表示用のフルネーム
+  company_name TEXT,
+  phone_number TEXT,
+  avatar_url TEXT,
+  address JSONB, -- 住所情報はJSONBで柔軟に
+  preferences JSONB DEFAULT '{}', -- ユーザー設定
+  metadata JSONB DEFAULT '{}', -- その他のメタデータ
+  visibility_flags JSONB DEFAULT '{"public": false, "staff_only": false}', -- 表示制御
+  is_guest BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  
+  CONSTRAINT user_accounts_pkey PRIMARY KEY (id),
+  CONSTRAINT user_accounts_auth_user_id_key UNIQUE (auth_user_id),
+  CONSTRAINT user_accounts_email_key UNIQUE (email),
+  CONSTRAINT user_accounts_auth_user_id_fkey FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+);
+```
+
+## フィールド詳細
+
+| フィールド名 | 型 | 説明 | NULL許容 | デフォルト値 |
+|------------|------|------|----------|------------|
+| id | UUID | プライマリキー | 不可 | gen_random_uuid() |
+| auth_user_id | UUID | Supabaseの認証システム（auth.users）の外部キー | 不可 | なし |
+| email | TEXT | メールアドレス | 可 | なし |
+| first_name | TEXT | 名 | 可 | なし |
+| last_name | TEXT | 姓 | 可 | なし |
+| full_name | TEXT | 表示用フルネーム | 可 | なし |
+| company_name | TEXT | 会社名 | 可 | なし |
+| phone_number | TEXT | 電話番号 | 可 | なし |
+| avatar_url | TEXT | プロフィール画像URL | 可 | なし |
+| address | JSONB | 住所情報（構造化データ） | 可 | なし |
+| preferences | JSONB | ユーザー設定情報 | 可 | `'{}'` |
+| metadata | JSONB | その他メタデータ | 可 | `'{}'` |
+| visibility_flags | JSONB | 表示制御フラグ | 可 | `'{"public": false, "staff_only": false}'` |
+| is_guest | BOOLEAN | ゲストユーザーかどうか | 不可 | false |
+| created_at | TIMESTAMPTZ | 作成日時 | 不可 | NOW() |
+| updated_at | TIMESTAMPTZ | 更新日時 | 不可 | NOW() |
+
+## インデックス
+
+パフォーマンスとクエリ最適化のために以下のインデックスを設定しています：
+
+```sql
+CREATE INDEX idx_user_accounts_auth_user_id ON public.user_accounts USING btree (auth_user_id);
+CREATE INDEX idx_user_accounts_email ON public.user_accounts USING btree (email);
+```
+
+## 制約
+
+- **プライマリキー**: `id` フィールド
+- **ユニーク制約**: 
+  - `auth_user_id` (Supabase認証ユーザーとの1対1マッピングを保証)
+  - `email` (メールアドレスの重複を防止)
+- **外部キー制約**: `auth_user_id` は `auth.users(id)` を参照し、CASCADE削除（ユーザーが削除されると、関連するアカウント情報も削除されます）
+
+## 自動ユーザー作成トリガー
+
+新規ユーザーが認証すると自動的に `user_accounts` レコードが作成されるトリガーを設定しています：
+
+```sql
+-- 更新トリガー関数の作成
+CREATE OR REPLACE FUNCTION public.handle_user_account_creation()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- admin_usersテーブルに既に存在するかチェック（管理者の場合はスキップ）
+  IF EXISTS (SELECT 1 FROM public.admin_users WHERE auth_user_id = NEW.id) THEN
+    RETURN NEW;
+  END IF;
+
+  -- 新規ユーザーが作成されたときに自動的にuser_accountsレコードを作成
+  INSERT INTO public.user_accounts (
+    auth_user_id, 
+    email, 
+    full_name,
+    avatar_url
+  ) VALUES (
+    NEW.id, 
+    NEW.email, 
+    NEW.raw_user_meta_data->>'full_name',
+    NEW.raw_user_meta_data->>'avatar_url'
+  )
+  ON CONFLICT (auth_user_id) DO NOTHING; -- 既存ユーザーなら何もしない
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- トリガーの作成
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users
+FOR EACH ROW EXECUTE FUNCTION public.handle_user_account_creation();
+```
+
+## RLSポリシー
+
+Row Level Security（RLS）を有効化し、以下のアクセス制御ポリシーを実装しています：
+
+```sql
+-- RLSを有効化
+ALTER TABLE public.user_accounts ENABLE ROW LEVEL SECURITY;
+
+-- デフォルトは拒否
+CREATE POLICY "Deny all by default" 
+ON public.user_accounts 
+FOR ALL 
+USING (false);
+
+-- 1. ユーザー自身のデータ閲覧ポリシー
+CREATE POLICY "Users can view own account" 
+ON public.user_accounts 
+FOR SELECT 
+USING (auth.uid() = auth_user_id);
+
+-- 2. ユーザー自身のデータ更新ポリシー
+CREATE POLICY "Users can update own account" 
+ON public.user_accounts 
+FOR UPDATE 
+USING (auth.uid() = auth_user_id)
+WITH CHECK (auth.uid() = auth_user_id);
+
+-- 3. 管理者は全データにアクセス可能
+CREATE POLICY "Admins can do anything" 
+ON public.user_accounts 
+FOR ALL 
+USING (
+  auth.jwt() ? 'app_metadata' AND 
+  (auth.jwt()->'app_metadata'->>'is_admin')::boolean = true
+);
+
+-- 4. スタッフは全データ閲覧可能だが、更新は制限付き
+CREATE POLICY "Staff can view all accounts" 
+ON public.user_accounts 
+FOR SELECT 
+USING (
+  auth.jwt() ? 'app_metadata' AND 
+  (auth.jwt()->'app_metadata'->>'is_staff')::boolean = true
+);
+
+CREATE POLICY "Staff can update customer accounts" 
+ON public.user_accounts 
+FOR UPDATE 
+USING (
+  auth.jwt() ? 'app_metadata' AND 
+  (auth.jwt()->'app_metadata'->>'is_staff')::boolean = true
+);
+```
+
+## アクセスパターン
+
+主なアクセスパターンは以下の通りです：
+
+1. **一般ユーザー**: 自身のアカウント情報のみ閲覧・更新可能
+2. **管理者**: すべてのアカウント情報に対してフルアクセス権限を持つ
+3. **スタッフ**: すべてのアカウント情報を閲覧可能、顧客アカウントの更新のみ可能
+
+## 注意事項
+
+- `visibility_flags` は特定の情報の表示制御に使用され、システム側とユーザー側での表示を制御します
+- アドレス情報は柔軟性を持たせるため JSONB 型で保存しています
+- auth.usersテーブルとの関連付けにより、認証システムと一元的に管理できます

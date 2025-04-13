@@ -1,0 +1,138 @@
+# admin_users テーブル設計
+
+## 概要
+
+`admin_users` テーブルは、システムの管理者とスタッフユーザーを管理するためのテーブルです。Supabaseの認証システム（`auth.users`）と連携し、管理者権限を持つユーザーの情報と役割を管理します。
+
+管理者とスタッフは一般ユーザーとは区別して管理する必要があるため、専用のテーブルで権限管理を行います。
+
+## テーブル構造
+
+現在の構造:
+
+```sql
+CREATE TABLE public.admin_users (
+  id UUID NOT NULL DEFAULT gen_random_uuid(),
+  auth_user_id UUID NOT NULL,
+  email TEXT,
+  first_name TEXT,
+  last_name TEXT,
+  role admin_role NOT NULL DEFAULT 'staff',
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+  
+  CONSTRAINT admin_users_pkey PRIMARY KEY (id),
+  CONSTRAINT admin_users_auth_user_id_key UNIQUE (auth_user_id),
+  CONSTRAINT admin_users_email_key UNIQUE (email),
+  CONSTRAINT admin_users_auth_user_id_fkey FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+);
+```
+
+## フィールド詳細
+
+| フィールド名 | 型 | 説明 | NULL許容 | デフォルト値 |
+|------------|------|------|----------|------------|
+| id | UUID | プライマリキー | 不可 | gen_random_uuid() |
+| auth_user_id | UUID | auth.usersテーブルの外部キー | 不可 | なし |
+| email | TEXT | メールアドレス | 可 | なし |
+| first_name | TEXT | 名 | 可 | なし |
+| last_name | TEXT | 姓 | 可 | なし |
+| role | TEXT | 役割（'admin'または'staff'） | 不可 | 'staff' |
+| is_active | BOOLEAN | アクティブ状態 | 不可 | true |
+| created_at | TIMESTAMPTZ | 作成日時 | 不可 | timezone('utc', now()) |
+| updated_at | TIMESTAMPTZ | 更新日時 | 不可 | timezone('utc', now()) |
+
+## インデックス
+
+パフォーマンスとクエリ最適化のために以下のインデックスを設定しています：
+
+```sql
+CREATE INDEX idx_admin_users_auth_user_id ON public.admin_users USING btree (auth_user_id);
+CREATE INDEX idx_admin_users_email ON public.admin_users USING btree (email);
+CREATE INDEX idx_admin_users_role ON public.admin_users USING btree (role);
+```
+
+## 制約
+
+- **プライマリキー**: `id` フィールド
+- **ユニーク制約**: 
+  - `auth_user_id` (Supabase認証ユーザーとの1対1マッピングを保証)
+  - `email` (メールアドレスの重複を防止)
+- **外部キー制約**: `auth_user_id` は `auth.users(id)` を参照し、CASCADE削除
+- **CHECK制約**: `role` は 'admin' または 'staff' のいずれかに限定
+
+
+## RLSポリシー
+
+Row Level Security（RLS）を有効化し、JWT権限に基づいた以下のアクセス制御ポリシーを実装しています：
+
+```sql
+-- RLSを有効化
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_users FORCE ROW LEVEL SECURITY;
+
+-- JWT権限を持つ管理者はフルアクセス可能
+CREATE POLICY "JWT admins can do anything"
+ON public.admin_users
+FOR ALL
+TO authenticated
+USING (
+  (current_setting('request.jwt.claims', true)::json->'app_metadata'->>'is_admin')::boolean = true
+);
+
+-- ユーザーは自分自身のレコードを閲覧可能
+CREATE POLICY "Users can view own record"
+ON public.admin_users
+FOR SELECT
+TO authenticated
+USING (auth.uid() = auth_user_id);
+
+-- サービスロールにアクセス権を付与
+GRANT ALL ON TABLE public.admin_users TO service_role;
+```
+
+## 自動更新トリガー
+
+レコードが更新された際に `updated_at` フィールドを自動的に更新するトリガーを設定しています：
+
+```sql
+-- 更新日時管理用のトリガー関数
+CREATE OR REPLACE FUNCTION public.handle_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- トリガーの作成
+CREATE TRIGGER admin_users_updated_at
+BEFORE UPDATE ON public.admin_users
+FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+```
+
+## 管理者権限の設定
+
+最初の管理者ユーザーの権限は、そのユーザーのJWTメタデータを更新することで設定します：
+
+```sql
+-- 管理者権限の付与（最初の管理者ユーザーに対して実行）
+UPDATE auth.users
+SET raw_app_meta_data = jsonb_set(
+  COALESCE(raw_app_meta_data, '{}'::jsonb),
+  '{is_admin}',
+  'true'::jsonb
+)
+WHERE id = '管理者のauth_user_id'; -- 実際のUUIDに置き換える
+```
+
+## 使用パターン
+
+このテーブルの主な使用パターンは：
+
+1. 管理者およびスタッフのユーザー管理
+2. 権限に基づいた機能制御（管理者かスタッフかの区別）
+3. システム管理画面へのアクセス制御
+
+管理者は完全な管理権限を持ち、スタッフはより限定された権限を持つという基本的な階層構造が実装されています。

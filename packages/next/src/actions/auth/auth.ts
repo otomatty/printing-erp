@@ -1,8 +1,6 @@
 'use server';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
-import { revalidatePath } from 'next/cache';
-import type { UserRole } from '@kit/types/auth';
 
 /**
  * ProfileWithRole型の定義
@@ -63,7 +61,7 @@ export async function getAuthState() {
 
     // プロフィール情報のみを取得
     const { data: profileOnly, error: profileOnlyError } = await supabase
-      .from('profiles')
+      .from('user_accounts')
       .select('*')
       .eq('auth_user_id', user.id)
       .single();
