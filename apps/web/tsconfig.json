@@ -30,21 +30,7 @@
     "./config/**/*.ts",
     "components/**/*",
     "lib/**/*.ts",
-    "app",
-    "../../packages/features/auth/src/components/login-dialog.tsx",
-    "../../packages/ui/src/custom/theme-toggle.tsx",
-    "../system/lib/server/gemini/skills.ts",
-    "../system/components/gmail",
-    "types/estimate.ts",
-    "../web/instrumentation.ts",
-    "(marketing)/robots.ts",
-    "(marketing)/not-found.tsx",
-    "(marketing)/layout.tsx",
-    "(marketing)/global-error.tsx",
-    "(marketing)/error.tsx",
-    "(marketing)/_sample",
-    "(marketing)",
-    "../system/system"
+    "app"
   ],
   "exclude": ["node_modules", ".next"]
 }

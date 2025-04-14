@@ -110,7 +110,7 @@ function isServerAction(request: NextRequest) {
 function redirectToMainSite(req: NextRequest): NextResponse {
   // 環境変数からメインサイトのURLを取得、ない場合はデフォルト値を使用
   const mainSiteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:2120';
+    process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:2120';
   return NextResponse.redirect(mainSiteUrl);
 }
 
