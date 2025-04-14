@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --port 2121",
     "build": "next build",
+    "build:vercel": "next build",
     "start": "next start",
     "lint": "next lint",
     "preview": "next build && opennextjs-cloudflare preview && wrangler dev",
