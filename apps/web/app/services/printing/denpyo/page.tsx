@@ -54,12 +54,12 @@ const DenpyoSeihonPage = () => {
         title={serviceIntroTitle}
         description={serviceIntroDesc}
       />
-      <DenpyoDetails />
       <WorkSamples
         sectionTitle={workSamplesTitle}
         sampleItems={workSamplesItems}
         note={workSamplesNote}
       />
+      <DenpyoDetails />
       <DeliveryInfo />
       <SubmissionGuide />
       <OrderFlow />

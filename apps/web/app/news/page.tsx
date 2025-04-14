@@ -1,7 +1,7 @@
 import PageHero from '~/components/custom/page-hero';
 import CtaSection from '~/components/custom/cta-section';
 import { getPublishedNews, getNewsCategories } from '~/actions/news';
-import NewsList from './_components/NewsList';
+import NewsList from './_components/news-list';
 
 /**
  * 検索パラメータの型

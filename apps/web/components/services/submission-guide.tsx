@@ -21,17 +21,22 @@ const SubmissionGuide: React.FC = () => {
             <CardContent className="flex-grow text-md">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
+                  <p className="mb-2">一番確実な方法です！</p>
                   <p className="mb-2">
-                    一番確実な方法です！
                     印刷データや原稿を直接店舗までお持ちください。
                   </p>
                   <p className="mb-4">
                     経験豊富なスタッフが、その場でデータを確認し、最適な印刷方法をご提案します。細かなご要望も直接お伺いできますので、安心してお任せいただけます。
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="mb-2 text-sm text-muted-foreground">
                     所在地: 〒022-0003 岩手県大船渡市盛町字みどり町4-12
-                    <br />
+                  </p>
+                  <p className="mb-2 text-sm text-muted-foreground">
                     ※ご来店の際は、事前にご連絡いただけるとスムーズです。
+                  </p>
+
+                  <p className="text-sm text-muted-foreground">
+                    駐車場がありますので、お車でのご来店も可能です。
                   </p>
                 </div>
                 <div className="aspect-video">
@@ -59,9 +64,12 @@ const SubmissionGuide: React.FC = () => {
               </CardTitle>
               <Mail className="w-6 h-6 text-primary" />
             </CardHeader>
-            <CardContent className="flex-grow text-md">
+            <CardContent className="flex-grow f text-md">
               <p className="mb-2">
                 比較的軽いデータ（目安：10MB以下）は、メール添付でお送りいただけます。
+              </p>
+              <p className="mb-2">
+                下記のメールアドレスから自動的にメールの例文が作成されます。
               </p>
               <div className="flex items-center mb-4">
                 <Mail className="w-4 h-4 mr-2 flex-shrink-0" />
@@ -101,8 +109,17 @@ const SubmissionGuide: React.FC = () => {
                 などのファイル転送サービスをご利用ください。
               </p>
               <p className="mb-4">
-                アップロード後、発行されるダウンロードURLを上記のメールアドレス宛にお知らせください。
+                アップロード後、発行されるダウンロードURLを下記のメールアドレス宛にお知らせください。
               </p>
+              <div className="flex items-center mb-4">
+                <Mail className="w-4 h-4 mr-2 flex-shrink-0" />
+                <a
+                  href={`mailto:nkikaku@crocus.ocn.ne.jp?subject=${encodeURIComponent('印刷データ入稿')}&body=${encodeURIComponent('ニイヌマ企画印刷 御担当者様\n\nお世話になります。\n\n印刷データを入稿いたします。\n\n■お名前:\n■ご連絡先:\n■転送サービスURL:\n■ファイル名:\n■備考:\n\nご確認よろしくお願いいたします。')}`}
+                  className="text-xl font-semibold text-gray-800 hover:underline break-all"
+                >
+                  nkikaku@crocus.ocn.ne.jp
+                </a>
+              </div>
               <p className="text-sm text-muted-foreground">
                 ※メール本文にお名前とご連絡先を必ずご明記ください。
               </p>

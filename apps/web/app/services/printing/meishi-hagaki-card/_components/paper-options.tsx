@@ -1,6 +1,7 @@
 import type React from 'react';
 import { FileText, Star, Image as ImageIcon } from 'lucide-react'; // アイコン例
 import Container from '~/components/custom/container';
+import SampleInfo from '~/components/services/sample-info';
 
 interface PaperItem {
   icon?: React.ElementType;
@@ -98,18 +99,7 @@ const PaperOptions: React.FC = () => {
             </div>
           ))}
         </div>
-        <div className="text-center mt-12">
-          {/* TODO: 用紙サンプル請求ページへのリンク or モーダル表示 */}
-          <button
-            type="button"
-            className="bg-primary text-white font-semibold py-2 px-6 rounded-lg hover:bg-primary-dark transition-colors duration-200"
-          >
-            用紙サンプルについて問い合わせる (TODO)
-          </button>
-          <p className="text-sm text-gray-500 mt-4">
-            掲載されていない用紙や特殊紙についても、お気軽にご相談ください。
-          </p>
-        </div>
+        <SampleInfo />
       </Container>
     </section>
   );

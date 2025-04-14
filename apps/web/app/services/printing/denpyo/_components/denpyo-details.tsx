@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Check, Hash, CopyPlus, Scissors } from 'lucide-react'; // アイコン例
 import Container from '~/components/custom/container';
+import SampleInfo from '~/components/services/sample-info';
 
 interface ListItem {
   name: string;
@@ -97,12 +98,9 @@ const DenpyoDetails: React.FC = () => {
                 </div>
               ))}
             </div>
-            <p className="text-sm text-gray-500 mt-6">
-              ※
-              上記以外にも、減感印刷（複写させたくない部分の加工）やファイル用の穴あけ加工なども可能です。
-            </p>
           </div>
         </div>
+        <SampleInfo />
       </Container>
     </section>
   );

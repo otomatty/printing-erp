@@ -2,11 +2,8 @@ import type React from 'react';
 import {
   Palette, // 色数
   Paintbrush, // 特色
-  Sparkles, // 箔押し
   Scissors, // 角丸
   Layers, // PP加工
-  TextSelect, // エンボス/デボス
-  ScanLine, // ナンバリング
   Database, // 可変データ
 } from 'lucide-react'; // アイコン例
 import Container from '~/components/custom/container';
@@ -30,12 +27,6 @@ const printingOptions: OptionItem[] = [
     title: '特色印刷',
     description: 'DIC/PANTONE指定でコーポレートカラーなどを正確に表現。',
   },
-  // {
-  // 	icon: Sparkles,
-  // 	title: "箔押し加工",
-  // 	description:
-  // 		"金・銀・その他カラー箔で高級感をプラス。名刺やカードにおすすめ。",
-  // },
   {
     icon: Scissors,
     title: '角丸加工',

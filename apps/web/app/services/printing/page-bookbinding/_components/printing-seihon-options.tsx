@@ -8,6 +8,7 @@ import {
   DraftingCompass, // 表紙デザイン
 } from 'lucide-react';
 import Container from '~/components/custom/container';
+import SampleInfo from '~/components/services/sample-info';
 
 interface OptionItem {
   icon: React.ElementType;
@@ -79,9 +80,7 @@ const PrintingSeihonOptions: React.FC = () => {
             </div>
           ))}
         </div>
-        <p className="text-center text-sm text-gray-500 mt-8">
-          上記以外にも様々なオプションがございます。冊子の仕様についてお気軽にご相談ください。
-        </p>
+        <SampleInfo />
       </Container>
     </section>
   );

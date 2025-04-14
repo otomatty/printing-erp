@@ -1,6 +1,6 @@
 import PageHero from '~/components/custom/page-hero';
 import CtaSection from '~/components/custom/cta-section';
-import NewsDetail from '../_components/NewsDetail';
+import NewsDetail from '../_components/news-detail';
 import { getNewsDetail, getLatestNews } from '~/actions/news';
 import { notFound } from 'next/navigation';
 

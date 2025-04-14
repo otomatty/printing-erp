@@ -1,12 +1,5 @@
 import type React from 'react';
-import {
-  Palette,
-  PencilRuler,
-  Combine,
-  ScanBarcode,
-  Stamp,
-  Bot,
-} from 'lucide-react'; // アイコン例
+import { Palette, PencilRuler, Bot } from 'lucide-react'; // アイコン例
 import Container from '~/components/custom/container';
 
 interface OptionItem {

@@ -14,7 +14,9 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      'inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground',
+      'relative flex w-full rounded-lg p-1 bg-card shadow-sm',
+      'border border-border/40',
+      'overflow-hidden',
       className
     )}
     {...props}
@@ -29,7 +31,20 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      'inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs',
+      'relative flex items-center justify-center whitespace-nowrap rounded-md px-4 py-2.5',
+      'text-sm font-medium ring-offset-background transition-all duration-200',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+      'disabled:pointer-events-none disabled:opacity-50',
+      // 非アクティブ状態
+      'text-muted-foreground hover:text-foreground hover:bg-muted/50',
+      // ホバー時の下線表示
+      'after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:scale-x-0 after:bg-primary after:transition-transform after:duration-200',
+      'hover:after:scale-x-100',
+      // アクティブ状態
+      'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm',
+      // アクティブ状態では下線を表示しない
+      'data-[state=active]:after:scale-x-0 data-[state=active]:hover:after:scale-x-0',
+      'active:scale-[0.98]',
       className
     )}
     {...props}
@@ -44,7 +59,10 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      'mt-2 ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+      'mt-4 ring-offset-background rounded-md',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+      // アニメーション効果
+      'animate-in fade-in-50 slide-in-from-bottom-3 duration-300 ease-out',
       className
     )}
     {...props}

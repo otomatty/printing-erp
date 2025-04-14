@@ -12,6 +12,7 @@ import type {
   ServiceItem,
 } from '~/types/serviceTypes';
 import Container from '../custom/container';
+import AdditionalInfo from './additional-info';
 
 // アニメーション設定
 const sectionVariants = {
@@ -63,7 +64,7 @@ export default function ServiceDetails() {
             <div className="max-w-5xl mx-auto">
               {/* Grid Layout */}
               <div
-                className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-12 lg:mb-16" // mb調整
+                className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mb-8 lg:mb-12" // mb調整
               >
                 {/* Text Content Area */}
                 <div className={`${index % 2 === 1 ? 'lg:order-2' : ''}`}>
@@ -94,7 +95,7 @@ export default function ServiceDetails() {
                   </h4>
                   {/* Features List */}
                   <motion.ul
-                    className="mb-8 space-y-3" // mb, space-y調整
+                    className="space-y-3" // mb, space-y調整
                     variants={listContainer} // Use list container variants
                     // initial, whileInView, viewport は親の motion.div で制御されるため削除しても良いが、
                     // リスト自体が画面内に入ったタイミングでアニメーションさせたい場合は残す
@@ -209,48 +210,12 @@ export default function ServiceDetails() {
 
               {/* IT導入補助金 Section (Conditional) */}
               {service.id === 'it-digital' && (
-                <motion.div // このセクションも独立してアニメーションさせる
-                  className="mt-12 lg:mt-16 pt-8 border-t border-gray-200 bg-gradient-to-br from-green-50 to-teal-50 p-6 md:p-8 rounded-lg shadow-sm border border-green-200" // mt, padding, bg, border調整
-                  variants={sectionVariants} // Use section variants (or define a new one)
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true, amount: 0.3 }}
-                >
-                  <h5 className="text-xl lg:text-2xl font-semibold mb-4 text-gray-800 flex items-center">
-                    {' '}
-                    {/* Changed from h4 to h5, size, flex */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24" // ViewBox変更
-                      fill="currentColor"
-                      className="w-6 h-6 inline-block mr-2 text-green-600 flex-shrink-0" // size, margin, shrink調整
-                      aria-hidden="true"
-                    >
-                      <title>補助金対象アイコン</title>
-                      <path
-                        fillRule="evenodd"
-                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" // Updated path for new viewbox
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    IT導入補助金をご利用いただけます
-                  </h5>
-                  <p className="text-gray-700 leading-relaxed">
-                    {' '}
-                    {/* text color, leading調整 */}
-                    当社のIT・デジタルサービス（ホームページ制作、業務システム開発）は、「IT導入補助金」の対象となる可能性があります。
-                    補助金を活用することで、導入費用の
-                    <strong className="text-primary font-semibold">
-                      {' '}
-                      最大2/3程度
-                    </strong>{' '}
-                    {/* font-semibold追加, 表現を少し和らげる */}
-                    （補助率や上限額は申請枠・類型により異なります）の補助を受けられる場合があります。
-                    申請手続きのサポートも可能ですので、詳細についてはお気軽にお問い合わせください。
-                  </p>
-                  {/* TODO: Add link to details page or official site */}
-                  {/* <Link href="/hojokin-support" className="text-primary hover:underline mt-4 inline-block">補助金サポートの詳細はこちら</Link> */}
-                </motion.div>
+                <AdditionalInfo type="it-subsidy" />
+              )}
+
+              {/* 印刷・デザイン一括対応 Section (Conditional) */}
+              {service.id === 'printing' && (
+                <AdditionalInfo type="print-design" />
               )}
             </div>
           </Container>

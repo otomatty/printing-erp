@@ -52,7 +52,7 @@ export default function NewsSection({
     <section className="py-16">
       <Container>
         <motion.div
-          className="w-full"
+          className="w-full bg-white rounded-lg p-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}

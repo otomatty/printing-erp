@@ -1,6 +1,15 @@
 import type React from 'react';
-import { Sheet, Palette, Feather } from 'lucide-react'; // アイコン例 (Sheet: 紙, Palette: 色, Feather: 軽さ/質感)
+import {
+  Sheet,
+  Palette,
+  Feather,
+  Info,
+  MapPin,
+  Phone,
+  ExternalLink,
+} from 'lucide-react'; // Info, MapPin, Phoneアイコンを追加
 import Container from '~/components/custom/container';
+import SampleInfo from '~/components/services/sample-info';
 
 interface PaperItem {
   icon?: React.ElementType; // オプションでアイコン
@@ -92,18 +101,9 @@ const PaperOptions: React.FC = () => {
             </div>
           ))}
         </div>
-        <div className="text-center mt-12">
-          {/* TODO: 用紙サンプル請求ページへのリンク or モーダル表示 */}
-          <button
-            type="button"
-            className="bg-primary text-white font-semibold py-2 px-6 rounded-lg hover:bg-primary-dark transition-colors duration-200"
-          >
-            用紙サンプルを請求する (TODO)
-          </button>
-          <p className="text-sm text-gray-500 mt-4">
-            掲載されていない用紙や特殊紙についても、お気軽にご相談ください。
-          </p>
-        </div>
+
+        {/* サンプル案内ボックス - ボタンをボックスに変更 */}
+        <SampleInfo />
       </Container>
     </section>
   );

@@ -129,7 +129,7 @@ export const servicesData: ServiceCategory[] = [
         id: 'it-item-1',
         name: 'ホームページ制作',
         description: [
-          '集客・ブランディングに繋がる戦略的制作', // "戦略的" を追加
+          '集客・ブランディングに繋がる', // "戦略的" を追加
           'オーダーメイドデザイン・CMS導入',
           'SEO対策・公開後の運用保守も対応', // "公開後" を明記
         ],
