@@ -28,8 +28,8 @@
     "build:web:vercel": "bun run build:prepare-vercel && turbo run build:vercel --filter=web",
     "build:app:vercel": "bun run build:prepare-vercel && turbo run build:vercel --filter=app",
     "build:system:vercel": "bun run build:prepare-vercel && turbo run build:vercel --filter=system",
-    "build:prepare-vercel": "mkdir -p packages/ui/dist && touch packages/ui/dist/.gitkeep",
-    "build:vercel": "bun run build:packages && bun run build:system:vercel",
+    "build:prepare-vercel": "echo 'Using pre-built packages from git repository'",
+    "build:vercel": "bun run build:system:vercel",
     "clean": "git clean -xdf .turbo node_modules dist",
     "clean:workspaces": "turbo clean",
     "dev": "turbo run dev --parallel --filter=!@kit/ui",
@@ -60,7 +60,8 @@
     "version:update:next": "bun run tooling/scripts/version-manager/cli.ts update next",
     "version:update:react": "bun run tooling/scripts/version-manager/cli.ts update react",
     "version:update:supabase": "bun run tooling/scripts/version-manager/cli.ts update supabase",
-    "build:packages": "turbo run build --filter=./packages/*"
+    "build:packages": "turbo run build --filter=./packages/*",
+    "prebuild:vercel": "echo 'Skip building packages in Vercel - using pre-built packages from Git'"
   },
   "packageManager": "bun@1.2.4",
   "devDependencies": {

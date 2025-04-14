@@ -1,0 +1,2 @@
+import {Trans}from'react-i18next/TransWithoutContext';import {useTranslation}from'react-i18next';function a(n){let{i18n:o}=useTranslation();return React.createElement(Trans,{i18n:o,...n})}export{a};//# sourceMappingURL=chunk-J7FZNYFX.mjs.map
+//# sourceMappingURL=chunk-J7FZNYFX.mjs.map

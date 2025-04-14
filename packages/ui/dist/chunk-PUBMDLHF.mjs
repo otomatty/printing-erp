@@ -1,0 +1,2 @@
+var u="/";function m(e,n,t){return e===n?true:typeof t=="function"?!t(n):f(e,n,t??true?1:3)}function f(e,n,t=1){let r=n.split("?")[0]??"";return !o(r)&&o(e)||!r.includes(e)?false:e===r?true:c(e,r,t)}function i(e){return e.split("/").filter(Boolean)}function c(e,n,t){let r=i(e),s=l(n,r);return e===n?true:s>r.length-(t-1)}function l(e,n){let t=0;for(let r of i(e))if(n.includes(r))t+=1;else return t;return t}function o(e){return e===u}export{m as a};//# sourceMappingURL=chunk-PUBMDLHF.mjs.map
+//# sourceMappingURL=chunk-PUBMDLHF.mjs.map

@@ -1,0 +1,2 @@
+var f=a=>{throw TypeError(a)};var d=(a,b,c)=>b.has(a)||f("Cannot "+c);var g=(a,b,c)=>(d(a,b,"read from private field"),c?c.call(a):b.get(a)),h=(a,b,c)=>b.has(a)?f("Cannot add the same private member more than once"):b instanceof WeakSet?b.add(a):b.set(a,c),i=(a,b,c,e)=>(d(a,b,"write to private field"),e?e.call(a,c):b.set(a,c),c),j=(a,b,c)=>(d(a,b,"access private method"),c);export{g as a,h as b,i as c,j as d};//# sourceMappingURL=chunk-JX3OK2JC.mjs.map
+//# sourceMappingURL=chunk-JX3OK2JC.mjs.map

@@ -1,0 +1,2 @@
+import {useMemo}from'react';function a({condition:t,children:e,fallback:u}){return useMemo(()=>t?typeof e=="function"?React.createElement(React.Fragment,null,e(t)):React.createElement(React.Fragment,null,e):u?React.createElement(React.Fragment,null,u):null,[t,u,e])}export{a};//# sourceMappingURL=chunk-PTN5UF3Z.mjs.map
+//# sourceMappingURL=chunk-PTN5UF3Z.mjs.map

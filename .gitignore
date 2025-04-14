@@ -17,14 +17,13 @@ next-env.d.ts
 
 # production
 build
+# packages の dist ディレクトリは含め、他の dist は除外
 dist
 **/dist
-**/dist/
-packages/*/dist/
+!packages/*/dist/
+# アプリケーションとツールのdistディレクトリは除外
 apps/*/dist/
 tooling/*/dist/
-
-
 
 # misc
 .DS_Store
@@ -82,3 +81,5 @@ supabase/seed.sql
 **/.github_credentials
 .token
 **/.token
+!packages/*/*/dist/
+!packages/ui/dist/

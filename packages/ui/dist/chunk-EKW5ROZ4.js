@@ -1,0 +1,2 @@
+'use strict';var react=require('react');function a({condition:t,children:e,fallback:u}){return react.useMemo(()=>t?typeof e=="function"?React.createElement(React.Fragment,null,e(t)):React.createElement(React.Fragment,null,e):u?React.createElement(React.Fragment,null,u):null,[t,u,e])}exports.a=a;//# sourceMappingURL=chunk-EKW5ROZ4.js.map
+//# sourceMappingURL=chunk-EKW5ROZ4.js.map

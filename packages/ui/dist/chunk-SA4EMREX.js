@@ -1,0 +1,2 @@
+'use strict';var TransWithoutContext=require('react-i18next/TransWithoutContext'),reactI18next=require('react-i18next');function a(n){let{i18n:o}=reactI18next.useTranslation();return React.createElement(TransWithoutContext.Trans,{i18n:o,...n})}exports.a=a;//# sourceMappingURL=chunk-SA4EMREX.js.map
+//# sourceMappingURL=chunk-SA4EMREX.js.map

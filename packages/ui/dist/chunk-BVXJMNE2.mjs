@@ -1,0 +1,2 @@
+import {a as a$1}from'./chunk-PM5DLNHD.mjs';import {a}from'./chunk-T5NLFGFR.mjs';function l({children:t,className:o,fullPage:s=true,spinnerClassName:i}){return React.createElement("div",{className:a("flex flex-col items-center justify-center space-y-4",o,{"bg-background fixed top-0 left-0 z-100 h-screen w-screen":s})},React.createElement(a$1,{className:i}),React.createElement("div",{className:"text-muted-foreground text-sm"},t))}export{l as a};//# sourceMappingURL=chunk-BVXJMNE2.mjs.map
+//# sourceMappingURL=chunk-BVXJMNE2.mjs.map

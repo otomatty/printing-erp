@@ -1,0 +1,2 @@
+'use strict';var chunkSA4EMREX_js=require('../chunk-SA4EMREX.js');require('../chunk-HYHNM5M6.js');Object.defineProperty(exports,"Trans",{enumerable:true,get:function(){return chunkSA4EMREX_js.a}});//# sourceMappingURL=index.js.map
+//# sourceMappingURL=index.js.map
