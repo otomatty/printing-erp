@@ -27,7 +27,7 @@
     "build:dts:utils:cached": "node config/scripts/cached-build.js utils build:dts:utils",
     "build:dts:custom:cached": "node config/scripts/cached-build.js custom build:dts:custom",
     "postinstall": "mkdir -p .cache/tsup-cache",
-    "dev": "concurrently \"bun run dev:components\" \"bun run dev:types\"",
+    "dev": "vite",
     "dev:components": "concurrently \"bun run dev:shadcn:watch\" \"bun run dev:makerkit:watch\" \"bun run dev:magicui:watch\" \"bun run dev:utils:watch\" \"bun run dev:custom:watch\"",
     "dev:types": "bun run build:dts:cached",
     "dev:shadcn:watch": "tsup --config config/tsup/dev/dev.shadcn.config.ts",
@@ -86,13 +86,13 @@
     "@biomejs/biome": "1.9.4",
     "@kit/tsconfig": "workspace:*",
     "@radix-ui/react-icons": "1.3.2",
-    "@storybook/addon-essentials": "8.6.7",
-    "@storybook/addon-interactions": "8.6.7",
-    "@storybook/addon-links": "8.6.7",
-    "@storybook/blocks": "8.6.7",
-    "@storybook/react": "8.6.7",
-    "@storybook/react-vite": "8.6.7",
-    "@storybook/test": "8.6.7",
+    "@storybook/addon-essentials": "8.6.12",
+    "@storybook/addon-interactions": "8.6.12",
+    "@storybook/addon-links": "8.6.12",
+    "@storybook/blocks": "8.6.12",
+    "@storybook/react": "8.6.12",
+    "@storybook/react-vite": "8.6.12",
+    "@storybook/test": "8.6.12",
     "@storybook/testing-library": "0.2.2",
     "@svgr/rollup": "8.1.0",
     "@tanstack/react-query": "5.69.0",
@@ -105,7 +105,7 @@
     "concurrently": "9.1.2",
     "cross-env": "^7.0.3",
     "react-hook-form": "7.54.2",
-    "storybook": "8.6.7",
+    "storybook": "8.6.12",
     "tailwindcss": "4.0.14",
     "tailwindcss-animate": "1.0.7",
     "tsup": "8.4.0",
@@ -217,9 +217,7 @@
   },
   "typesVersions": {
     "*": {
-      "*": [
-        "src/*"
-      ]
+      "*": ["src/*"]
     }
   }
 }
