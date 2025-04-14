@@ -23,7 +23,7 @@ declare const CommandInput: React.ForwardRefExoticComponent<Omit<Omit<Pick<Pick<
     ref?: React.Ref<HTMLInputElement>;
 } & {
     asChild?: boolean;
-}, "key" | "asChild" | keyof React.InputHTMLAttributes<HTMLInputElement>>, "onChange" | "value" | "type"> & {
+}, "key" | "asChild" | keyof React.InputHTMLAttributes<HTMLInputElement>>, "onChange" | "type" | "value"> & {
     value?: string;
     onValueChange?: (search: string) => void;
 } & React.RefAttributes<HTMLInputElement>, "ref"> & React.RefAttributes<HTMLInputElement>>;
@@ -49,7 +49,7 @@ declare const CommandGroup: React.ForwardRefExoticComponent<Omit<{
     ref?: React.Ref<HTMLDivElement>;
 } & {
     asChild?: boolean;
-}, "key" | keyof React.HTMLAttributes<HTMLDivElement> | "asChild">, "value" | "heading"> & {
+}, "key" | keyof React.HTMLAttributes<HTMLDivElement> | "asChild">, "heading" | "value"> & {
     heading?: React.ReactNode;
     value?: string;
     forceMount?: boolean;
@@ -67,7 +67,7 @@ declare const CommandItem: React.ForwardRefExoticComponent<Omit<{
     ref?: React.Ref<HTMLDivElement>;
 } & {
     asChild?: boolean;
-}, "key" | keyof React.HTMLAttributes<HTMLDivElement> | "asChild">, "onSelect" | "value" | "disabled"> & {
+}, "key" | keyof React.HTMLAttributes<HTMLDivElement> | "asChild">, "onSelect" | "disabled" | "value"> & {
     disabled?: boolean;
     onSelect?: (value: string) => void;
     value?: string;

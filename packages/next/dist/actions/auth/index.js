@@ -31,14 +31,14 @@ async function getAuthState() {
         profile: null
       };
     }
-    const { data: profileOnly, error: profileOnlyError } = await supabase.from("profiles").select("*").eq("auth_user_id", user.id).single();
+    const { data: profileOnly, error: profileOnlyError } = await supabase.from("user_accounts").select("*").eq("auth_user_id", user.id).single();
     if (profileOnlyError || !profileOnly) {
       return {
         isAuthenticated: true,
         profile: null
       };
     }
-    const { data: isAdmin } = await supabase.rpc("check_is_admin");
+    const { data: isAdmin } = await supabase.schema("system").rpc("check_is_admin");
     const profileWithRole = {
       id: profileOnly.id,
       email: profileOnly.email ?? null,
