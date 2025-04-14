@@ -1,0 +1,278 @@
+/*
+* theme.utilities.css
+*
+* スタイリングユーティリティクラス
+* このファイルはコンポーネントのスタイリングに使用する汎用的なユーティリティクラスを定義します。
+*
+* 主な機能：
+* - レイアウト関連のユーティリティ
+* - アニメーション関連のユーティリティ
+* - レスポンシブデザイン用のユーティリティ
+* - その他の汎用的なスタイリングユーティリティ
+*/
+
+@layer utilities {
+ 
+  /* アニメーションクラスの定義 */
+  .animate-orbit {
+    animation: orbit calc(var(--duration)*1s) linear infinite;
+  }
+
+  .animate-accordion-down {
+    animation: accordion-down 0.2s ease-out;
+  }
+
+  .animate-accordion-up {
+    animation: accordion-up 0.2s ease-out;
+  }
+
+  .animate-shimmer-slide {
+    animation: shimmer-slide var(--speed) ease-in-out infinite alternate;
+  }
+
+  .animate-spin-around {
+    animation: spin-around calc(var(--speed) * 2) infinite linear;
+  }
+
+  .animate-marquee {
+    animation: marquee var(--duration) infinite linear;
+  }
+
+  .animate-marquee-vertical {
+    animation: marquee-vertical var(--duration) linear infinite;
+  }
+
+  .animate-ripple {
+    animation: ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite;
+  }
+
+  .animate-background-position-spin {
+    animation: background-position-spin 3000ms infinite alternate;
+  }
+
+  .animate-meteor {
+    animation: meteor 5s linear infinite;
+  }
+
+  .animate-aurora {
+    animation: aurora-gradient 6s ease-in-out infinite;
+  }
+
+  .animate-spin-clockwise {
+    animation: spin 20s linear infinite;
+  }
+
+  .animate-spin-counterclockwise {
+    animation: spin-reverse 20s linear infinite;
+  }
+
+
+   .noise-texture {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .noise-texture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.4;
+    z-index: -1;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    mix-blend-mode: overlay;
+  }
+
+  .noise-texture.dark::after {
+    opacity: 0.2;
+  }
+
+  .aurora-gradient {
+    @apply inline-block bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent;
+    background-size: 400% 400%;
+    animation: aurora-gradient 6s ease-in-out infinite;
+  }
+
+  /* テーマカラー関連ユーティリティ */
+  
+  /* 背景色のバリエーション */
+  .bg-background-light {
+    background-color: color-mix(in srgb, var(--background) 70%, white);
+  }
+  
+  .bg-background-lighter {
+    background-color: color-mix(in srgb, var(--background) 40%, white);
+  }
+  
+  .bg-background-dark {
+    background-color: color-mix(in srgb, var(--background) 70%, black);
+  }
+  
+  .bg-background-darker {
+    background-color: color-mix(in srgb, var(--background) 40%, black);
+  }
+  
+  /* 背景色のパターン */
+  .bg-background-grid {
+    background-image: 
+      linear-gradient(to right, color-mix(in srgb, var(--primary) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--primary) 10%, transparent) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .bg-background-dots {
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--primary) 15%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 15px 15px;
+  }
+  
+  .bg-background-stripes {
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--background),
+      var(--background) 10px,
+      color-mix(in srgb, var(--background) 80%, var(--primary)) 10px,
+      color-mix(in srgb, var(--background) 80%, var(--primary)) 20px
+    );
+  }
+  
+  /* プライマリカラーのバリエーション */
+  .bg-primary-light {
+    background-color: color-mix(in srgb, var(--primary) 70%, white);
+  }
+  
+  .bg-primary-lighter {
+    background-color: color-mix(in srgb, var(--primary) 40%, white);
+  }
+  
+  .bg-primary-dark {
+    background-color: color-mix(in srgb, var(--primary) 70%, black);
+  }
+  
+  .bg-primary-darker {
+    background-color: color-mix(in srgb, var(--primary) 40%, black);
+  }
+  
+  .text-primary-light {
+    color: color-mix(in srgb, var(--primary) 70%, white);
+  }
+  
+  .text-primary-lighter {
+    color: color-mix(in srgb, var(--primary) 40%, white);
+  }
+  
+  .text-primary-dark {
+    color: color-mix(in srgb, var(--primary) 70%, black);
+  }
+  
+  .text-primary-darker {
+    color: color-mix(in srgb, var(--primary) 40%, black);
+  }
+  
+  /* アクセントカラーのバリエーション */
+  .bg-accent-light {
+    background-color: color-mix(in srgb, var(--accent) 70%, white);
+  }
+  
+  .bg-accent-lighter {
+    background-color: color-mix(in srgb, var(--accent) 40%, white);
+  }
+  
+  .bg-accent-dark {
+    background-color: color-mix(in srgb, var(--accent) 70%, black);
+  }
+  
+  .bg-accent-darker {
+    background-color: color-mix(in srgb, var(--accent) 40%, black);
+  }
+  
+  .text-accent-light {
+    color: color-mix(in srgb, var(--accent) 70%, white);
+  }
+  
+  .text-accent-lighter {
+    color: color-mix(in srgb, var(--accent) 40%, white);
+  }
+  
+  .text-accent-dark {
+    color: color-mix(in srgb, var(--accent) 70%, black);
+  }
+  
+  .text-accent-darker {
+    color: color-mix(in srgb, var(--accent) 40%, black);
+  }
+  
+  /* 印刷関連テーマユーティリティ */
+  .print-texture {
+    background-image: 
+      linear-gradient(45deg, var(--primary) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--primary) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--primary) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--primary) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    opacity: 0.05;
+  }
+  
+  /* テーマ対応ボーダー */
+  .border-theme {
+    border-color: var(--primary);
+  }
+  
+  .border-theme-light {
+    border-color: color-mix(in srgb, var(--primary) 50%, white);
+  }
+  
+  .border-theme-lighter {
+    border-color: color-mix(in srgb, var(--primary) 25%, white);
+  }
+  
+  /* テーマ対応シャドウ */
+  .shadow-theme-sm {
+    box-shadow: 0 1px 2px 0 color-mix(in srgb, var(--primary) 10%, black);
+  }
+  
+  .shadow-theme {
+    box-shadow: 0 1px 3px 0 color-mix(in srgb, var(--primary) 10%, black),
+                0 1px 2px -1px color-mix(in srgb, var(--primary) 10%, black);
+  }
+  
+  .shadow-theme-md {
+    box-shadow: 0 4px 6px -1px color-mix(in srgb, var(--primary) 10%, black),
+                0 2px 4px -2px color-mix(in srgb, var(--primary) 10%, black);
+  }
+  
+  .shadow-theme-lg {
+    box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--primary) 10%, black),
+                0 4px 6px -4px color-mix(in srgb, var(--primary) 10%, black);
+  }
+  
+  /* テーマ対応グラデーション */
+  .bg-theme-gradient {
+    background: linear-gradient(135deg, 
+                var(--primary), 
+                color-mix(in srgb, var(--primary) 60%, var(--secondary)));
+  }
+  
+  .bg-theme-gradient-subtle {
+    background: linear-gradient(135deg, 
+                color-mix(in srgb, var(--primary) 70%, white), 
+                color-mix(in srgb, var(--primary) 30%, white));
+  }
+}
+
+@keyframes aurora-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
