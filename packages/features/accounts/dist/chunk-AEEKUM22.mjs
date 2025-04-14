@@ -9,7 +9,7 @@ function usePersonalAccountData(userId, partialAccount) {
     if (!userId) {
       throw new Error("User ID is required");
     }
-    const response = await client.from("profiles").select(
+    const response = await client.from("user_accounts").select(
       `
         id,
         full_name,

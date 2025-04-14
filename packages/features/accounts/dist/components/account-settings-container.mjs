@@ -1,8 +1,8 @@
 "use client";
 import {
   PersonalAccountSettingsContainer
-} from "../chunk-XOF5TOCK.mjs";
-import "../chunk-BHNMR4AH.mjs";
+} from "../chunk-XUWL4DPZ.mjs";
+import "../chunk-AEEKUM22.mjs";
 export {
   PersonalAccountSettingsContainer
 };

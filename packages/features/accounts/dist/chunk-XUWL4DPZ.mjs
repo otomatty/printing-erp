@@ -1,7 +1,7 @@
 import {
   usePersonalAccountData,
   useRevalidatePersonalAccountDataQuery
-} from "./chunk-BHNMR4AH.mjs";
+} from "./chunk-AEEKUM22.mjs";
 
 // src/components/account-settings-container.tsx
 import { useTranslation as useTranslation5 } from "react-i18next";
@@ -974,7 +974,7 @@ function useUpdateAccountData(accountId) {
   const client = useSupabase3();
   const mutationKey = ["account:data", accountId];
   const mutationFn = async (data) => {
-    const response = await client.from("profiles").update(data).match({
+    const response = await client.from("user_accounts").update(data).match({
       id: accountId
     });
     if (response.error) {
@@ -1106,7 +1106,7 @@ function UploadProfileAvatarForm(props) {
             file,
             props.userId
           ).then((pictureUrl) => {
-            return client.from("profiles").update({
+            return client.from("user_accounts").update({
               avatar_url: pictureUrl
             }).eq("id", props.userId).throwOnError();
           }).then(() => {
@@ -1116,7 +1116,7 @@ function UploadProfileAvatarForm(props) {
         createToaster(promise);
       } else {
         const promise = () => removeExistingStorageFile().then(() => {
-          return client.from("profiles").update({
+          return client.from("user_accounts").update({
             avatar_url: null
           }).eq("id", props.userId).throwOnError();
         }).then(() => {

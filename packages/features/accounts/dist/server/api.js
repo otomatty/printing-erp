@@ -33,7 +33,7 @@ var AccountsApi = class {
    * @param id
    */
   async getAccount(id) {
-    const { data, error } = await this.client.from("profiles").select("*").eq("id", id).single();
+    const { data, error } = await this.client.from("user_accounts").select("*").eq("id", id).single();
     if (error) {
       throw error;
     }

@@ -1,7 +1,7 @@
 "use client";
 import {
   usePersonalAccountData
-} from "../chunk-BHNMR4AH.mjs";
+} from "../chunk-AEEKUM22.mjs";
 
 // src/components/personal-account-dropdown.tsx
 import { useMemo } from "react";
