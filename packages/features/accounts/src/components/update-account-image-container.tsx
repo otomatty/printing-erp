@@ -73,7 +73,7 @@ function UploadProfileAvatarForm(props: {
             )
               .then((pictureUrl) => {
                 return client
-                  .from('profiles')
+                  .from('user_accounts')
                   .update({
                     avatar_url: pictureUrl,
                   })
@@ -91,7 +91,7 @@ function UploadProfileAvatarForm(props: {
           removeExistingStorageFile()
             .then(() => {
               return client
-                .from('profiles')
+                .from('user_accounts')
                 .update({
                   avatar_url: null,
                 })

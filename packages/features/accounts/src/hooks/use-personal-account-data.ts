@@ -36,7 +36,7 @@ export function usePersonalAccountData(
     }
 
     const response = await client
-      .from('profiles')
+      .from('user_accounts')
       .select(
         `
         id,

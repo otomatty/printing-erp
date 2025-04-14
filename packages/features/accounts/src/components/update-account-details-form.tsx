@@ -17,7 +17,8 @@ import { Input } from '@kit/ui/input';
 import { useUpdateAccountData } from '../hooks/use-update-account';
 import { AccountDetailsSchema } from '../schema/account-details.schema';
 
-type UpdateUserDataParams = Database['public']['Tables']['profiles']['Update'];
+type UpdateUserDataParams =
+  Database['public']['Tables']['user_accounts']['Update'];
 
 export function UpdateAccountDetailsForm({
   displayName,

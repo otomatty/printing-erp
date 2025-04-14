@@ -17,7 +17,7 @@ class AccountsApi {
    */
   async getAccount(id: string) {
     const { data, error } = await this.client
-      .from('profiles')
+      .from('user_accounts')
       .select('*')
       .eq('id', id)
       .single();
