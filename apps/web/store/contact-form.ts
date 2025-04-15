@@ -5,19 +5,21 @@ import type {
   PrintServicesFormData,
   DigitalServicesFormData,
   GeneralInquiryFormData,
-  UserInfoData,
+  UserInfo,
   InquiryType,
   FormStep,
 } from '~/types/contact-form';
 
 // フォームデータの初期値
 // ユーザー情報の初期値
-const initialUserInfo: UserInfoData = {
+const initialUserInfo: UserInfo = {
   name: '',
   companyName: '',
   email: '',
   phone: '',
   preferredContact: 'email',
+  address: '',
+  postalCode: '',
 };
 
 // 印刷サービスフォームの初期値
@@ -40,11 +42,21 @@ const initialDigitalServicesData: DigitalServicesFormData = {
   otherRequests: '',
 };
 
+// デジタルサービス通常フォームのAtom - 個別コンポーネントから移動
+export const digitalStandardFormAtom = atom<DigitalServicesFormData>({
+  inquiryType: 'digital-services',
+  serviceType: '',
+  projectDescription: '',
+  deadline: '',
+  budget: '',
+  otherRequests: '',
+});
+
 // 一般的な問い合わせフォームの初期値
 const initialGeneralInquiryData: GeneralInquiryFormData = {
   inquiryType: 'general-inquiry',
   inquiryContent: '',
-  preferredContactMethod: 'email',
+  preferredContactMethod: 'email', // デフォルト値は必要だがユーザーからの入力は不要
   preferredContactTime: '',
 };
 
@@ -79,7 +91,7 @@ export const currentFormDataAtom = atom((get) => {
 });
 
 // ユーザー情報を管理するアトム
-export const userInfoAtom = atom<UserInfoData>(initialUserInfo);
+export const userInfoAtom = atom<UserInfo>(initialUserInfo);
 
 // ユーザー情報が有効かどうかを判断するアトム（書き込み可能）
 export const isUserInfoValidAtom = atom(

@@ -30,11 +30,11 @@ export default function StepDetails({ onAIEstimateSelect }: StepDetailsProps) {
   const getHeaderText = () => {
     switch (inquiryType) {
       case 'print-services':
-        return '印刷サービスに関するお問い合わせ';
+        return '印刷サービス';
       case 'digital-services':
-        return 'IT・デジタルサービスに関するお問い合わせ';
+        return 'IT・デジタルサービス';
       case 'general-inquiry':
-        return 'その他のお問い合わせ・ご質問';
+        return 'その他のお問い合わせ';
       default:
         return 'お問い合わせ内容';
     }

@@ -225,9 +225,7 @@ export function FeatureSelectionStep() {
                             {feature.name}
                           </Label>
                           <Badge
-                            variant={
-                              feature.isRequired ? 'default' : 'secondary'
-                            }
+                            variant={feature.isRequired ? 'default' : 'outline'}
                           >
                             {feature.isRequired ? '必須' : '任意'}
                           </Badge>

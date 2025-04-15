@@ -220,7 +220,7 @@ export function AIQuestionsStep() {
                   ? 'border border-muted bg-muted/10'
                   : question.isAnswered
                     ? 'border border-primary/20 bg-primary/5'
-                    : 'border-2 border-primary/30'
+                    : 'border border-primary/30'
               }`}
             >
               <div className="space-y-4">

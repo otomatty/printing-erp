@@ -414,7 +414,7 @@ export default function PrintServicesForm() {
                     ? 'ご質問内容をご記入ください'
                     : 'ご依頼内容をご記入ください'
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary/50 focus:border-primary"
                 required={inquiryType === 'order' || inquiryType === 'estimate'}
               />
               {(inquiryType === 'order' || inquiryType === 'estimate') &&
@@ -442,7 +442,7 @@ export default function PrintServicesForm() {
               value={formData.deadline}
               onChange={(e) => updateFormData({ deadline: e.target.value })}
               placeholder="例: 1ヶ月以内、8月末までなど"
-              className="w-full max-w-[400px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              className="w-full max-w-[400px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary/50 focus:border-primary"
             />
           </div>
 

@@ -51,7 +51,7 @@ export default function StepUserInfo() {
             required
             value={userInfo.name}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
           />
           {!userInfo.name && showValidation && (
             <p className="text-xs text-red-500 mt-1">お名前は必須項目です</p>
@@ -71,7 +71,39 @@ export default function StepUserInfo() {
             name="companyName"
             value={userInfo.companyName}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
+          />
+        </div>
+
+        <div>
+          <Label
+            htmlFor="postalCode"
+            className="block text-sm font-medium mb-1"
+          >
+            郵便番号
+          </Label>
+          <Input
+            type="text"
+            id="postalCode"
+            name="postalCode"
+            value={userInfo.postalCode || ''}
+            onChange={handleInputChange}
+            placeholder="1234567（ハイフンなし）"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="address" className="block text-sm font-medium mb-1">
+            住所
+          </Label>
+          <Input
+            type="text"
+            id="address"
+            name="address"
+            value={userInfo.address || ''}
+            onChange={handleInputChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
           />
         </div>
 
@@ -86,7 +118,7 @@ export default function StepUserInfo() {
             required
             value={userInfo.email}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
           />
           {!userInfo.email && showValidation && (
             <p className="text-xs text-red-500 mt-1">
@@ -107,7 +139,8 @@ export default function StepUserInfo() {
             required={isPhoneRequired}
             value={userInfo.phone}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="09012345678（ハイフンなし）"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
           />
           {isPhoneRequired && !userInfo.phone && showValidation && (
             <p className="text-xs text-red-500 mt-1">

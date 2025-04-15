@@ -14,14 +14,16 @@ export type InquiryType =
   | 'digital-services'
   | 'general-inquiry';
 
-// ユーザー情報の型定義
-export type UserInfoData = {
+// サーバーアクション用にユーザー情報型を拡張
+export interface UserInfo {
   name: string;
   companyName: string;
   email: string;
   phone: string;
   preferredContact: string;
-};
+  address?: string;
+  postalCode?: string;
+}
 
 // 各フォームデータの基本型
 export interface BaseFormData {
@@ -57,7 +59,7 @@ export interface GeneralInquiryFormData extends BaseFormData {
 }
 
 // 統合されたフォームデータ型
-export type ContactFormData = UserInfoData &
+export type ContactFormData = UserInfo &
   (PrintServicesFormData | DigitalServicesFormData | GeneralInquiryFormData);
 
 // イベントハンドラ型

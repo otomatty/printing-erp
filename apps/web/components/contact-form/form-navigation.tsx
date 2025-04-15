@@ -1,84 +1,64 @@
-import React from 'react';
-import { ArrowLeft, ArrowRight, Send } from 'lucide-react';
-import { useAtom } from 'jotai';
-import {
-  inquiryTypeAtom,
-  isFormValidAtom,
-  isUserInfoValidAtom,
-} from '~/store/contact-form';
+import { Button } from '@kit/ui/button';
+import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import type { FormStep } from '~/types/contact-form';
 
-type FormStep =
-  | 'inquiry-type'
-  | 'user-info'
-  | 'details'
-  | 'confirmation'
-  | 'complete';
-
-type FormNavigationProps = {
+interface FormNavigationProps {
   currentStep: FormStep;
   handleBack: () => void;
   handleNext: () => void;
-  isNextDisabled?: boolean;
-};
+  isNextDisabled: boolean;
+  isSubmitting?: boolean;
+}
 
 export default function FormNavigation({
   currentStep,
   handleBack,
   handleNext,
   isNextDisabled,
+  isSubmitting = false,
 }: FormNavigationProps) {
-  const [inquiryType] = useAtom(inquiryTypeAtom);
-  const [isFormValid] = useAtom(isFormValidAtom);
-  const [isUserInfoValid] = useAtom(isUserInfoValidAtom);
-
-  const isDisabled = () => {
-    switch (currentStep) {
-      case 'inquiry-type':
-        return !inquiryType;
-      case 'details':
-        return !isFormValid;
-      case 'user-info':
-        return !isUserInfoValid;
-      default:
-        return isNextDisabled;
-    }
+  // 次へボタンのテキスト
+  const nextButtonText = () => {
+    if (currentStep === 'inquiry-type') return '次へ';
+    if (currentStep === 'details') return '次へ';
+    if (currentStep === 'user-info') return '内容確認';
+    if (currentStep === 'confirmation')
+      return isSubmitting ? '送信中...' : '送信する';
+    return '次へ';
   };
 
   return (
-    <div className="mt-8 flex justify-between">
+    <div className="flex justify-between mt-8">
+      {/* 戻るボタン（初期ステップでは表示しない） */}
       {currentStep !== 'inquiry-type' ? (
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={handleBack}
-          className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+          className="px-5"
+          disabled={isSubmitting}
         >
-          <ArrowLeft size={16} className="mr-2" />
+          <ArrowLeft className="w-4 h-4 mr-2" />
           戻る
-        </button>
+        </Button>
       ) : (
         <div />
       )}
 
-      <button
+      {/* 次へ進むボタン */}
+      <Button
         type="button"
         onClick={handleNext}
-        disabled={isDisabled()}
-        className={`bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-2 rounded-md transition-colors flex items-center ${
-          isDisabled() ? 'opacity-50 cursor-not-allowed' : ''
-        }`}
+        className="px-5"
+        disabled={isNextDisabled}
       >
-        {currentStep === 'confirmation' ? (
-          <>
-            送信する
-            <Send size={16} className="ml-2" />
-          </>
+        {isSubmitting ? (
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
         ) : (
-          <>
-            次へ
-            <ArrowRight size={16} className="ml-2" />
-          </>
+          <ArrowRight className="w-4 h-4 ml-2 order-last" />
         )}
-      </button>
+        {nextButtonText()}
+      </Button>
     </div>
   );
 }

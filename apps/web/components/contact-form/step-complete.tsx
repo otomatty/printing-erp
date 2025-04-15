@@ -4,13 +4,13 @@ import { ArrowLeft, Check } from 'lucide-react';
 import { useAtom } from 'jotai';
 import { inquiryTypeAtom, currentFormDataAtom } from '~/store/contact-form';
 import type {
-  UserInfoData,
+  UserInfo,
   InquiryType,
   PrintServicesFormData,
 } from '~/types/contact-form';
 
 type StepCompleteProps = {
-  userInfo: UserInfoData;
+  userInfo: UserInfo;
 };
 
 /**

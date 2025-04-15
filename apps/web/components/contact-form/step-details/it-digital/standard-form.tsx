@@ -1,18 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { isFormValidAtom } from '~/store/contact-form';
-import { atom } from 'jotai';
-import type { DigitalServicesFormData } from '~/types/contact-form';
-
-// デジタルサービス通常フォームのAtom
-export const digitalStandardFormAtom = atom<DigitalServicesFormData>({
-  inquiryType: 'digital-services',
-  serviceType: '',
-  projectDescription: '',
-  deadline: '',
-  budget: '',
-  otherRequests: '',
-});
+import { isFormValidAtom, digitalStandardFormAtom } from '~/store/contact-form';
 
 export default function DigitalStandardForm() {
   const [formData, setFormData] = useAtom(digitalStandardFormAtom);

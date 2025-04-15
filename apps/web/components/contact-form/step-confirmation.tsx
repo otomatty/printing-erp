@@ -5,13 +5,13 @@ import type {
   PrintServicesFormData,
   DigitalServicesFormData,
   GeneralInquiryFormData,
-  UserInfoData,
+  UserInfo,
   InquiryType,
 } from '~/types/contact-form';
 import ConfirmationItem from './confirmation-item';
 
 type StepConfirmationProps = {
-  userInfo: UserInfoData;
+  userInfo: UserInfo;
   onChangeStep: (step: 'inquiry-type' | 'user-info' | 'details') => void;
 };
 
@@ -220,6 +220,24 @@ export default function StepConfirmation({
             onClick={() => onChangeStep('user-info')}
           >
             <p className="mt-1">{userInfo.phone}</p>
+          </ConfirmationItem>
+        )}
+
+        {userInfo.postalCode && (
+          <ConfirmationItem
+            label="郵便番号"
+            onClick={() => onChangeStep('user-info')}
+          >
+            <p className="mt-1">{userInfo.postalCode}</p>
+          </ConfirmationItem>
+        )}
+
+        {userInfo.address && (
+          <ConfirmationItem
+            label="住所"
+            onClick={() => onChangeStep('user-info')}
+          >
+            <p className="mt-1">{userInfo.address}</p>
           </ConfirmationItem>
         )}
 

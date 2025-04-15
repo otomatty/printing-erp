@@ -1,7 +1,7 @@
 'use client';
 import { useAtom } from 'jotai';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ContactFormProgressIndicator,
   StepInquiryType,
@@ -17,10 +17,14 @@ import {
   userInfoAtom,
   isUserInfoValidAtom,
   inquiryTypeAtom,
+  digitalServicesFormAtom,
+  printServicesFormAtom,
+  generalInquiryFormAtom,
 } from '~/store/contact-form';
 import type { FormStep, InquiryType } from '~/types/contact-form';
 // 新しいatomをインポート - AI見積もりフォームの表示状態を管理
 import { atom } from 'jotai';
+import { submitContactForm } from '~/actions/contact';
 
 // AI見積もりフォームの表示状態を追跡するためのatom
 export const isAIEstimateShownAtom = atom(false);
@@ -34,6 +38,15 @@ export default function ContactForm() {
   const [isAIEstimateShown, setIsAIEstimateShown] = useAtom(
     isAIEstimateShownAtom
   );
+
+  // フォーム送信状態管理
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // 各フォームの状態を取得
+  const [digitalServicesForm] = useAtom(digitalServicesFormAtom);
+  const [printServicesForm] = useAtom(printServicesFormAtom);
+  const [generalInquiryForm] = useAtom(generalInquiryFormAtom);
 
   // URLパラメータを取得
   const searchParams = useSearchParams();
@@ -79,15 +92,65 @@ export default function ContactForm() {
   };
 
   // 次へボタンの処理
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep === 'inquiry-type') setCurrentStep('details');
     else if (currentStep === 'details') setCurrentStep('user-info');
     else if (currentStep === 'user-info') setCurrentStep('confirmation');
     else if (currentStep === 'confirmation') {
-      // ここでフォームを送信する処理を実装
-      // 実際の実装ではAPI呼び出しなどを行う
-      console.log('Form submitted:', { userInfo });
-      setCurrentStep('complete');
+      // フォームを送信する処理
+      setIsSubmitting(true);
+      setSubmitError(null);
+
+      try {
+        // 問い合わせタイプに応じたフォームデータを取得
+        let formDetails: Record<string, unknown>;
+        switch (inquiryType) {
+          case 'digital-services':
+            formDetails = digitalServicesForm as unknown as Record<
+              string,
+              unknown
+            >;
+            break;
+          case 'print-services':
+            formDetails = printServicesForm as unknown as Record<
+              string,
+              unknown
+            >;
+            break;
+          case 'general-inquiry':
+            formDetails = generalInquiryForm as unknown as Record<
+              string,
+              unknown
+            >;
+            break;
+          default:
+            formDetails = {};
+        }
+
+        // サーバーアクションでフォームを送信
+        const result = await submitContactForm({
+          userInfo,
+          inquiryType,
+          formDetails,
+        });
+
+        if (result.success) {
+          // 送信成功
+          setCurrentStep('complete');
+        } else {
+          // エラーメッセージを設定
+          setSubmitError(
+            result.error || '送信に失敗しました。もう一度お試しください。'
+          );
+        }
+      } catch (error) {
+        console.error('送信エラー:', error);
+        setSubmitError(
+          '予期せぬエラーが発生しました。もう一度お試しください。'
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -112,6 +175,14 @@ export default function ContactForm() {
       )}
 
       <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
+        {/* エラーメッセージ表示 */}
+        {submitError && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md text-red-600">
+            <p className="font-medium">エラーが発生しました</p>
+            <p className="text-sm">{submitError}</p>
+          </div>
+        )}
+
         {/* STEP 1: お問い合わせ種別選択 */}
         {currentStep === 'inquiry-type' && <StepInquiryType />}
 
@@ -141,10 +212,12 @@ export default function ContactForm() {
             handleBack={handleBack}
             handleNext={handleNext}
             isNextDisabled={
-              currentStep === 'inquiry-type' ||
+              // inquiry-typeステップでは次へボタンを常に有効にする
               (currentStep === 'details' && !isFormValid) ||
-              (currentStep === 'user-info' && !isUserInfoValid)
+              (currentStep === 'user-info' && !isUserInfoValid) ||
+              isSubmitting
             }
+            isSubmitting={isSubmitting && currentStep === 'confirmation'}
           />
         )}
       </div>
