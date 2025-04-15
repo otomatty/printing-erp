@@ -84,9 +84,9 @@ export default function HomepageWorkflowSection() {
           backgroundColor="bg-white"
           cumulativeDuration={false}
         />
-        <div className="mt-16 bg-indigo-50 rounded-lg p-8 max-w-3xl mx-auto">
+        <div className="mt-16 bg-primary/5 rounded-lg p-8 max-w-3xl mx-auto">
           <h3 className="text-xl font-semibold mb-4 text-center">
-            <span className="text-indigo-600">
+            <span className="text-primary">
               目的に合わせた
               <br className="sm:hidden" />
               段階的な制作

@@ -2,15 +2,15 @@ import React from 'react';
 import type { Metadata } from 'next';
 
 // インポート済みのコンポーネント
-import HomepageHeroSection from './_components/HomepageHeroSection';
-import HomepageChallengesSection from './_components/HomepageChallengesSection';
-import { HomepageServicesSection } from './_components/HomepageServicesSection';
-import HomepageCostPerformanceSection from './_components/HomepageCostPerformanceSection';
+import HomepageHeroSection from './_components/hero';
+import HomepageChallengesSection from './_components/challenges';
+import { HomepageServicesSection } from './_components/services';
+import HomepageCostPerformanceSection from './_components/cost-performance';
 import HomepageBenefitsSection from './_components/benefits';
 import HomepageCaseStudiesSection from './_components/case-studies';
-import HomepageWhyChooseUsSection from './_components/HomepageWhyChooseUsSection';
-import HomepageWorkflowSection from './_components/HomepageWorkflowSection';
-import HomepagePricingSection from './_components/HomepagePricingSection';
+import HomepageWhyChooseUsSection from './_components/why-choose-us';
+import HomepageWorkflowSection from './_components/workflow';
+import HomepagePricingSection from './_components/pricing';
 import MobileEstimateButton from '~/components/custom/mobile-estimate-button';
 import FAQSection from '~/components/custom/faq/faq-section';
 import { homepageFAQs } from './_data/faqData';

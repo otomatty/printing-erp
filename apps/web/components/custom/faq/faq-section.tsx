@@ -116,7 +116,7 @@ export default function FAQSection({
                   <button
                     type="button"
                     onClick={() => toggleItem(faq.question)}
-                    className="w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary group cursor-pointer rounded-md hover:bg-gray-50 transition-colors p-2"
+                    className="w-full text-left focus:outline-none focus-visible:ring focus-visible:ring-primary group cursor-pointer rounded-md hover:bg-gray-50 transition-colors p-2"
                     aria-expanded={openItems[faq.question]}
                   >
                     <div className="flex items-start">

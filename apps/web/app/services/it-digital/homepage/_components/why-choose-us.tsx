@@ -178,7 +178,7 @@ const HomepageWhyChooseUsSection: React.FC = () => {
 																	w-8 h-8 mb-1 rounded-full cursor-help
 																	${
                                     item.ninuma.rating === '◎'
-                                      ? 'bg-indigo-200 text-indigo-700 border-2 border-indigo-400'
+                                      ? 'bg-indigo-200 text-indigo-700 border border-indigo-400'
                                       : item.ninuma.rating === '○'
                                         ? 'bg-green-100 text-green-600'
                                         : item.ninuma.rating === '△'
