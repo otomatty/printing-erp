@@ -2,11 +2,11 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { inquiryTypeAtom, currentFormDataAtom } from '~/store/contact-form';
 import type {
-  EstimateFormData,
-  OrderFormData,
-  QuestionFormData,
-  OtherFormData,
+  PrintServicesFormData,
+  DigitalServicesFormData,
+  GeneralInquiryFormData,
   UserInfoData,
+  InquiryType,
 } from '~/types/contact-form';
 import ConfirmationItem from './confirmation-item';
 
@@ -15,6 +15,10 @@ type StepConfirmationProps = {
   onChangeStep: (step: 'inquiry-type' | 'user-info' | 'details') => void;
 };
 
+/**
+ * 確認画面コンポーネント
+ * ユーザーが入力した内容を確認し、編集できるようにする
+ */
 export default function StepConfirmation({
   userInfo,
   onChangeStep,
@@ -25,102 +29,42 @@ export default function StepConfirmation({
   // 問い合わせ種別によって表示内容を変える
   const renderDetailsByType = () => {
     switch (inquiryType) {
-      case 'estimate': {
-        const data = currentFormData as EstimateFormData;
+      case 'print-services': {
+        const data = currentFormData as PrintServicesFormData;
         return (
           <>
-            <ConfirmationItem
-              label="製品/サービス"
-              onClick={() => onChangeStep('details')}
-            >
-              <p className="mt-1">{data.product}</p>
-            </ConfirmationItem>
-
-            {data.size && (
+            {data.printInquiryType && data.printInquiryType !== 'none' && (
               <ConfirmationItem
-                label="サイズ"
+                label="ご依頼種別"
                 onClick={() => onChangeStep('details')}
               >
-                <p className="mt-1">{data.size}</p>
+                <p className="mt-1">
+                  {data.printInquiryType === 'estimate' && '見積もり依頼'}
+                  {data.printInquiryType === 'order' && '注文・発注'}
+                  {data.printInquiryType === 'question' && '相談・質問'}
+                </p>
               </ConfirmationItem>
             )}
 
             <ConfirmationItem
-              label="部数"
+              label="印刷物の種類"
               onClick={() => onChangeStep('details')}
             >
-              <p className="mt-1">{data.quantity}</p>
+              <p className="mt-1">
+                {printingTypeLabels[data.printingType] || data.printingType}
+              </p>
             </ConfirmationItem>
 
-            {data.paper && (
-              <ConfirmationItem
-                label="用紙"
-                onClick={() => onChangeStep('details')}
-              >
-                <p className="mt-1">{data.paper}</p>
-              </ConfirmationItem>
-            )}
+            <ConfirmationItem
+              label="ご依頼内容"
+              onClick={() => onChangeStep('details')}
+            >
+              <p className="mt-1 whitespace-pre-line">{data.contents}</p>
+            </ConfirmationItem>
 
             {data.deadline && (
               <ConfirmationItem
-                label="納期"
-                onClick={() => onChangeStep('details')}
-              >
-                <p className="mt-1">{data.deadline}</p>
-              </ConfirmationItem>
-            )}
-
-            {data.otherRequests && (
-              <ConfirmationItem
-                label="その他のご要望"
-                onClick={() => onChangeStep('details')}
-              >
-                <p className="mt-1 whitespace-pre-line">{data.otherRequests}</p>
-              </ConfirmationItem>
-            )}
-          </>
-        );
-      }
-
-      case 'order': {
-        const data = currentFormData as OrderFormData;
-        return (
-          <>
-            <ConfirmationItem
-              label="発注内容"
-              onClick={() => onChangeStep('details')}
-            >
-              <p className="mt-1 whitespace-pre-line">{data.orderContent}</p>
-            </ConfirmationItem>
-
-            {data.size && (
-              <ConfirmationItem
-                label="サイズ"
-                onClick={() => onChangeStep('details')}
-              >
-                <p className="mt-1">{data.size}</p>
-              </ConfirmationItem>
-            )}
-
-            <ConfirmationItem
-              label="部数"
-              onClick={() => onChangeStep('details')}
-            >
-              <p className="mt-1">{data.quantity}</p>
-            </ConfirmationItem>
-
-            {data.paper && (
-              <ConfirmationItem
-                label="用紙"
-                onClick={() => onChangeStep('details')}
-              >
-                <p className="mt-1">{data.paper}</p>
-              </ConfirmationItem>
-            )}
-
-            {data.deadline && (
-              <ConfirmationItem
-                label="納期(希望)"
+                label="希望納期"
                 onClick={() => onChangeStep('details')}
               >
                 <p className="mt-1">{data.deadline}</p>
@@ -133,6 +77,47 @@ export default function StepConfirmation({
             >
               <p className="mt-1">{data.hasDesignData ? 'あり' : 'なし'}</p>
             </ConfirmationItem>
+          </>
+        );
+      }
+
+      case 'digital-services': {
+        const data = currentFormData as DigitalServicesFormData;
+        return (
+          <>
+            <ConfirmationItem
+              label="サービスの種類"
+              onClick={() => onChangeStep('details')}
+            >
+              <p className="mt-1">{getServiceTypeLabel(data.serviceType)}</p>
+            </ConfirmationItem>
+
+            <ConfirmationItem
+              label="プロジェクト内容"
+              onClick={() => onChangeStep('details')}
+            >
+              <p className="mt-1 whitespace-pre-line">
+                {data.projectDescription}
+              </p>
+            </ConfirmationItem>
+
+            {data.deadline && (
+              <ConfirmationItem
+                label="希望納期"
+                onClick={() => onChangeStep('details')}
+              >
+                <p className="mt-1">{data.deadline}</p>
+              </ConfirmationItem>
+            )}
+
+            {data.budget && (
+              <ConfirmationItem
+                label="予算の目安"
+                onClick={() => onChangeStep('details')}
+              >
+                <p className="mt-1">{data.budget}</p>
+              </ConfirmationItem>
+            )}
 
             {data.otherRequests && (
               <ConfirmationItem
@@ -146,15 +131,15 @@ export default function StepConfirmation({
         );
       }
 
-      case 'question': {
-        const data = currentFormData as QuestionFormData;
+      case 'general-inquiry': {
+        const data = currentFormData as GeneralInquiryFormData;
         return (
           <>
             <ConfirmationItem
-              label="ご質問内容"
+              label="お問い合わせ内容"
               onClick={() => onChangeStep('details')}
             >
-              <p className="mt-1 whitespace-pre-line">{data.questionContent}</p>
+              <p className="mt-1 whitespace-pre-line">{data.inquiryContent}</p>
             </ConfirmationItem>
 
             {data.preferredContactMethod && (
@@ -163,7 +148,11 @@ export default function StepConfirmation({
                 onClick={() => onChangeStep('details')}
               >
                 <p className="mt-1">
-                  {data.preferredContactMethod === 'email' ? 'メール' : '電話'}
+                  {data.preferredContactMethod === 'email'
+                    ? 'メール'
+                    : data.preferredContactMethod === 'phone'
+                      ? '電話'
+                      : 'どちらでも'}
                 </p>
               </ConfirmationItem>
             )}
@@ -181,18 +170,6 @@ export default function StepConfirmation({
         );
       }
 
-      case 'other': {
-        const data = currentFormData as OtherFormData;
-        return (
-          <ConfirmationItem
-            label="お問い合わせ内容"
-            onClick={() => onChangeStep('details')}
-          >
-            <p className="mt-1 whitespace-pre-line">{data.content}</p>
-          </ConfirmationItem>
-        );
-      }
-
       default:
         return null;
     }
@@ -207,10 +184,10 @@ export default function StepConfirmation({
           onClick={() => onChangeStep('inquiry-type')}
         >
           <p className="mt-1">
-            {inquiryType === 'estimate' && 'お見積り依頼'}
-            {inquiryType === 'order' && 'ご注文・制作依頼'}
-            {inquiryType === 'question' && 'サービスに関するご質問'}
-            {inquiryType === 'other' && 'その他のお問い合わせ'}
+            {inquiryType === 'print-services' && '印刷サービス'}
+            {inquiryType === 'digital-services' && 'IT・デジタルサービス'}
+            {inquiryType === 'general-inquiry' &&
+              'その他のお問い合わせ・ご質問'}
           </p>
         </ConfirmationItem>
 
@@ -251,7 +228,11 @@ export default function StepConfirmation({
           onClick={() => onChangeStep('user-info')}
         >
           <p className="mt-1">
-            {userInfo.preferredContact === 'email' ? 'メール' : '電話'}
+            {userInfo.preferredContact === 'email'
+              ? 'メール'
+              : userInfo.preferredContact === 'phone'
+                ? '電話'
+                : 'どちらでも'}
           </p>
         </ConfirmationItem>
 
@@ -267,4 +248,26 @@ export default function StepConfirmation({
       </div>
     </div>
   );
+}
+
+// 印刷物の種類ラベル
+const printingTypeLabels: Record<string, string> = {
+  'meishi-card': '名刺・ハガキ・カード類',
+  envelope: '封筒印刷',
+  denpyo: '伝票印刷',
+  'flyer-poster': 'チラシ・ポスター',
+  bookbinding: 'ページ物・製本',
+  other: 'その他',
+};
+
+// サービスの種類のラベルを取得
+function getServiceTypeLabel(serviceType: string): string {
+  const types = {
+    web: 'ウェブサイト制作',
+    app: 'アプリ開発',
+    system: 'システム開発',
+    design: 'デザイン制作',
+    other: 'その他',
+  };
+  return types[serviceType as keyof typeof types] || serviceType || '選択なし';
 }

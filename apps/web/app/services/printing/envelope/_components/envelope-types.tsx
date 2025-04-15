@@ -6,6 +6,7 @@ import { cn } from '@kit/ui/utils';
 import { motion } from 'framer-motion';
 import { ResponsiveDialog } from '@kit/ui/responsive-dialog';
 import { Button } from '@kit/ui/button';
+import Link from 'next/link';
 
 // 封筒データの型定義
 interface EnvelopeSize {
@@ -571,8 +572,12 @@ const EnvelopeDetail: React.FC<{ envelope: EnvelopeSize }> = ({ envelope }) => {
 
       {/* ボタンをダイアログ全体の下部に配置 */}
       <div className="mt-8">
-        <Button className="w-full py-6 text-base">
-          この封筒で印刷を依頼する
+        <Button className="w-full py-6 text-base" asChild>
+          <Link
+            href={`/contact?printingType=envelope&envelopeType=${envelope.name}&envelopeSize=${envelope.size}`}
+          >
+            この封筒で印刷を依頼する
+          </Link>
         </Button>
       </div>
     </div>

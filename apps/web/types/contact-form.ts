@@ -9,7 +9,10 @@ export type FormStep =
   | 'complete';
 
 // 問い合わせタイプの型定義
-export type InquiryType = 'estimate' | 'order' | 'question' | 'other';
+export type InquiryType =
+  | 'print-services'
+  | 'digital-services'
+  | 'general-inquiry';
 
 // ユーザー情報の型定義
 export type UserInfoData = {
@@ -25,42 +28,37 @@ export interface BaseFormData {
   inquiryType: InquiryType;
 }
 
-// 見積もり依頼フォーム
-export interface EstimateFormData extends BaseFormData {
-  product: string;
-  size: string;
-  quantity: string;
-  paper: string;
+// 印刷サービスに関するお問い合わせタイプ
+export type PrintInquiryType = 'estimate' | 'order' | 'question' | 'none';
+
+// 印刷サービスに関するお問い合わせフォーム
+export interface PrintServicesFormData extends BaseFormData {
+  printingType: string; // 印刷物の種類（名刺・カード類、封筒、チラシなど）
+  printInquiryType: PrintInquiryType; // 見積もり依頼、注文・発注、相談・質問
+  contents: string; // 印刷物の詳細情報やその他要望を含む自由記述欄
+  deadline: string; // 希望納期
+  hasDesignData: boolean; // デザインデータの有無
+}
+
+// IT・デジタルサービスに関するお問い合わせフォーム
+export interface DigitalServicesFormData extends BaseFormData {
+  serviceType: string; // ウェブサイト制作、アプリ開発、システム開発など
+  projectDescription: string;
   deadline: string;
+  budget: string;
   otherRequests: string;
 }
 
-// 注文フォーム
-export interface OrderFormData extends BaseFormData {
-  orderContent: string;
-  size: string;
-  quantity: string;
-  paper: string;
-  deadline: string;
-  hasDesignData: boolean;
-  otherRequests: string;
-}
-
-// 質問フォーム
-export interface QuestionFormData extends BaseFormData {
-  questionContent: string;
-  preferredContactMethod: 'phone' | 'email' | '';
+// その他のお問い合わせ・ご質問フォーム
+export interface GeneralInquiryFormData extends BaseFormData {
+  inquiryContent: string;
+  preferredContactMethod: 'phone' | 'email' | 'either';
   preferredContactTime: string;
-}
-
-// その他問い合わせフォーム
-export interface OtherFormData extends BaseFormData {
-  content: string;
 }
 
 // 統合されたフォームデータ型
 export type ContactFormData = UserInfoData &
-  (EstimateFormData | OrderFormData | QuestionFormData | OtherFormData);
+  (PrintServicesFormData | DigitalServicesFormData | GeneralInquiryFormData);
 
 // イベントハンドラ型
 export type InputChangeHandler = (

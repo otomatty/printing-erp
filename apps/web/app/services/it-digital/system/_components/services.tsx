@@ -44,12 +44,12 @@ export function SystemServicesSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="relative h-[400px] lg:h-[500px] rounded-xl overflow-hidden shadow-xl">
+          <div className="relative h-[400px] lg:h-[500px] rounded-xl overflow-hidden">
             <Image
-              src="/images/system-development.jpg" // 実際の画像パスに置き換えが必要
+              src="/images/it-digital/table-discussion.webp" // 実際の画像パスに置き換えが必要
               alt="業務システム開発のプロセスイメージ"
               fill
-              className="object-cover"
+              className="object-contain"
             />
           </div>
 

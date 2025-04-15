@@ -63,7 +63,7 @@ export default function AdditionalInfo({
   // タイプに応じたデフォルト値を設定
   const defaultTitle =
     type === 'it-subsidy'
-      ? 'IT導入補助金をご利用いただけます'
+      ? '補助金をご利用いただけます'
       : type === 'print-design'
         ? '印刷・デザイン一括対応いたします'
         : '';
@@ -71,7 +71,7 @@ export default function AdditionalInfo({
   const defaultDescription =
     type === 'it-subsidy' ? (
       <>
-        当社のIT・デジタルサービス（ホームページ制作、業務システム開発）は、「IT導入補助金」の対象となる可能性があります。
+        当社のIT・デジタルサービス（ホームページ制作、業務システム開発）は、各種補助金の対象となる可能性があります。
         補助金を活用することで、導入費用の
         <strong className="text-primary font-semibold"> 最大2/3程度</strong>{' '}
         （補助率や上限額は申請枠・類型により異なります）の補助を受けられる場合があります。
@@ -95,14 +95,14 @@ export default function AdditionalInfo({
   // デフォルトのリンク情報
   const defaultLinkText =
     type === 'it-subsidy'
-      ? '補助金サポートの詳細はこちら'
+      ? '補助金特設ページはこちら'
       : type === 'print-design'
         ? 'デザイン制作サービスの詳細はこちら'
         : '';
 
   const defaultLinkHref =
     type === 'it-subsidy'
-      ? '/hojokin-support'
+      ? '/hojokin'
       : type === 'print-design'
         ? '/design-service'
         : '';

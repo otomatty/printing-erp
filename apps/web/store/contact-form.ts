@@ -1,9 +1,10 @@
+'use client';
+
 import { atom } from 'jotai';
 import type {
-  EstimateFormData,
-  OrderFormData,
-  QuestionFormData,
-  OtherFormData,
+  PrintServicesFormData,
+  DigitalServicesFormData,
+  GeneralInquiryFormData,
   UserInfoData,
   InquiryType,
   FormStep,
@@ -19,108 +20,99 @@ const initialUserInfo: UserInfoData = {
   preferredContact: 'email',
 };
 
-const initialEstimateData: EstimateFormData = {
-  inquiryType: 'estimate',
-  product: '',
-  size: '',
-  quantity: '',
-  paper: '',
-  deadline: '',
-  otherRequests: '',
-};
-
-const initialOrderData: OrderFormData = {
-  inquiryType: 'order',
-  orderContent: '',
-  size: '',
-  quantity: '',
-  paper: '',
+// 印刷サービスフォームの初期値
+const initialPrintServicesData: PrintServicesFormData = {
+  inquiryType: 'print-services',
+  printingType: '', // 印刷物の種類
+  printInquiryType: 'estimate', // 印刷サービスの問い合わせ種類（見積もり、注文、質問）
+  contents: '', // 印刷物の詳細情報や要望
   deadline: '',
   hasDesignData: false,
+};
+
+// デジタルサービスフォームの初期値
+const initialDigitalServicesData: DigitalServicesFormData = {
+  inquiryType: 'digital-services',
+  serviceType: '',
+  projectDescription: '',
+  deadline: '',
+  budget: '',
   otherRequests: '',
 };
 
-const initialQuestionData: QuestionFormData = {
-  inquiryType: 'question',
-  questionContent: '',
-  preferredContactMethod: '',
+// 一般的な問い合わせフォームの初期値
+const initialGeneralInquiryData: GeneralInquiryFormData = {
+  inquiryType: 'general-inquiry',
+  inquiryContent: '',
+  preferredContactMethod: 'email',
   preferredContactTime: '',
 };
 
-const initialOtherData: OtherFormData = {
-  inquiryType: 'other',
-  content: '',
-};
-
 // 問い合わせタイプのアトム
-export const inquiryTypeAtom = atom<InquiryType>('estimate');
+export const inquiryTypeAtom = atom<InquiryType>('print-services');
 
 // 各タイプごとのフォームデータアトム
-export const estimateFormAtom = atom<EstimateFormData>(initialEstimateData);
-export const orderFormAtom = atom<OrderFormData>(initialOrderData);
-export const questionFormAtom = atom<QuestionFormData>(initialQuestionData);
-export const otherFormAtom = atom<OtherFormData>(initialOtherData);
+export const printServicesFormAtom = atom<PrintServicesFormData>(
+  initialPrintServicesData
+);
+export const digitalServicesFormAtom = atom<DigitalServicesFormData>(
+  initialDigitalServicesData
+);
+export const generalInquiryFormAtom = atom<GeneralInquiryFormData>(
+  initialGeneralInquiryData
+);
 
 // 現在のフォームデータを取得するための派生アトム
 export const currentFormDataAtom = atom((get) => {
   const inquiryType = get(inquiryTypeAtom);
 
   switch (inquiryType) {
-    case 'estimate':
-      return get(estimateFormAtom);
-    case 'order':
-      return get(orderFormAtom);
-    case 'question':
-      return get(questionFormAtom);
-    case 'other':
-      return get(otherFormAtom);
+    case 'print-services':
+      return get(printServicesFormAtom);
+    case 'digital-services':
+      return get(digitalServicesFormAtom);
+    case 'general-inquiry':
+      return get(generalInquiryFormAtom);
     default:
-      return get(estimateFormAtom);
+      return get(printServicesFormAtom);
   }
 });
 
 // ユーザー情報を管理するアトム
 export const userInfoAtom = atom<UserInfoData>(initialUserInfo);
 
-// ユーザー情報が有効かどうかを判断するアトム
-export const isUserInfoValidAtom = atom((get) => {
-  const userInfo = get(userInfoAtom);
-  return !!userInfo.name && !!userInfo.email; // 名前とメールアドレスは必須
-});
+// ユーザー情報が有効かどうかを判断するアトム（書き込み可能）
+export const isUserInfoValidAtom = atom(
+  (get) => {
+    const userInfo = get(userInfoAtom);
+    // 「電話」または「どちらでも」を選択している場合は電話番号も必須
+    const isPhoneRequired =
+      userInfo.preferredContact === 'phone' ||
+      userInfo.preferredContact === 'either';
+
+    return (
+      !!userInfo.name &&
+      !!userInfo.email &&
+      (!isPhoneRequired || !!userInfo.phone)
+    );
+  },
+  (_get, set, value: boolean) => {
+    // 外部から書き込みを可能にする
+    // 主にテスト用や特殊なケース用
+    set(isUserInfoValidAtom, value);
+  }
+);
 
 // ステップを管理するアトム
 export const currentStepAtom = atom<FormStep>('inquiry-type');
 
+// フォームが有効かどうかを判断するアトム (書き込み可能)
+export const isFormValidAtom = atom<boolean>(false);
+
 // リセットアトム（コンポーネント内でuseSetAtomを使ってリセットするために使用）
 export const resetFormAtom = atom(null, (_, set) => {
-  set(estimateFormAtom, initialEstimateData);
-  set(orderFormAtom, initialOrderData);
-  set(questionFormAtom, initialQuestionData);
-  set(otherFormAtom, initialOtherData);
-});
-
-// フォームが有効かどうかを判断する派生アトム
-export const isFormValidAtom = atom((get) => {
-  const inquiryType = get(inquiryTypeAtom);
-
-  switch (inquiryType) {
-    case 'estimate': {
-      const data = get(estimateFormAtom);
-      return !!data.product && !!data.quantity; // 製品と部数は必須
-    }
-    case 'order': {
-      const data = get(orderFormAtom);
-      return !!data.orderContent && !!data.quantity; // 発注内容と部数は必須
-    }
-    case 'question': {
-      const data = get(questionFormAtom);
-      return !!data.questionContent; // 質問内容は必須
-    }
-    case 'other': {
-      const data = get(otherFormAtom);
-      return !!data.content; // お問い合わせ内容は必須
-    }
-    default:
-      return false;
-  }
+  set(printServicesFormAtom, initialPrintServicesData);
+  set(digitalServicesFormAtom, initialDigitalServicesData);
+  set(generalInquiryFormAtom, initialGeneralInquiryData);
+  set(isFormValidAtom, false);
 });

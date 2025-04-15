@@ -1,7 +1,11 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight, Send } from 'lucide-react';
 import { useAtom } from 'jotai';
-import { inquiryTypeAtom, isFormValidAtom } from '~/store/contact-form';
+import {
+  inquiryTypeAtom,
+  isFormValidAtom,
+  isUserInfoValidAtom,
+} from '~/store/contact-form';
 
 type FormStep =
   | 'inquiry-type'
@@ -25,6 +29,7 @@ export default function FormNavigation({
 }: FormNavigationProps) {
   const [inquiryType] = useAtom(inquiryTypeAtom);
   const [isFormValid] = useAtom(isFormValidAtom);
+  const [isUserInfoValid] = useAtom(isUserInfoValidAtom);
 
   const isDisabled = () => {
     switch (currentStep) {
@@ -32,6 +37,8 @@ export default function FormNavigation({
         return !inquiryType;
       case 'details':
         return !isFormValid;
+      case 'user-info':
+        return !isUserInfoValid;
       default:
         return isNextDisabled;
     }

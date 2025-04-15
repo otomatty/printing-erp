@@ -152,8 +152,9 @@ export default function HojokinTopPage() {
         {/* --- 3. 補助金活用による解決策の提示セクション --- */}
         <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-8 rounded-xl">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-            そのお悩み、<span className="text-blue-600">補助金活用</span>
-            で解決できるかもしれません！
+            そのお悩み、<span className="text-blue-600">ニイヌマ企画印刷</span>
+            が解決いたしますpt-2 bg-white border border-gray-100 rounded-lg
+            shadow-sm p-6 hover:shadow-md transition-shadow duration-300！
           </h2>
           <p className="text-center text-gray-700 max-w-3xl mx-auto mb-10">
             国や自治体の補助金制度を活用すれば、IT導入やDX推進にかかるコスト負担を軽減し、事業成長を加速できます。

@@ -2,15 +2,24 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Check } from 'lucide-react';
 import { useAtom } from 'jotai';
-import { inquiryTypeAtom } from '~/store/contact-form';
-import type { UserInfoData } from '~/types/contact-form';
+import { inquiryTypeAtom, currentFormDataAtom } from '~/store/contact-form';
+import type {
+  UserInfoData,
+  InquiryType,
+  PrintServicesFormData,
+} from '~/types/contact-form';
 
 type StepCompleteProps = {
   userInfo: UserInfoData;
 };
 
+/**
+ * 送信完了画面コンポーネント
+ * お問い合わせ送信後の完了メッセージを表示する
+ */
 export default function StepComplete({ userInfo }: StepCompleteProps) {
   const [inquiryType] = useAtom(inquiryTypeAtom);
+  const [currentFormData] = useAtom(currentFormDataAtom);
 
   // 会社名と氏名から表示名を生成
   const displayName = userInfo.companyName
@@ -20,13 +29,23 @@ export default function StepComplete({ userInfo }: StepCompleteProps) {
   // 問い合わせ種別に応じたメッセージを取得
   const getInquiryTypeMessage = () => {
     switch (inquiryType) {
-      case 'estimate':
-        return 'お見積りのご依頼';
-      case 'order':
-        return 'ご注文・制作のご依頼';
-      case 'question':
-        return 'サービスに関するお問い合わせ';
-      case 'other':
+      case 'print-services': {
+        // currentFormDataを取得して、printInquiryTypeに基づいたメッセージを返す
+        const formData = currentFormData as PrintServicesFormData;
+        if (formData.printInquiryType === 'estimate') {
+          return '印刷サービスに関する見積もりのご依頼';
+        }
+        if (formData.printInquiryType === 'order') {
+          return '印刷サービスに関するご注文・発注';
+        }
+        if (formData.printInquiryType === 'question') {
+          return '印刷サービスに関するご相談・質問';
+        }
+        return '印刷サービスに関するお問い合わせ';
+      }
+      case 'digital-services':
+        return 'IT・デジタルサービスに関するお問い合わせ';
+      case 'general-inquiry':
         return 'お問い合わせ';
       default:
         return 'お問い合わせ';

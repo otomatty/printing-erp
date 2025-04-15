@@ -210,7 +210,12 @@ export default function ServiceDetails() {
 
               {/* IT導入補助金 Section (Conditional) */}
               {service.id === 'it-digital' && (
-                <AdditionalInfo type="it-subsidy" />
+                <AdditionalInfo
+                  type="it-subsidy"
+                  showLink={true}
+                  linkHref="/hojokin"
+                  linkText="補助金特設ページはこちら"
+                />
               )}
 
               {/* 印刷・デザイン一括対応 Section (Conditional) */}

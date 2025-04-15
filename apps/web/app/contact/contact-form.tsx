@@ -14,24 +14,39 @@ import {
   currentStepAtom,
   userInfoAtom,
   isUserInfoValidAtom,
+  inquiryTypeAtom,
 } from '~/store/contact-form';
 import type { FormStep } from '~/types/contact-form';
+// 新しいatomをインポート - AI見積もりフォームの表示状態を管理
+import { atom } from 'jotai';
+
+// AI見積もりフォームの表示状態を追跡するためのatom
+export const isAIEstimateShownAtom = atom(false);
 
 export default function ContactForm() {
   const [currentStep, setCurrentStep] = useAtom(currentStepAtom);
   const [userInfo] = useAtom(userInfoAtom);
   const [isFormValid] = useAtom(isFormValidAtom);
   const [isUserInfoValid] = useAtom(isUserInfoValidAtom);
+  const [inquiryType] = useAtom(inquiryTypeAtom);
+  const [isAIEstimateShown, setIsAIEstimateShown] = useAtom(
+    isAIEstimateShownAtom
+  );
 
   const handleChangeStep = (step: FormStep) => {
     setCurrentStep(step);
+
+    // 詳細ステップに入る前にAI見積もり表示状態をリセット
+    if (step !== 'details') {
+      setIsAIEstimateShown(false);
+    }
   };
 
   // 次へボタンの処理
   const handleNext = () => {
-    if (currentStep === 'inquiry-type') setCurrentStep('user-info');
-    else if (currentStep === 'user-info') setCurrentStep('details');
-    else if (currentStep === 'details') setCurrentStep('confirmation');
+    if (currentStep === 'inquiry-type') setCurrentStep('details');
+    else if (currentStep === 'details') setCurrentStep('user-info');
+    else if (currentStep === 'user-info') setCurrentStep('confirmation');
     else if (currentStep === 'confirmation') {
       // ここでフォームを送信する処理を実装
       // 実際の実装ではAPI呼び出しなどを行う
@@ -42,10 +57,16 @@ export default function ContactForm() {
 
   // 戻るボタンの処理
   const handleBack = () => {
-    if (currentStep === 'user-info') setCurrentStep('inquiry-type');
-    else if (currentStep === 'details') setCurrentStep('user-info');
-    else if (currentStep === 'confirmation') setCurrentStep('details');
+    if (currentStep === 'details') setCurrentStep('inquiry-type');
+    else if (currentStep === 'user-info') setCurrentStep('details');
+    else if (currentStep === 'confirmation') setCurrentStep('user-info');
   };
+
+  // AI自動見積もりが表示されている場合はナビゲーションを非表示にする
+  const shouldHideNavigation =
+    inquiryType === 'digital-services' &&
+    currentStep === 'details' &&
+    isAIEstimateShown;
 
   return (
     <div>
@@ -58,11 +79,13 @@ export default function ContactForm() {
         {/* STEP 1: お問い合わせ種別選択 */}
         {currentStep === 'inquiry-type' && <StepInquiryType />}
 
-        {/* STEP 2: お客様情報 */}
-        {currentStep === 'user-info' && <StepUserInfo />}
+        {/* STEP 2: お問い合わせ内容 */}
+        {currentStep === 'details' && (
+          <StepDetails onAIEstimateSelect={() => setIsAIEstimateShown(true)} />
+        )}
 
-        {/* STEP 3: お問い合わせ内容 */}
-        {currentStep === 'details' && <StepDetails />}
+        {/* STEP 3: お客様情報 */}
+        {currentStep === 'user-info' && <StepUserInfo />}
 
         {/* STEP 4: 確認 */}
         {currentStep === 'confirmation' && (
@@ -75,16 +98,16 @@ export default function ContactForm() {
         {/* 完了画面 */}
         {currentStep === 'complete' && <StepComplete userInfo={userInfo} />}
 
-        {/* ナビゲーションボタン */}
-        {currentStep !== 'complete' && (
+        {/* ナビゲーションボタン - AI自動見積もりの場合は非表示 */}
+        {currentStep !== 'complete' && !shouldHideNavigation && (
           <FormNavigation
             currentStep={currentStep}
             handleBack={handleBack}
             handleNext={handleNext}
             isNextDisabled={
               currentStep === 'inquiry-type' ||
-              (currentStep === 'user-info' && !isUserInfoValid) ||
-              (currentStep === 'details' && !isFormValid)
+              (currentStep === 'details' && !isFormValid) ||
+              (currentStep === 'user-info' && !isUserInfoValid)
             }
           />
         )}

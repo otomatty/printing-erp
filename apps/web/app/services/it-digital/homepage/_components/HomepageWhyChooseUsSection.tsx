@@ -11,6 +11,7 @@ import {
 } from '@kit/ui/tooltip';
 import ReasonCard from '../../_common/ReasonCard';
 import DevelopmentPrinciple from '../../_common/DevelopmentPrinciple';
+import PartnershipSection from '../../_common/PartnershipSection';
 import {
   reasonCards,
   developmentPrinciples,
@@ -270,56 +271,13 @@ const HomepageWhyChooseUsSection: React.FC = () => {
         </div>
 
         {/* 顧客との関係性を表現するセクション */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-16">
-          <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="w-full md:w-1/2">
-              <h3 className="text-2xl font-bold mb-4">
-                <span className="text-indigo-600">制作会社ではなく</span>
-                <br />
-                気軽に相談できる身近なパートナー
-              </h3>
-              <p className="text-gray-700 mb-6">
-                「ホームページのことはよくわからない」というお客様でも安心して相談できる関係づくりを大切にしています。
-                専門用語を使わず、わかりやすく説明し、制作後も困ったときにすぐ対応します。
-              </p>
-              <ul className="space-y-3">
-                {relationshipMetrics.map((metric) => (
-                  <li
-                    key={`metric-${metric.metric}`}
-                    className="flex items-start"
-                  >
-                    <svg
-                      className="w-5 h-5 text-green-500 mr-2 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <title>チェックマーク</title>
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    <span>
-                      {metric.metric}{' '}
-                      <span className="font-semibold">{metric.value}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="w-full md:w-1/2 relative h-64 md:h-80 rounded-lg overflow-hidden">
-              <Image
-                src="/images/partnership.jpg" // 実際の画像に置き換える必要があります
-                alt="顧客との長期的なパートナーシップ"
-                fill
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </div>
+        <PartnershipSection
+          accentColor="indigo"
+          serviceType="ホームページ"
+          titlePrefix="制作会社"
+          metrics={relationshipMetrics}
+          hasPadding={false}
+        />
 
         {/* 開発思想や原則を示すコールアウト */}
         <div className="bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-xl p-8 text-white">
