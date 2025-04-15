@@ -246,7 +246,7 @@ export const CustomStyling: Story = {
             <RadioGroupItem
               value="option-1"
               id="custom-1"
-              className="border-blue-400 text-blue-600 focus:ring-blue-400"
+              className="border-blue-400 text-primary focus:ring-blue-400"
             />
             <Label htmlFor="custom-1" className="text-blue-700">
               ブルーオプション

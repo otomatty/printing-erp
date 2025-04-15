@@ -34,7 +34,7 @@ const ServiceCTA: React.FC<ServiceCTAProps> = ({
             </Link>
             <Link
               href={secondaryButtonLink}
-              className="bg-white text-blue-600 border border-blue-600 px-6 py-3 rounded-md hover:bg-blue-50 transition-colors"
+              className="bg-white text-primary border border-blue-600 px-6 py-3 rounded-md hover:bg-blue-50 transition-colors"
             >
               {secondaryButtonText}
             </Link>

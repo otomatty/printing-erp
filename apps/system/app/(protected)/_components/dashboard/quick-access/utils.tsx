@@ -54,7 +54,7 @@ export function getIconComponent(iconName: string, size = 24): React.ReactNode {
  */
 export function getCategoryColor(categoryId: string): string {
   const colorMap: Record<string, string> = {
-    sales: 'bg-blue-100 text-blue-600',
+    sales: 'bg-blue-100 text-primary',
     design: 'bg-purple-100 text-purple-600',
     production: 'bg-green-100 text-green-600',
     shipping: 'bg-amber-100 text-amber-600',

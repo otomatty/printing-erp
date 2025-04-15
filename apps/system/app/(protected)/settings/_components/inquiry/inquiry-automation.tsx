@@ -225,7 +225,7 @@ export function InquiryAutomation() {
           </div>
         </div>
 
-        <div className="flex items-center text-blue-600 gap-2 p-2 bg-blue-50 rounded-md text-sm">
+        <div className="flex items-center text-primary gap-2 p-2 bg-blue-50 rounded-md text-sm">
           <AlertCircle className="h-4 w-4" />
           <p>
             自動化ルールは上から順に評価され、最初に条件が一致したルールが適用されます。

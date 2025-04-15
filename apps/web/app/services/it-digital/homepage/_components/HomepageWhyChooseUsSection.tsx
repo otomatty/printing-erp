@@ -9,9 +9,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@kit/ui/tooltip';
-import ReasonCard from '../../_common/ReasonCard';
-import DevelopmentPrinciple from '../../_common/DevelopmentPrinciple';
-import PartnershipSection from '../../_common/PartnershipSection';
+import ReasonCard from '../../_common/reason-card';
+import DevelopmentPrinciple from '../../_common/development-principle';
+import PartnershipSection from '../../_common/partnership';
 import {
   reasonCards,
   developmentPrinciples,

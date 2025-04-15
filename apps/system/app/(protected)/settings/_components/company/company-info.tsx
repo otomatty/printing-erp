@@ -241,7 +241,7 @@ export function CompanyInfo() {
                 <Label>システム名表示設定</Label>
                 <div className="flex items-center mt-2">
                   <div className="flex items-center space-x-2 p-4 border rounded-md w-full">
-                    <Building2 className="h-5 w-5 text-blue-600" />
+                    <Building2 className="h-5 w-5 text-primary" />
                     <span className="font-medium">{companyData.name}</span>
                     <span className="text-sm text-muted-foreground">
                       業務管理システム

@@ -1,12 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { formDataAtom } from '~/store/estimate';
 import { Card } from '@kit/ui/card';
 import { Label } from '@kit/ui/label';
 import { RadioGroup, RadioGroupItem } from '@kit/ui/radio-group';
+import { useSearchParams } from 'next/navigation';
 import type { ProjectType } from '~/types/estimate';
 import type { EstimateFormData } from '~/types/estimate';
+
 const projectTypes: {
   value: ProjectType;
   label: string;
@@ -39,6 +42,22 @@ const projectTypes: {
 
 export function ProjectTypeStep() {
   const [formData, setFormData] = useAtom(formDataAtom);
+  const searchParams = useSearchParams();
+
+  // URLパラメータからプロジェクトタイプを取得して設定
+  useEffect(() => {
+    const preSelected = searchParams.get('pre_selected') as ProjectType | null;
+
+    if (
+      preSelected &&
+      projectTypes.some((type) => type.value === preSelected)
+    ) {
+      setFormData((prev: EstimateFormData) => ({
+        ...prev,
+        projectType: preSelected,
+      }));
+    }
+  }, [searchParams, setFormData]);
 
   const handleChange = (value: ProjectType) => {
     setFormData((prev: EstimateFormData) => ({

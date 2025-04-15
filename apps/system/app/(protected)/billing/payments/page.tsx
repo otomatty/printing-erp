@@ -180,7 +180,7 @@ export default function PaymentsPage() {
 
         <Card className="p-4 flex items-center">
           <div className="bg-blue-100 p-3 rounded-full mr-4">
-            <CreditCard className="text-blue-600" size={24} />
+            <CreditCard className="text-primary" size={24} />
           </div>
           <div>
             <p className="text-gray-500 text-sm">今月入金合計</p>

@@ -8,14 +8,14 @@ import { Button } from '@kit/ui/button';
 
 const SystemHeroSection = () => {
   return (
-    <section className="relative bg-gradient-to-b from-blue-50 to-white py-20 lg:py-32">
+    <section className="relative bg-gradient-to-b from-primary/10 to-white py-20 lg:py-32">
       <Container className="relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div className="text-center lg:text-left">
             <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900">
-              業務を<span className="text-blue-600">効率化する</span>
+              業務を<span className="text-primary">効率化する</span>
               <br />
-              システム開発サービス
+              システム開発
             </h1>
             <p className="text-lg text-gray-700 mb-8">
               お客様のビジネスに最適な業務システムを開発・導入し、業務効率化を実現します。
@@ -32,7 +32,7 @@ const SystemHeroSection = () => {
           </div>
           <div className="relative h-[300px] lg:h-[450px] rounded-xl overflow-hidden">
             <Image
-              src="/images/system-hero.jpg" // 仮画像パス、実際の画像に置き換えが必要
+              src="/images/it-digital/office-environment.webp" // 仮画像パス、実際の画像に置き換えが必要
               alt="業務システム開発イメージ"
               fill
               className="object-cover"

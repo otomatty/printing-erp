@@ -3,10 +3,9 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Container from '~/components/custom/container';
-import { Button } from '@kit/ui/button';
-import Link from 'next/link';
 import { categories, allSystems } from '../_data';
 import { ChevronDown } from 'lucide-react';
+import SectionTitle from '../../_common/section-title';
 
 export function SystemServicesSection() {
   const [activeCategory, setActiveCategory] = useState('business');
@@ -32,16 +31,12 @@ export function SystemServicesSection() {
   return (
     <section className="py-16 lg:py-32 bg-gray-50">
       <Container>
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-            <span className="text-blue-600">お客様の会社にぴったりの</span>
-            業務システム
-          </h2>
-          <p className="max-w-3xl mx-auto mt-6 text-lg text-gray-600">
-            面倒な作業を減らし、仕事をスムーズにする業務システムをお作りします。
-            お客様の普段の仕事の進め方に合わせて、使いやすいシステムに仕上げます。
-          </p>
-        </div>
+        <SectionTitle
+          title="お客様の会社に"
+          highlightedText="ぴったりの"
+          afterHighlightedText="業務システム"
+          description="面倒な作業を減らし、仕事をスムーズにする業務システムをお作りします。お客様の普段の仕事の進め方に合わせて、使いやすいシステムに仕上げます。"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="relative h-[400px] lg:h-[500px] rounded-xl overflow-hidden">
@@ -55,7 +50,7 @@ export function SystemServicesSection() {
 
           <div>
             <h3 className="text-2xl lg:text-3xl font-bold mb-6">
-              <span className="text-blue-600">使いやすさにこだわった</span>
+              <span className="text-primary">使いやすさにこだわった</span>
               <br />
               システムづくり
             </h3>
@@ -66,10 +61,10 @@ export function SystemServicesSection() {
 
             <div className="space-y-6 mb-8">
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-blue-600"
+                    className="h-6 w-6 text-primary"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -94,10 +89,10 @@ export function SystemServicesSection() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-blue-600"
+                    className="h-6 w-6 text-primary"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -122,10 +117,10 @@ export function SystemServicesSection() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-blue-600"
+                    className="h-6 w-6 text-primary"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -153,10 +148,12 @@ export function SystemServicesSection() {
         </div>
 
         <div className="mt-20">
-          <h3 className="text-2xl lg:text-3xl font-bold mb-8 text-center">
-            こんな<span className="text-blue-600">お役立ちシステム</span>
-            を作れます
-          </h3>
+          <SectionTitle
+            title="こんな"
+            highlightedText="お役立ちシステム"
+            afterHighlightedText="を作れます"
+            className="mb-8"
+          />
 
           {/* モバイル用ドロップダウン (md未満で表示) */}
           <div className="md:hidden mb-8">
@@ -180,7 +177,7 @@ export function SystemServicesSection() {
                   <button
                     type="button"
                     key={category.id}
-                    className={`w-full text-left px-4 py-3 hover:bg-gray-100 ${activeCategory === category.id ? 'text-blue-600 font-medium' : 'text-gray-700'}`}
+                    className={`w-full text-left px-4 py-3 hover:bg-gray-100 ${activeCategory === category.id ? 'text-primary font-medium' : 'text-gray-700'}`}
                     onClick={() => handleCategorySelect(category.id)}
                   >
                     {category.name}
@@ -199,14 +196,14 @@ export function SystemServicesSection() {
                   type="button"
                   className={`inline-block py-4 px-6 text-sm font-medium text-center rounded-t-lg border-b-2 ${
                     activeCategory === category.id
-                      ? 'text-blue-600 border-blue-600'
+                      ? 'text-primary border-primary'
                       : 'text-gray-500 border-transparent hover:text-gray-600 hover:border-gray-300'
                   } relative`}
                   onClick={() => setActiveCategory(category.id)}
                 >
                   {category.name}
                   {activeCategory === category.id && (
-                    <span className="absolute bottom-0 left-0 w-full h-1 bg-blue-600" />
+                    <span className="absolute bottom-0 left-0 w-full h-1 bg-primary" />
                   )}
                 </button>
               ))}
@@ -234,12 +231,12 @@ export function SystemServicesSection() {
           </div>
 
           {/* カスタムシステム構築のボックス */}
-          <div className="mt-12 bg-blue-50 border-2 border-blue-200 p-8 rounded-xl shadow-lg">
+          <div className="mt-12 bg-primary/5 border border-primary/30 p-8 rounded-lg">
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="flex-shrink-0 w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
+              <div className="flex-shrink-0 w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-10 w-10 text-blue-600"
+                  className="h-10 w-10 text-primary"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -261,7 +258,7 @@ export function SystemServicesSection() {
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-2xl font-bold mb-2">
-                  <span className="text-blue-600">「これが欲しかった！」</span>
+                  <span className="text-primary">「これが欲しかった！」</span>
                   と言われるシステムを
                 </h3>
                 <p className="text-lg text-gray-700">

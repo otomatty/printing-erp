@@ -14,6 +14,11 @@
       "~/custom/*": ["./src/custom/*"]
     }
   },
-  "include": ["*.ts", "src"],
+  "include": [
+    "*.ts",
+    "src",
+    "../../apps/web/components/services/presentation-slider",
+    "../../apps/web/components/services/index.tsx"
+  ],
   "exclude": ["node_modules"]
 }

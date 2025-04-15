@@ -253,7 +253,7 @@ export default function InventoryPage() {
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <Card className="p-4 flex items-center">
           <div className="bg-blue-100 p-3 rounded-full mr-4">
-            <FileText className="text-blue-600" size={24} />
+            <FileText className="text-primary" size={24} />
           </div>
           <div>
             <p className="text-gray-500 text-sm">用紙</p>
@@ -440,7 +440,7 @@ export default function InventoryPage() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8 text-blue-600"
+                          className="h-8 w-8 text-primary"
                         >
                           <ShoppingCart className="h-4 w-4" />
                         </Button>

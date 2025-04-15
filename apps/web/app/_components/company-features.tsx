@@ -50,7 +50,7 @@ export default function CompanyFeaturesSection() {
             }}
           >
             <motion.div
-              className="bg-primary/10 p-3 rounded-full mb-4"
+              className="bg-primary/5 p-3 rounded-full mb-4"
               whileHover={{ scale: 1.1, rotate: 5 }}
               transition={{ type: 'spring', stiffness: 300 }}
             >
@@ -71,7 +71,7 @@ export default function CompanyFeaturesSection() {
             }}
           >
             <motion.div
-              className="bg-primary/10 p-3 rounded-full mb-4"
+              className="bg-primary/5 p-3 rounded-full mb-4"
               whileHover={{ scale: 1.1, rotate: -5 }}
               transition={{ type: 'spring', stiffness: 300 }}
             >
@@ -92,7 +92,7 @@ export default function CompanyFeaturesSection() {
             }}
           >
             <motion.div
-              className="bg-primary/10 p-3 rounded-full mb-4"
+              className="bg-primary/5 p-3 rounded-full mb-4"
               whileHover={{ scale: 1.1, rotate: 5 }}
               transition={{ type: 'spring', stiffness: 300 }}
             >

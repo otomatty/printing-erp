@@ -29,13 +29,13 @@ export default function DashboardStats() {
               </p>
             </div>
             <div className="bg-blue-100 p-2 rounded-full">
-              <FileText className="text-blue-600" size={24} />
+              <FileText className="text-primary" size={24} />
             </div>
           </div>
           <div className="mt-4">
             <a
               href="/system/orders"
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-primary hover:underline"
             >
               すべての注文を見る →
             </a>

@@ -106,7 +106,7 @@ export default function NotificationsMenu() {
       case 'success':
         return 'bg-success/10';
       default:
-        return 'bg-primary/10';
+        return 'bg-primary/5';
     }
   };
 

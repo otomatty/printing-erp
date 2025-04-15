@@ -73,7 +73,7 @@ const HomepageEngineers = () => {
                 href={engineer.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+                className="inline-flex items-center text-primary hover:text-blue-800 transition-colors"
               >
                 <span>個人サイトを見る</span>
                 <svg

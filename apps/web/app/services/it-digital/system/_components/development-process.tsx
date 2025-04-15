@@ -146,7 +146,7 @@ const SystemDevelopmentProcess: React.FC = () => {
       <Container>
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold mb-3">
-            システム開発の<span className="text-blue-600">進め方</span>
+            システム開発の<span className="text-primary">進め方</span>
           </h2>
           <p className="text-lg text-gray-700 max-w-3xl mx-auto">
             短期間でシステムを利用開始し、段階的に改善していく開発手法を採用しています

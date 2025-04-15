@@ -254,7 +254,7 @@ export function EstimateResultStep() {
                 <AlertDescription>{rushFeeCalculation.reason}</AlertDescription>
               </Alert>
             ) : (
-              <div className="p-3 bg-primary/10 rounded-md text-sm">
+              <div className="p-3 bg-primary/5 rounded-md text-sm">
                 {rushFeeCalculation.reason}
               </div>
             )}

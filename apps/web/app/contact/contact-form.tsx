@@ -1,5 +1,7 @@
 'use client';
 import { useAtom } from 'jotai';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import {
   ContactFormProgressIndicator,
   StepInquiryType,
@@ -16,7 +18,7 @@ import {
   isUserInfoValidAtom,
   inquiryTypeAtom,
 } from '~/store/contact-form';
-import type { FormStep } from '~/types/contact-form';
+import type { FormStep, InquiryType } from '~/types/contact-form';
 // 新しいatomをインポート - AI見積もりフォームの表示状態を管理
 import { atom } from 'jotai';
 
@@ -28,10 +30,44 @@ export default function ContactForm() {
   const [userInfo] = useAtom(userInfoAtom);
   const [isFormValid] = useAtom(isFormValidAtom);
   const [isUserInfoValid] = useAtom(isUserInfoValidAtom);
-  const [inquiryType] = useAtom(inquiryTypeAtom);
+  const [inquiryType, setInquiryType] = useAtom(inquiryTypeAtom);
   const [isAIEstimateShown, setIsAIEstimateShown] = useAtom(
     isAIEstimateShownAtom
   );
+
+  // URLパラメータを取得
+  const searchParams = useSearchParams();
+
+  // URLパラメータに基づいて初期設定を行う
+  useEffect(() => {
+    const mode = searchParams.get('mode');
+    const type = searchParams.get('type') as InquiryType | null;
+    const service = searchParams.get('service');
+
+    // 問い合わせタイプがURLパラメータで指定されていれば設定
+    if (
+      type &&
+      ['digital-services', 'print-services', 'general-inquiry'].includes(type)
+    ) {
+      setInquiryType(type);
+
+      // もし詳細ステップに進む前なら詳細ステップに移動
+      if (currentStep === 'inquiry-type') {
+        setCurrentStep('details');
+      }
+
+      // AI見積もりモードが指定されている場合
+      if (mode === 'ai-estimate' && type === 'digital-services') {
+        setIsAIEstimateShown(true);
+      }
+    }
+  }, [
+    searchParams,
+    setInquiryType,
+    setCurrentStep,
+    setIsAIEstimateShown,
+    currentStep,
+  ]);
 
   const handleChangeStep = (step: FormStep) => {
     setCurrentStep(step);

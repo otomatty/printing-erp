@@ -29,7 +29,7 @@ export function StatCards({
     <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
       <Card className="p-4 flex items-center">
         <div className="bg-blue-100 p-3 rounded-full mr-4">
-          <Calendar className="text-blue-600" size={24} />
+          <Calendar className="text-primary" size={24} />
         </div>
         <div>
           <p className="text-gray-500 text-sm">予定</p>

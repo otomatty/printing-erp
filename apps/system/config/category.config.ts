@@ -36,7 +36,7 @@ export const categories: Record<CategoryId, CategoryInfo> = {
     id: 'sales',
     name: '営業受注',
     bg: 'bg-blue-100',
-    icon: 'text-blue-600',
+    icon: 'text-primary',
     hover: 'hover:bg-blue-200',
   },
   design: {

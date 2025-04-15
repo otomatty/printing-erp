@@ -152,7 +152,7 @@ export default function HojokinTopPage() {
         {/* --- 3. 補助金活用による解決策の提示セクション --- */}
         <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-8 rounded-xl">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-            そのお悩み、<span className="text-blue-600">ニイヌマ企画印刷</span>
+            そのお悩み、<span className="text-primary">ニイヌマ企画印刷</span>
             が解決いたしますpt-2 bg-white border border-gray-100 rounded-lg
             shadow-sm p-6 hover:shadow-md transition-shadow duration-300！
           </h2>
@@ -163,7 +163,7 @@ export default function HojokinTopPage() {
           <div className="grid md:grid-cols-2 gap-x-8 gap-y-4 max-w-4xl mx-auto">
             {merits.map((merit) => (
               <div key={merit} className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-blue-600 mr-2 mt-1 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 text-primary mr-2 mt-1 flex-shrink-0" />
                 <p className="text-gray-700">{merit}</p>
               </div>
             ))}
@@ -181,9 +181,9 @@ export default function HojokinTopPage() {
               <Link
                 href={subsidy.link}
                 key={subsidy.slug}
-                className="block border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-300 transition-all duration-300"
+                className="block border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-primary transition-all duration-300"
               >
-                <h3 className="font-semibold text-xl text-blue-700 mb-3 group-hover:text-blue-800">
+                <h3 className="font-semibold text-xl text-primary mb-3 group-hover:text-primary-hover">
                   {subsidy.name}
                 </h3>
                 <p className="text-sm text-gray-600 mb-2">
@@ -193,7 +193,7 @@ export default function HojokinTopPage() {
                   <span className="font-medium">対象経費例:</span>{' '}
                   {subsidy.target}
                 </p>
-                <p className="text-sm text-blue-600 group-hover:underline font-medium">
+                <p className="text-sm text-primary group-hover:underline font-medium">
                   詳細を見る &rarr;
                 </p>
               </Link>
@@ -262,7 +262,7 @@ export default function HojokinTopPage() {
                 {/* 事例内容 */}
                 <div className="p-6 flex flex-col justify-between w-full md:w-2/3">
                   <div>
-                    <p className="text-sm font-medium text-blue-600 mb-1">
+                    <p className="text-sm font-medium text-primary mb-1">
                       {study.category} {study.companyName}
                     </p>
                     <h3 className="font-semibold text-lg mb-3">
@@ -281,7 +281,7 @@ export default function HojokinTopPage() {
                       </div>
                       <div>
                         <dt className="font-semibold text-gray-700">成果:</dt>
-                        <dd className="text-gray-600 font-medium text-green-700">
+                        <dd className="font-medium text-green-700">
                           {study.result}
                         </dd>
                       </div>
@@ -292,7 +292,7 @@ export default function HojokinTopPage() {
                     <div className="mt-4 text-right">
                       <Link
                         href={study.detailLink}
-                        className="text-sm text-blue-600 hover:underline inline-flex items-center"
+                        className="text-sm text-primary hover:underline inline-flex items-center"
                       >
                         事例詳細を見る
                         <ArrowRight className="w-4 h-4 ml-1" />
@@ -305,10 +305,7 @@ export default function HojokinTopPage() {
           </div>
           {/* 事例一覧ページへのリンク */}
           <div className="text-center mt-10">
-            <Link
-              href="/case-studies"
-              className="text-blue-600 hover:underline"
-            >
+            <Link href="/case-studies" className="text-primary hover:underline">
               {' '}
               {/* 仮のパス */}
               その他の活用事例を見る &rarr;
@@ -341,7 +338,7 @@ export default function HojokinTopPage() {
                     <div className="aspect-video bg-gray-100" />
                   )}
                   <div className="p-4">
-                    <h3 className="font-semibold text-md mb-1 group-hover:text-blue-600">
+                    <h3 className="font-semibold text-md mb-1 group-hover:text-primary">
                       {topic.title}
                     </h3>
                     <p className="text-xs text-gray-500 mb-2">{topic.date}</p>
@@ -358,7 +355,7 @@ export default function HojokinTopPage() {
             </p>
           )}
           <div className="text-center mt-8">
-            <Link href="/topics" className="text-blue-600 hover:underline">
+            <Link href="/topics" className="text-primary hover:underline">
               特集記事一覧へ &rarr;
             </Link>
           </div>

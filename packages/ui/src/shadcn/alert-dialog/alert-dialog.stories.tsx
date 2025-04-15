@@ -208,7 +208,7 @@ export const CustomStyling: Story = {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="border-primary/20 hover:bg-primary/10">
+          <AlertDialogCancel className="border-primary/20 hover:bg-primary/5">
             閉じる
           </AlertDialogCancel>
           <AlertDialogAction className="bg-primary/80 hover:bg-primary">

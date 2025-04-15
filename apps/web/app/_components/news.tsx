@@ -102,7 +102,7 @@ export default function NewsSection({
                         locale: ja,
                       })}
                     </span>
-                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-md md:w-28 inline-block text-center">
+                    <span className="bg-primary/5 text-primary text-xs px-2 py-1 rounded-md md:w-28 inline-block text-center">
                       {news.category?.name || '未分類'}
                     </span>
                     <span className="font-medium">{news.title}</span>

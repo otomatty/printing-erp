@@ -7,8 +7,7 @@ import SystemChallengesSection from './_components/challenges';
 import { SystemServicesSection } from './_components/services';
 import SystemCostPerformanceSection from './_components/cost-performance';
 import SystemBenefitsSection from './_components/benefits';
-import SystemCaseStudiesSection from './_components/case-studies';
-import SystemWhyChooseUsSection from './_components/why-choose-us';
+import SystemWhyChooseUsSection from './_components/why-chose-us';
 import SystemWorkflowSection from './_components/workflow';
 import SystemPricingSection from './_components/pricing';
 import MobileEstimateButton from '~/components/custom/mobile-estimate-button';
@@ -38,9 +37,6 @@ export default function SystemPage() {
 
       {/* 6. 導入企業が実感した4つのメリット */}
       <SystemBenefitsSection />
-
-      {/* 7. 実績とお客様の声 */}
-      <SystemCaseStudiesSection />
 
       {/* 8. 選ばれる理由 */}
       <SystemWhyChooseUsSection />

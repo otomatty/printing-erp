@@ -348,7 +348,7 @@ export const CustomStyling: Story = {
             <h4 className="font-medium leading-none text-blue-700">
               カスタムスタイル
             </h4>
-            <p className="text-sm text-blue-600">
+            <p className="text-sm text-primary">
               カスタムスタイルを適用したポップオーバーです。
             </p>
           </div>

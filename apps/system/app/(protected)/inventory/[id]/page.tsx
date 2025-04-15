@@ -422,7 +422,7 @@ export default async function InventoryDetailPage({
                 variant="outline"
                 className="h-28 flex flex-col items-center justify-center space-y-2"
               >
-                <Settings className="h-8 w-8 text-blue-600" />
+                <Settings className="h-8 w-8 text-primary" />
                 <span>在庫調整</span>
               </Button>
             </div>

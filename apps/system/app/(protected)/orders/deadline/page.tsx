@@ -313,7 +313,7 @@ export default function DeadlineManagementPage() {
 
         <Card className="p-4 flex items-center">
           <div className="bg-blue-100 p-3 rounded-full mr-4">
-            <Calendar className="text-blue-600" size={24} />
+            <Calendar className="text-primary" size={24} />
           </div>
           <div>
             <p className="text-gray-500 text-sm">来週納期</p>

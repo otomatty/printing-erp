@@ -73,7 +73,7 @@ const WorksList: React.FC<WorksListProps> = ({ works }) => {
             </div>
             <Link
               href={`/services/it-digital/works/${work.id}`}
-              className="text-blue-600 text-sm font-medium hover:underline"
+              className="text-primary text-sm font-medium hover:underline"
             >
               詳細を見る &rarr;
             </Link>

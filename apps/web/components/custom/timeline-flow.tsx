@@ -65,111 +65,109 @@ const TimelineFlow: React.FC<TimelineFlowProps> = ({
   return (
     <section className={`py-16 lg:py-32 ${backgroundColor}`}>
       <Container>
-        <div className="max-w-5xl mx-auto">
-          <motion.h2
-            className="text-3xl font-bold mb-12 text-center text-gray-800"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            {title}
-          </motion.h2>
+        <motion.h2
+          className="text-3xl font-bold mb-12 text-center text-gray-800"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          {title}
+        </motion.h2>
 
-          {/* タイムライン */}
-          <motion.div
-            className="relative"
-            variants={container}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.1 }}
-          >
-            {/* 中央線 */}
-            <div className="absolute left-10 md:left-1/2 top-0 bottom-0 w-1 bg-primary/20 md:transform md:-translate-x-1/2" />
+        {/* タイムライン */}
+        <motion.div
+          className="relative"
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          {/* 中央線 */}
+          <div className="absolute left-10 md:left-1/2 top-0 bottom-0 w-1 bg-primary/20 md:transform md:-translate-x-1/2" />
 
-            {/* ステップアイテム */}
-            {stepsData.map((step, index) => (
-              <motion.div
-                key={step.id}
-                className="relative flex items-start mb-12 last:mb-0"
-                variants={item}
-              >
-                {/* ステップ番号 */}
-                <div className="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 flex-shrink-0 w-20 h-20 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold z-10">
-                  {step.step}
-                </div>
+          {/* ステップアイテム */}
+          {stepsData.map((step, index) => (
+            <motion.div
+              key={step.id}
+              className="relative flex items-start mb-12 last:mb-0"
+              variants={item}
+            >
+              {/* ステップ番号 */}
+              <div className="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 flex-shrink-0 w-20 h-20 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold z-10">
+                {step.step}
+              </div>
 
-                {/* デスクトップ: 左側 (偶数index) - カードスタイル */}
-                <div className="hidden md:block md:w-1/2 md:pr-16">
-                  {index % 2 === 0 && (
-                    <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
-                      <div className="flex items-center gap-2 flex-wrap mb-2">
-                        <h3 className="text-xl font-bold text-gray-800">
-                          {step.title}
-                        </h3>
-                        {step.duration && (
-                          <div className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm whitespace-nowrap">
-                            <Clock size={14} className="mr-1" />
-                            <span>
-                              {cumulativeDuration
-                                ? cumulativeDurations[index]
-                                : step.duration}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-gray-600">{step.description}</p>
+              {/* デスクトップ: 左側 (偶数index) - カードスタイル */}
+              <div className="hidden md:block md:w-1/2 md:pr-16">
+                {index % 2 === 0 && (
+                  <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
+                    <div className="flex items-center gap-2 flex-wrap mb-2">
+                      <h3 className="text-xl font-bold text-gray-800">
+                        {step.title}
+                      </h3>
+                      {step.duration && (
+                        <div className="inline-flex items-center px-3 py-1 bg-primary/5 text-primary rounded-full text-sm whitespace-nowrap">
+                          <Clock size={14} className="mr-1" />
+                          <span>
+                            {cumulativeDuration
+                              ? cumulativeDurations[index]
+                              : step.duration}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-
-                {/* モバイル: 右側 - カードスタイル */}
-                <div className="ml-28 md:hidden bg-white border border-gray-100 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-300">
-                  <div className="flex items-center gap-2 flex-wrap mb-2">
-                    <h3 className="text-xl font-bold text-gray-800">
-                      {step.title}
-                    </h3>
-                    {step.duration && (
-                      <div className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm whitespace-nowrap">
-                        <Clock size={14} className="mr-1" />
-                        <span>
-                          {cumulativeDuration
-                            ? cumulativeDurations[index]
-                            : step.duration}
-                        </span>
-                      </div>
-                    )}
+                    <p className="text-gray-600">{step.description}</p>
                   </div>
-                  <p className="text-gray-600">{step.description}</p>
-                </div>
+                )}
+              </div>
 
-                {/* デスクトップ: 右側 (奇数index) - カードスタイル */}
-                <div className="hidden md:block md:w-1/2 md:pl-16 md:ml-auto">
-                  {index % 2 === 1 && (
-                    <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
-                      <div className="flex items-center gap-2 flex-wrap mb-2">
-                        <h3 className="text-xl font-bold text-gray-800">
-                          {step.title}
-                        </h3>
-                        {step.duration && (
-                          <div className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm whitespace-nowrap">
-                            <Clock size={14} className="mr-1" />
-                            <span>
-                              {cumulativeDuration
-                                ? cumulativeDurations[index]
-                                : step.duration}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-gray-600">{step.description}</p>
+              {/* モバイル: 右側 - カードスタイル */}
+              <div className="ml-28 md:hidden bg-white border border-gray-100 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-300">
+                <div className="flex items-center gap-2 flex-wrap mb-2">
+                  <h3 className="text-xl font-bold text-gray-800">
+                    {step.title}
+                  </h3>
+                  {step.duration && (
+                    <div className="inline-flex items-center px-3 py-1 bg-primary/5 text-primary rounded-full text-sm whitespace-nowrap">
+                      <Clock size={14} className="mr-1" />
+                      <span>
+                        {cumulativeDuration
+                          ? cumulativeDurations[index]
+                          : step.duration}
+                      </span>
                     </div>
                   )}
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+                <p className="text-gray-600">{step.description}</p>
+              </div>
+
+              {/* デスクトップ: 右側 (奇数index) - カードスタイル */}
+              <div className="hidden md:block md:w-1/2 md:pl-16 md:ml-auto">
+                {index % 2 === 1 && (
+                  <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
+                    <div className="flex items-center gap-2 flex-wrap mb-2">
+                      <h3 className="text-xl font-bold text-gray-800">
+                        {step.title}
+                      </h3>
+                      {step.duration && (
+                        <div className="inline-flex items-center px-3 py-1 bg-primary/5 text-primary rounded-full text-sm whitespace-nowrap">
+                          <Clock size={14} className="mr-1" />
+                          <span>
+                            {cumulativeDuration
+                              ? cumulativeDurations[index]
+                              : step.duration}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-gray-600">{step.description}</p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </Container>
     </section>
   );

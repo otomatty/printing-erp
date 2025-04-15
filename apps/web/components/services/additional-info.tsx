@@ -26,7 +26,7 @@ const stylePresets = {
   'print-design': {
     bg: 'bg-gradient-to-br from-blue-50 to-indigo-50',
     border: 'border-blue-200',
-    iconColor: 'text-blue-600',
+    iconColor: 'text-primary',
   },
   other: {
     bg: 'bg-gradient-to-br from-gray-50 to-slate-50',

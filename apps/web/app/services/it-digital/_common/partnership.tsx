@@ -23,11 +23,9 @@ const PartnershipSection: React.FC<PartnershipSectionProps> = ({
       <div className="flex flex-col md:flex-row items-center gap-8">
         <div className="w-full md:w-1/2">
           <h3 className="text-2xl font-bold mb-4">
-            <span className={`text-${accentColor}-600`}>
-              {titlePrefix}ではなく
-            </span>
+            <span className="text-primary">{titlePrefix}ではなく</span>
             <br />
-            気軽に相談できる身近なパートナー
+            気軽に相談できるパートナー
           </h3>
           <p className="text-gray-700 mb-6">
             「{serviceType}

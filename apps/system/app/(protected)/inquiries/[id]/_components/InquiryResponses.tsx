@@ -94,7 +94,7 @@ export function InquiryResponses({ inquiry }: InquiryResponsesProps) {
                           href={attachment}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                          className="flex items-center gap-1 text-sm text-primary hover:text-blue-800"
                         >
                           <Paperclip className="h-4 w-4" />
                           添付ファイル {index + 1}

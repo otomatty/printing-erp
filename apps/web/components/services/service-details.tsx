@@ -74,7 +74,7 @@ export default function ServiceDetails() {
                   >
                     {service.title}
                     {service.badge && (
-                      <span className="ml-3 mt-1 px-3 py-1 bg-primary/10 text-primary text-sm font-semibold rounded-full">
+                      <span className="ml-3 mt-1 px-3 py-1 bg-primary/5 text-primary text-sm font-semibold rounded-full">
                         {' '}
                         {/* Padding調整 */}
                         {service.badge}

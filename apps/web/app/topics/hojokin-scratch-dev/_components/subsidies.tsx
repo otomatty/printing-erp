@@ -24,7 +24,7 @@ const SubsidiesSection: React.FC = () => {
             </p>
             <Link
               href="/hojokin/monodukuri"
-              className="text-blue-600 hover:underline font-medium"
+              className="text-primary hover:underline font-medium"
             >
               詳細はこちら &rarr;
             </Link>
@@ -40,7 +40,7 @@ const SubsidiesSection: React.FC = () => {
             </p>
             <Link
               href="/hojokin/shoryokuka"
-              className="text-blue-600 hover:underline font-medium"
+              className="text-primary hover:underline font-medium"
             >
               詳細はこちら &rarr;
             </Link>
@@ -56,7 +56,7 @@ const SubsidiesSection: React.FC = () => {
             </p>
             <Link
               href="/hojokin/shinjigyo"
-              className="text-blue-600 hover:underline font-medium"
+              className="text-primary hover:underline font-medium"
             >
               詳細はこちら &rarr;
             </Link>
@@ -72,7 +72,7 @@ const SubsidiesSection: React.FC = () => {
             </p>
             <Link
               href="/hojokin/jizokuka"
-              className="text-blue-600 hover:underline font-medium"
+              className="text-primary hover:underline font-medium"
             >
               詳細はこちら &rarr;
             </Link>

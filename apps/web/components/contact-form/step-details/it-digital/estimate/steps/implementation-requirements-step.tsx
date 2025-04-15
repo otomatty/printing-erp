@@ -133,7 +133,7 @@ export function ImplementationRequirementsStep() {
                   className={cn(
                     'p-4 flex flex-col items-center justify-center cursor-pointer transition-colors border-2',
                     {
-                      'border-primary bg-primary/10':
+                      'border-primary bg-primary/5':
                         requirements.designFormat === format.value,
                       'border-transparent hover:border-muted-foreground/50':
                         requirements.designFormat !== format.value,

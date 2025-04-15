@@ -174,7 +174,7 @@ export default function BillingPage() {
 
         <Card className="p-4 flex items-center">
           <div className="bg-blue-100 p-3 rounded-full mr-4">
-            <Clock className="text-blue-600" size={24} />
+            <Clock className="text-primary" size={24} />
           </div>
           <div>
             <p className="text-gray-500 text-sm">送信済み</p>

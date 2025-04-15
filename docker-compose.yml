@@ -12,7 +12,7 @@ services:
       - web
       - system
     networks:
-      - saedgewell_net
+      - niinuma_kikaku_net
     deploy:
       resources:
         limits:
@@ -44,13 +44,13 @@ services:
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
       - SUPABASE_AUTH_COOKIE_SECURE=true
       - SUPABASE_AUTH_COOKIE_SAME_SITE=none
-      - SUPABASE_AUTH_COOKIE_DOMAIN=.saedgewell.test
-      - NEXT_PUBLIC_SITE_URL=https://saedgewell.test
-      - COOKIE_DOMAIN=.saedgewell.test
-      - AUTH_COOKIE_DOMAIN=.saedgewell.test
+      - SUPABASE_AUTH_COOKIE_DOMAIN=.niinuma-kikaku.test
+      - NEXT_PUBLIC_SITE_URL=https://niinuma-kikaku.test
+      - COOKIE_DOMAIN=.niinuma-kikaku.test
+      - AUTH_COOKIE_DOMAIN=.niinuma-kikaku.test
       - DOCKER_DEBUG=true
     networks:
-      - saedgewell_net
+      - niinuma_kikaku_net
     restart: always
     deploy:
       resources:

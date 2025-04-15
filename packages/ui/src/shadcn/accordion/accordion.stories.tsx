@@ -214,7 +214,7 @@ export const CustomStyling: Story = {
   render: (args) => (
     <Accordion type="single" collapsible className="w-full max-w-md" {...args}>
       <AccordionItem value="item-1" className="border-b-2 border-blue-500">
-        <AccordionTrigger className="text-blue-600 hover:text-blue-800">
+        <AccordionTrigger className="text-primary hover:text-blue-800">
           カスタムスタイルのアコーディオン
         </AccordionTrigger>
         <AccordionContent className="bg-blue-50 p-2 rounded-b">

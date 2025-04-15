@@ -13,7 +13,7 @@ const EditingSupport: React.FC = () => {
           <div className="bg-gray-50 h-full p-6 rounded-lg shadow-md transition-shadow hover:shadow-lg">
             <div className="flex items-start mb-5">
               <div className="flex-shrink-0 mr-4 mt-1">
-                <div className="bg-primary/10 p-2 rounded-md inline-flex items-center justify-center">
+                <div className="bg-primary/5 p-2 rounded-md inline-flex items-center justify-center">
                   <Edit3 className="h-6 w-6 text-primary" />
                 </div>
               </div>
@@ -36,7 +36,7 @@ const EditingSupport: React.FC = () => {
           <div className="bg-gray-50 h-full p-6 rounded-lg shadow-md transition-shadow hover:shadow-lg">
             <div className="flex items-start mb-5">
               <div className="flex-shrink-0 mr-4 mt-1">
-                <div className="bg-primary/10 p-2 rounded-md inline-flex items-center justify-center">
+                <div className="bg-primary/5 p-2 rounded-md inline-flex items-center justify-center">
                   <UploadCloud className="h-6 w-6 text-primary" />
                 </div>
               </div>

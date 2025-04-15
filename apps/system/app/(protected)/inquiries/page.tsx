@@ -55,7 +55,7 @@ export default async function InquiriesPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-4 rounded-lg shadow flex items-center">
           <div className="bg-blue-100 p-3 rounded-full mr-4">
-            <MessageSquare className="text-blue-600" size={24} />
+            <MessageSquare className="text-primary" size={24} />
           </div>
           <div>
             <p className="text-gray-500 text-sm">全件数</p>
@@ -161,7 +161,7 @@ export default async function InquiriesPage() {
                     <td className="px-4 py-3 text-sm font-medium">
                       <Link
                         href={`/system/inquiries/${inquiry.id}`}
-                        className="text-gray-900 hover:text-blue-600"
+                        className="text-gray-900 hover:text-primary"
                       >
                         {inquiry.id}
                       </Link>
@@ -189,7 +189,7 @@ export default async function InquiriesPage() {
                     >
                       <Link
                         href={`/system/inquiries/${inquiry.id}`}
-                        className="text-gray-900 hover:text-blue-600"
+                        className="text-gray-900 hover:text-primary"
                       >
                         {inquiry.subject}
                       </Link>
@@ -217,7 +217,7 @@ export default async function InquiriesPage() {
                     <td className="px-4 py-3 text-sm">
                       <Link
                         href={`/system/inquiries/${inquiry.id}`}
-                        className="text-blue-600 hover:text-blue-800 flex items-center"
+                        className="text-primary hover:text-blue-800 flex items-center"
                       >
                         <Eye size={16} className="mr-1" />
                         詳細

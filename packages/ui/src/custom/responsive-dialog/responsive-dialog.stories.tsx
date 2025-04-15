@@ -148,7 +148,7 @@ export const CustomStyling: Story = {
     contentClassName: 'border-2 border-blue-500',
     children: (
       <div className="py-4">
-        <p className="text-blue-600 font-medium">
+        <p className="text-primary font-medium">
           カスタムスタイルが適用されたコンテンツです。
         </p>
         <p className="mt-2 text-gray-600">

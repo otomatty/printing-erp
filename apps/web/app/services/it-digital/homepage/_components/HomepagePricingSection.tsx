@@ -1,15 +1,15 @@
-import type React from "react";
-import PricingSection from "../../_common/PricingSection";
-import { homepagePricingData } from "../_data/pricingData";
+import type React from 'react';
+import PricingSection from '../../_common/pricing';
+import { homepagePricingData } from '../_data/pricingData';
 
 interface HomepagePricingSectionProps {
-	id?: string;
+  id?: string;
 }
 
 const HomepagePricingSection: React.FC<HomepagePricingSectionProps> = ({
-	id,
+  id,
 }) => {
-	return <PricingSection id={id} {...homepagePricingData} />;
+  return <PricingSection id={id} {...homepagePricingData} />;
 };
 
 export default HomepagePricingSection;

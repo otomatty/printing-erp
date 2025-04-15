@@ -53,7 +53,7 @@ export function ResponsiveDialog({
 
   // DialogContentのaria-describedby警告を解消
   const dialogContentProps = {
-    className: cn('sm:max-w-[425px]', contentClassName),
+    className: cn('max-w-5xl max-h-[90vh]', contentClassName),
     'aria-describedby': description ? 'dialog-description' : undefined,
     ref: dialogRef,
   };
@@ -69,7 +69,9 @@ export function ResponsiveDialog({
     return (
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-        <DrawerContent>
+        <DrawerContent
+          className={cn('max-w-[100vw] max-h-[95vh]', contentClassName)}
+        >
           {(title || description) && (
             <DrawerHeader className="text-left">
               {title && <DrawerTitle>{title}</DrawerTitle>}
@@ -78,7 +80,9 @@ export function ResponsiveDialog({
               )}
             </DrawerHeader>
           )}
-          <div className={cn('px-4', className)}>{renderChildren()}</div>
+          <div className={cn('p-4 overflow-y-auto max-h-[80vh]', className)}>
+            {renderChildren()}
+          </div>
         </DrawerContent>
       </Drawer>
     );
@@ -98,7 +102,9 @@ export function ResponsiveDialog({
             )}
           </DialogHeader>
         )}
-        <div className={className}>{renderChildren()}</div>
+        <div className={cn('p-4 overflow-y-auto max-h-[80vh]', className)}>
+          {renderChildren()}
+        </div>
       </DialogContent>
     </Dialog>
   );

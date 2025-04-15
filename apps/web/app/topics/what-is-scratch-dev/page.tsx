@@ -21,7 +21,7 @@ const WhatIsScratchDevPage: React.FC = () => {
       />
 
       <Container className="py-12">
-        <article className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-strong:text-gray-800">
+        <article className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary hover:prose-a:text-blue-800 prose-strong:text-gray-800">
           {/* Introduction */}
           <p>
             Webサイト制作やシステム開発の文脈で「スクラッチ開発」という言葉を耳にすることがあります。これは、既存のテンプレートやパッケージソフトウェアを利用せず、

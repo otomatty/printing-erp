@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Container from '~/components/custom/container';
-import EngineerSection from './_common/EngineerSection';
+import EngineerSection from './_common/engineer';
 import CtaSection from '~/components/custom/cta-section';
 import { Laptop, Database, Settings, ChevronRight } from 'lucide-react';
 
@@ -84,14 +84,14 @@ export default function ITDigitalServicesPage() {
                 key={service.title}
                 className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
-                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-blue-100 text-primary rounded-full flex items-center justify-center mb-4">
                   {service.icon && <service.icon size={24} />}
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
                 <p className="text-gray-600 mb-4">{service.description}</p>
                 <a
                   href={service.link}
-                  className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center"
+                  className="text-primary hover:text-blue-800 font-medium inline-flex items-center"
                 >
                   詳細を見る
                   <ChevronRight size={16} className="ml-1" />

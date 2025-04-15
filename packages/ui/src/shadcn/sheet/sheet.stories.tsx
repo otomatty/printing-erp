@@ -217,7 +217,7 @@ export const CustomStyling: Story = {
         <SheetContent className="bg-blue-50 border-blue-200">
           <SheetHeader>
             <SheetTitle className="text-blue-700">カスタムスタイル</SheetTitle>
-            <SheetDescription className="text-blue-600">
+            <SheetDescription className="text-primary">
               カスタムスタイルを適用したシートの例です。
             </SheetDescription>
           </SheetHeader>
