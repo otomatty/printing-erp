@@ -48,7 +48,7 @@ export default function CompanyPhilosophy() {
             Mission
           </motion.h3>
           <motion.p
-            className="text-xl text-center mb-8"
+            className="text-xl text-center mb-8 font-bold"
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
