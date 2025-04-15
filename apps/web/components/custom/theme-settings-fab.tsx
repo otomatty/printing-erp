@@ -73,9 +73,9 @@ const themeOptions: ThemeOption[] = [
   // 同系色テーマ (カラー名として表示)
   {
     value: 'default',
-    label: 'グリーン',
-    color: 'bg-[hsl(136_31%_12%)]',
-    darkColor: 'bg-[hsl(68_50%_97%)]',
+    label: 'デフォルト',
+    color: 'bg-primary',
+    darkColor: 'bg-primary',
     category: 'color',
   },
   {
