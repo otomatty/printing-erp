@@ -269,15 +269,13 @@ export function EstimateForm({ onBackToSelection }: EstimateFormProps) {
           <ArrowLeft className="w-4 h-4 mr-2" />
           戻る
         </Button>
-        {currentStep !== 'user-info' && (
-          <Button
-            onClick={handleNext}
-            disabled={currentStep === 'estimate-result'}
-          >
-            次へ
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-        )}
+        <Button
+          onClick={handleNext}
+          disabled={currentStep === 'estimate-result'}
+        >
+          次へ
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </Button>
       </div>
       <div className="text-center">
         <button

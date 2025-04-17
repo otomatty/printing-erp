@@ -1,4 +1,4 @@
-'use server';
+'use client';
 
 import { Card } from '@kit/ui/card';
 import { Badge } from '@kit/ui/badge';
@@ -9,8 +9,7 @@ import { calculateRushFee } from '../../_utils/calculateRushFee';
 import { calculateImplementationCosts } from '../../_utils/calculateImplementationCosts';
 import { v4 as uuidv4 } from 'uuid';
 import { EstimateResultActions } from './estimate-result-client';
-import { cookies } from 'next/headers';
-import { getAtomValue } from '~/utils/get-atom-value';
+import { useAtom } from 'jotai';
 import {
   formDataAtom,
   proposedFeaturesAtom,
@@ -25,22 +24,16 @@ import type {
   EstimateFormData,
   FeatureProposal,
 } from '~/types/estimate';
+import { useMemo } from 'react';
 
 /**
  * 見積もり結果表示およびPDFダウンロード/問い合わせを行うステップコンポーネント
  */
-export async function EstimateResultStep() {
-  // サーバーサイドでatomから値を取得
-  const cookieStore = await cookies();
-  const formData = getAtomValue<EstimateFormData>(formDataAtom, cookieStore);
-  const proposedFeatures = getAtomValue<FeatureProposal[]>(
-    proposedFeaturesAtom,
-    cookieStore
-  );
-  const selectedFeatureIds = getAtomValue<string[]>(
-    selectedFeatureIdsAtom,
-    cookieStore
-  );
+export function EstimateResultStep() {
+  // クライアントサイドでatomから値を取得
+  const [formData] = useAtom(formDataAtom);
+  const [proposedFeatures] = useAtom(proposedFeaturesAtom);
+  const [selectedFeatureIds] = useAtom(selectedFeatureIdsAtom);
 
   if (!formData || !proposedFeatures || !selectedFeatureIds) {
     return (
@@ -82,9 +75,7 @@ export async function EstimateResultStep() {
   );
 
   // PDF生成のサーバーアクション
-  async function generatePdf() {
-    'use server';
-
+  const generatePdf = async () => {
     if (!implementationCosts || !rushFeeCalculation) {
       console.error('必要なデータが不足しています。');
       return null;
@@ -162,13 +153,14 @@ export async function EstimateResultStep() {
         items: [...featureItems, ...implementationCostItems],
       };
 
+      // サーバーアクションをimportしてそのまま呼び出す
       const pdfBuffer = await generatePdfAction(estimateDataForPdf);
       return { buffer: pdfBuffer, estimateData: estimateDataForPdf };
     } catch (error) {
-      console.error('PDFダウンロード処理エラー:', error);
+      console.error('PDFの生成に失敗しました:', error);
       return null;
     }
-  }
+  };
 
   // PDF生成・表示用のクライアントコンポーネントに渡すestimateDataの作成
   const estimateData: EstimateWithItems = {
@@ -184,6 +176,30 @@ export async function EstimateResultStep() {
     totalDuration: totalDuration,
     items: [],
   };
+
+  // PDF生成・表示用のestimateDataをメモ化
+  const estimateDataMemo = useMemo((): EstimateWithItems => {
+    return {
+      id: uuidv4(),
+      estimateNumber: `EST-${new Date().toISOString().slice(0, 10)}`,
+      issueDate: new Date(),
+      customerName: formData.customerName || 'お客様',
+      projectName: `プロジェクト見積もり (${formData.projectType})`,
+      projectType: formData.projectType as ProjectType,
+      deadline: formData.deadline as Deadline,
+      description: formData.description,
+      totalAmount: rushFeeCalculation.totalPrice,
+      totalDuration: totalDuration,
+      items: [],
+    };
+  }, [
+    formData.customerName,
+    formData.projectType,
+    formData.deadline,
+    formData.description,
+    rushFeeCalculation.totalPrice,
+    totalDuration,
+  ]);
 
   return (
     <div className="space-y-6">
@@ -380,7 +396,7 @@ export async function EstimateResultStep() {
         {/* クライアントコンポーネントに処理を委譲 */}
         <EstimateResultActions
           isPdfGenerating={false}
-          estimateData={estimateData}
+          estimateData={estimateDataMemo}
           pdfUrl={null}
           onGeneratePdf={generatePdf}
           onSendInquiry={() => {

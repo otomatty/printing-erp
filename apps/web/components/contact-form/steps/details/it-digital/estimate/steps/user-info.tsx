@@ -6,14 +6,10 @@ import { useState } from 'react';
 import { Label } from '@kit/ui/label';
 import { Input } from '@kit/ui/input';
 import { RadioGroup, RadioGroupItem } from '@kit/ui/radio-group';
-import { currentStepAtom } from '~/store/estimate';
-import { Button } from '@kit/ui/button';
-import { ArrowRight } from 'lucide-react';
 
 export function UserInfoStep() {
   const [formData, setFormData] = useAtom(formDataAtom);
   const [showValidation, setShowValidation] = useState(false);
-  const [, setCurrentStep] = useAtom(currentStepAtom);
 
   // 電話番号が必須かどうかを判定
   const isPhoneRequired =
@@ -36,23 +32,6 @@ export function UserInfoStep() {
       preferredContact: value as 'email' | 'phone' | 'either',
     }));
     setShowValidation(true);
-  };
-
-  const handleNext = () => {
-    setShowValidation(true);
-
-    // 必須フィールドの検証
-    const isValid =
-      !!formData.customerName &&
-      !!formData.email &&
-      (!isPhoneRequired || !!formData.phone);
-
-    if (isValid) {
-      setCurrentStep('estimate-result');
-    } else {
-      // スクロールしてエラーメッセージを表示
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
   };
 
   return (
@@ -197,21 +176,6 @@ export function UserInfoStep() {
             </Label>
           </div>
         </RadioGroup>
-      </div>
-
-      <div className="mt-8">
-        <Button onClick={handleNext} className="w-full">
-          見積もり結果を確認する
-          <ArrowRight className="w-4 h-4 ml-2" />
-        </Button>
-        {showValidation &&
-          (!formData.customerName ||
-            !formData.email ||
-            (isPhoneRequired && !formData.phone)) && (
-            <p className="text-xs text-destructive mt-2 text-center">
-              必須項目をすべて入力してください
-            </p>
-          )}
       </div>
     </div>
   );
