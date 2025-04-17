@@ -1,16 +1,59 @@
 import type { PricingSectionProps } from '../../_common/pricing';
 import type React from 'react';
 
+// 説明文
+export const description = (
+  <>
+    ニーズや予算に合わせて、最適な
+    <span className="font-semibold text-primary">ホームページ制作プラン</span>
+    をご用意しています
+  </>
+);
+
+// 分割払い情報
+export const paymentInfo = {
+  title: '分割払いで導入しやすく',
+  description: (
+    <>
+      <p className="text-lg mb-3">
+        <span className="font-bold text-red-600 text-xl">金利0%</span>
+        の分割払いで、初期投資の負担を軽減できます
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg p-3 shadow-sm">
+          <p className="font-bold text-center mb-2">12回払いの場合</p>
+          <p className="text-center text-lg">
+            月々<span className="font-bold text-xl">2.5万円</span>から
+          </p>
+        </div>
+        <div className="bg-white rounded-lg p-3 shadow-sm">
+          <p className="font-bold text-center mb-2">一括払いの場合</p>
+          <p className="text-center">
+            <span className="font-bold text-lg">5%割引</span>特典あり
+          </p>
+        </div>
+      </div>
+    </>
+  ),
+};
+
 export const homepagePricingData: Omit<PricingSectionProps, 'id'> = {
   title: '料金プラン',
-  description:
-    'ニーズや予算に合わせて、最適なホームページ制作プランをご用意しています。一括支払いだけでなく月額払いプランもご用意。ホームページは完成してからが本番。継続的な運営をサポートするプランもございます。',
+  description,
   benefitText:
     'Next.js × Supabase × AI駆動開発による40%以上のコスト削減・明確な料金体系・短納期',
   serviceData: {
     basePackage: {
       title: 'ホームページベースパッケージ',
-      startingPrice: '30万円',
+      startingPrice: {
+        value: 30,
+        unit: '万円',
+        standardPrice: {
+          value: 50,
+          unit: '万円',
+        },
+        discount: '40%OFF',
+      },
       description:
         '高速・高パフォーマンスなNext.jsコーポレートサイトの基本パッケージ',
       features: [
@@ -21,61 +64,12 @@ export const homepagePricingData: Omit<PricingSectionProps, 'id'> = {
         'Google Analytics連携',
         '月1回の更新サポート（3ヶ月間）',
       ],
-      color: 'teal',
-      cta: {
-        text: '詳細見積もりを作成',
-        link: '/estimate',
+      monthlyPayment: {
+        value: 2.5,
+        unit: '万円',
+        duration: '12回',
       },
     },
-    options: [
-      {
-        title: '追加ページ',
-        price: '3万円〜/ページ',
-        description: '基本的なコンテンツページの追加',
-      },
-      {
-        title: 'CMS機能',
-        price: '12万円〜',
-        description: 'お知らせやブログの更新機能',
-        recommended: true,
-      },
-      {
-        title: '多言語対応',
-        price: '15万円〜',
-        description: '英語・中国語などの多言語サイト対応',
-      },
-      {
-        title: 'SNS連携',
-        price: '5万円〜',
-        description: 'SNSフィード表示・共有機能',
-      },
-      {
-        title: '会員機能',
-        price: '18万円〜',
-        description: 'ユーザー登録・会員限定コンテンツ',
-      },
-      {
-        title: 'EC機能（軽量）',
-        price: '25万円〜',
-        description: '簡易的なオンライン販売機能',
-      },
-    ],
-    caseStudies: [
-      {
-        title: '製造業コーポレートサイト',
-        description: '製品カタログを含む会社紹介サイト',
-        basePrice: '30万円',
-        options: ['製品カタログページ：8万円', '採用情報ページ：5万円'],
-        totalPrice: '43万円',
-      },
-      {
-        title: '飲食店ブランドサイト',
-        description: 'メニューや店舗情報を掲載するブランドサイト',
-        basePrice: '30万円',
-        options: ['予約システム連携：12万円', 'Instagram連携：5万円'],
-        totalPrice: '47万円',
-      },
-    ],
   },
   notes: [
     '表示価格はベースとなる最低料金です。実際のプロジェクト要件により変動します。',
@@ -193,15 +187,5 @@ export const homepagePricingData: Omit<PricingSectionProps, 'id'> = {
       disclaimer: '※ご相談は完全無料・営業の強要はありません',
     },
   },
-  paymentOptions: [
-    {
-      title: '一括払い',
-      description: '一括払いで5%割引',
-    },
-    {
-      title: '分割払い（最大12回）',
-      description: '金利0%の分割払い',
-      isHighlighted: true,
-    },
-  ],
+  paymentInfo,
 };

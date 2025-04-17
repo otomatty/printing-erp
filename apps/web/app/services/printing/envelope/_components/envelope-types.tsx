@@ -40,9 +40,9 @@ const nagagataEnvelopes: EnvelopeSize[] = [
     id: 'naga-4',
     name: '長形4号（長4）',
     size: '90×205mm',
-    paperSize: 'A4四つ折り・B5三つ折り',
+    paperSize: 'B5三つ折り',
     isStandard: true,
-    usage: '給与明細・個人向け文書',
+    usage: '給与明細・個人向け文書・請求書・納品書',
     isPopular: true,
     type: 'nagagata',
   },
@@ -53,24 +53,6 @@ const nagagataEnvelopes: EnvelopeSize[] = [
     paperSize: 'A4四つ折り・B5三つ折り',
     isStandard: true,
     usage: '通知書・各種案内',
-    type: 'nagagata',
-  },
-  {
-    id: 'naga-2',
-    name: '長形2号（長2）',
-    size: '119×277mm',
-    paperSize: 'A4二つ折り',
-    isStandard: false, // 定形外
-    usage: '賞状・証書類',
-    type: 'nagagata',
-  },
-  {
-    id: 'naga-1',
-    name: '長形1号（長1）',
-    size: '120×332mm',
-    paperSize: 'B4三つ折り',
-    isStandard: false, // 定形外
-    usage: '契約書・重要書類',
     type: 'nagagata',
   },
   {
@@ -98,16 +80,6 @@ const kakugataEnvelopes: EnvelopeSize[] = [
     type: 'kakugata',
   },
   {
-    id: 'kaku-20',
-    name: '角形20号（角20）',
-    size: '229×324mm',
-    paperSize: 'A4（折らずに封入可）',
-    isStandard: false, // 定形外
-    usage: 'カタログ・A4書類',
-    isPopular: true,
-    type: 'kakugata',
-  },
-  {
     id: 'kaku-A4',
     name: '角形A4号',
     size: '228×312mm',
@@ -123,24 +95,6 @@ const kakugataEnvelopes: EnvelopeSize[] = [
     paperSize: 'B5（折らずに封入可）',
     isStandard: false, // 定形外
     usage: 'パンフレット・中型書類',
-    type: 'kakugata',
-  },
-  {
-    id: 'kaku-4',
-    name: '角形4号（角4）',
-    size: '197×267mm',
-    paperSize: 'B5（折らずに封入可）',
-    isStandard: false, // 定形外
-    usage: '社内書類・履歴書',
-    type: 'kakugata',
-  },
-  {
-    id: 'kaku-0',
-    name: '角形0号（角0）',
-    size: '287×382mm',
-    paperSize: 'A3・B3（折らずに封入可）',
-    isStandard: false, // 定形外
-    usage: '大型図面・ポスター',
     type: 'kakugata',
   },
 ];
@@ -278,12 +232,14 @@ const EnvelopeShape: React.FC<{ envelope: EnvelopeSize }> = ({ envelope }) => {
             {hasWindow && (
               <rect
                 x={width * 0.1}
-                y={height * 0.3}
-                width={width * 0.5}
-                height={height * 0.2}
+                y={height * 0.52}
+                width={width * 0.4}
+                height={height * 0.4}
                 fill="white"
                 stroke="#d1d5db"
                 strokeWidth="1"
+                rx={10}
+                ry={10}
               />
             )}
 

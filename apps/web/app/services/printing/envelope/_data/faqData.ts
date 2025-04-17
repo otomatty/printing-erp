@@ -35,4 +35,4 @@ export const envelopeFaqData: FAQItem[] = [
   // TODO: 封筒固有の質問を追加 (例: 窓付き封筒の窓の素材は？ 特殊なサイズの封筒は作れる？など)
 ];
 
-export const faqTitle = '封筒印刷のよくあるご質問'; // FAQ セクションのタイトルを追加
+export const faqTitle = 'よくあるご質問'; // FAQ セクションのタイトルを追加

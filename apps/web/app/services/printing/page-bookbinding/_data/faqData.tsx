@@ -111,4 +111,4 @@ export const pageMonoFaqData: FAQItem[] = [
   // TODO: ページ物・製本固有の質問を追加 (例: 対応可能な最大ページ数は？ データ入稿の注意点は？など)
 ];
 
-export const faqTitle = 'ページ物・冊子印刷・製本のよくあるご質問';
+export const faqTitle = 'よくあるご質問';

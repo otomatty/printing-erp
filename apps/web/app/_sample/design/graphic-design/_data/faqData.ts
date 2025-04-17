@@ -40,4 +40,4 @@ export const graphicDesignFaqData: FAQItem[] = [
   },
 ];
 
-export const faqTitle = 'グラフィックデザインのよくあるご質問';
+export const faqTitle = 'よくあるご質問';

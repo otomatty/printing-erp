@@ -2,7 +2,6 @@
 
 import React from 'react';
 import TimelineFlow from '~/components/custom/timeline-flow';
-import Container from '~/components/custom/container';
 
 // ホームページ制作の流れデータ
 const homepageWorkflowSteps = [
@@ -66,63 +65,13 @@ const homepageWorkflowSteps = [
 
 export default function HomepageWorkflowSection() {
   return (
-    <section className="py-16 lg:py-32 bg-white">
-      <Container>
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            ホームページ制作の<span className="text-indigo-600">進め方</span>
-          </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            お客様と常に対話しながら、進み具合を見える化して
-            <span className="font-semibold">確実に成果をお届けする</span>
-            制作の流れをご紹介します
-          </p>
-        </div>
-        <TimelineFlow
-          title=""
-          stepsData={homepageWorkflowSteps}
-          backgroundColor="bg-white"
-          cumulativeDuration={false}
-        />
-        <div className="mt-16 bg-primary/5 rounded-lg p-8 max-w-3xl mx-auto">
-          <h3 className="text-xl font-semibold mb-4 text-center">
-            <span className="text-primary">
-              目的に合わせた
-              <br className="sm:hidden" />
-              段階的な制作
-            </span>
-            を採用
-          </h3>
-          <p className="text-gray-700 mb-4">
-            当社では、「まずは必要最小限の機能から始める」「小さく区切って少しずつ作る」という方法で、
-            短期間で目に見える成果をお届けします。この方法には以下のメリットがあります：
-          </p>
-          <ul className="space-y-2 text-gray-700 ml-5 list-disc">
-            <li>
-              <span className="font-medium">早期公開が可能</span>
-              ：コアページから先に制作し、最短2週間で公開できます
-            </li>
-            <li>
-              <span className="font-medium">デザイン修正の柔軟性</span>
-              ：制作過程で細かい修正を反映しやすく、イメージ通りのサイトが実現します
-            </li>
-            <li>
-              <span className="font-medium">費用対効果の検証</span>
-              ：重要なページから公開することで、効果を見ながら追加投資を検討できます
-            </li>
-            <li>
-              <span className="font-medium">成長に合わせた拡張</span>
-              ：基本サイト完成後も、ニーズに応じて機能やページを追加できます
-            </li>
-          </ul>
-        </div>
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            ※
-            上記の期間はサイトの規模や複雑さによって変わります。シンプルなサイトなら約1ヶ月、大規模サイトは2〜3ヶ月を目安にご検討ください。
-          </p>
-        </div>
-      </Container>
-    </section>
+    <div className="bg-white">
+      <TimelineFlow
+        title="ホームページ制作の流れ"
+        stepsData={homepageWorkflowSteps}
+        backgroundColor="bg-white"
+        cumulativeDuration={false}
+      />
+    </div>
   );
 }

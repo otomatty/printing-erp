@@ -17,7 +17,6 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { Header } from '../components/layout/header';
 import { Footer } from '../components/layout/footer';
 import type { ColorTheme } from '~/components/color-theme-provider';
-import { ThemeSettingsFab } from '~/components/custom/theme-settings-fab';
 
 import '../styles/globals.css';
 
@@ -25,7 +24,24 @@ export const metadata: Metadata = {
   title: 'ニイヌマ企画印刷 | 確かな技術と対応力の総合印刷',
   description:
     'ニイヌマ企画印刷は、各種印刷・製本、編集・デザインなど、印刷にかかわることなら何でもお受けします。1985年創業の印刷会社です。',
-  keywords: ['印刷', '製本', '編集', 'デザイン', '印刷会社'],
+  keywords: [
+    '印刷会社',
+    '岩手',
+    '大船渡',
+    '陸前高田',
+    '住田',
+    'ホームページ制作',
+    'ホームページ作成',
+    'ホームページ運用',
+    '業務システム開発',
+    '印刷',
+    '製本',
+    '編集',
+    'デザイン',
+  ],
+  other: {
+    'apple-mobile-web-app-title': 'ニイヌマ企画印刷',
+  },
 };
 
 export default async function RootLayout({
@@ -36,8 +52,7 @@ export default async function RootLayout({
   const { language } = await createI18nServerInstance();
   const theme = await getTheme();
   const colorTheme = await getColorTheme();
-  const fontFamily = await getFontFamily();
-  const className = getClassName(theme, colorTheme, fontFamily);
+  const className = getClassName(theme, colorTheme, 'rounded');
 
   return (
     <html lang={language} className={className}>
@@ -46,7 +61,6 @@ export default async function RootLayout({
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
-          <ThemeSettingsFab />
         </RootProviders>
 
         <Toaster richColors={true} theme={theme} position="top-center" />
@@ -58,7 +72,7 @@ export default async function RootLayout({
 function getClassName(
   theme?: string,
   colorTheme?: ColorTheme,
-  fontFamily?: string
+  fontFamily = 'rounded'
 ) {
   const dark = theme === 'dark';
   const light = !dark;
@@ -78,25 +92,7 @@ function getClassName(
   }, []);
 
   // フォントクラスの取得
-  let fontClass = '';
-  if (fontFamily) {
-    switch (fontFamily) {
-      case 'noto-sans':
-        fontClass = 'font-noto-sans';
-        break;
-      case 'zen-gothic':
-        fontClass = 'font-zen-gothic';
-        break;
-      case 'mincho':
-        fontClass = 'font-mincho';
-        break;
-      case 'rounded':
-        fontClass = 'font-rounded';
-        break;
-      default:
-        fontClass = '';
-    }
-  }
+  const fontClass = 'font-rounded';
 
   // クライアントサイドでcolorThemeクラスを管理するため、
   // ここではdarkやlightなど基本的なクラスのみ適用する
@@ -119,9 +115,4 @@ async function getTheme() {
 async function getColorTheme() {
   const cookiesStore = await cookies();
   return (cookiesStore.get('color-theme')?.value || 'default') as ColorTheme;
-}
-
-async function getFontFamily() {
-  const cookiesStore = await cookies();
-  return cookiesStore.get('font-family')?.value || 'default';
 }

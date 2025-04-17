@@ -13,7 +13,8 @@
       "~/hooks/*": ["./hooks/*"],
       "~/store/*": ["./store/*"],
       "~/data/*": ["./data/*"],
-      "~/utils/*": ["./utils/*"]
+      "~/utils/*": ["./utils/*"],
+      "~/public/*": ["./public/*"]
     },
     "plugins": [
       {

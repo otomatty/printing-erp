@@ -26,6 +26,14 @@ const steps = [
     title: '実装要件',
   },
   {
+    id: 'modern-estimate',
+    title: '最新開発手法',
+  },
+  {
+    id: 'user-info',
+    title: 'お客様情報',
+  },
+  {
     id: 'estimate-result',
     title: '見積もり結果',
   },
@@ -84,18 +92,18 @@ export type DesignFormat =
 // 実装要件の型
 export interface ImplementationRequirements {
   // デザイン関連
-  hasDesign: boolean;
+  hasDesign: boolean | 'entrust' | 'collaborate';
   designFormat?: DesignFormat;
-  hasBrandGuidelines: boolean;
+  hasBrandGuidelines: boolean | 'entrust' | 'collaborate';
 
   // アセット関連
-  hasLogo: boolean;
-  hasImages: boolean;
-  hasIcons: boolean;
-  hasCustomFonts: boolean;
+  hasLogo: boolean | 'entrust' | 'collaborate';
+  hasImages: boolean | 'entrust' | 'collaborate';
+  hasIcons: boolean | 'entrust' | 'collaborate';
+  hasCustomFonts: boolean | 'entrust' | 'collaborate';
 
   // コンテンツ関連
-  hasContent: boolean;
+  hasContent: boolean | 'entrust' | 'collaborate';
 }
 
 // 実装要件による追加コストの計算結果
@@ -104,16 +112,19 @@ export interface ImplementationCosts {
   designCost: {
     amount: number;
     reason: string;
+    duration: number;
   };
   // アセット関連
   assetsCost: {
     amount: number;
     reason: string;
+    duration: number;
   };
   // コンテンツ関連
   contentCost: {
     amount: number;
     reason: string;
+    duration: number;
   };
   // 合計
   totalAdditionalCost: number;
@@ -126,11 +137,39 @@ export interface EstimateFormData {
   projectType: ProjectType;
   description: string;
   deadline: Deadline;
-  implementationRequirements?: ImplementationRequirements;
+  implementationRequirements?: ImplementationRequirements & {
+    // 実装要件のコスト計算結果を保持するプロパティ
+    designCost?: {
+      amount: number;
+      duration: number;
+    };
+    assetsCost?: {
+      amount: number;
+      duration: number;
+    };
+    contentCost?: {
+      amount: number;
+      duration: number;
+    };
+    totalAdditionalCost?: number;
+    additionalDuration?: number;
+  };
   features: string[];
   baseCost: number;
   rushFee: number;
   totalCost: number;
+  // 最新開発手法関連のデータ
+  modernCost?: number;
+  installments?: number;
+  monthlyPayment?: number;
+  // 顧客情報
+  customerName?: string;
+  companyName?: string;
+  email?: string;
+  phone?: string;
+  postalCode?: string;
+  address?: string;
+  preferredContact?: 'email' | 'phone' | 'either';
 }
 
 // AIが生成する質問の型 - フロントエンドでの管理用
@@ -253,3 +292,38 @@ export type ProjectTemplateWithSimilarity = z.infer<
 >;
 
 // --- ここまで Mastra Workflow から持ってきたスキーマ定義 ---
+
+// 見積明細アイテムの型定義
+export interface EstimateItem {
+  id: string;
+  name: string;
+  description?: string;
+  unitPrice: number;
+  quantity: number;
+  amount: number;
+  note?: string;
+}
+
+// 見積書データの型定義
+export interface EstimateWithItems {
+  id: string;
+  estimateNumber: string;
+  issueDate: string | Date;
+  customerName: string;
+  customerDepartment?: string;
+  customerAddress?: string;
+  projectName?: string;
+  projectType?: ProjectType;
+  deadline?: Deadline;
+  description?: string;
+  deliveryDate?: string | Date;
+  validUntil?: string | Date;
+  paymentTerms?: string;
+  salesPerson?: string;
+  totalAmount: number;
+  totalDuration?: number;
+  rushFee?: number;
+  rushFeeNote?: string;
+  notes?: string[] | string;
+  items: EstimateItem[];
+}

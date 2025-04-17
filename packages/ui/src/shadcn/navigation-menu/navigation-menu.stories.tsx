@@ -401,7 +401,7 @@ export const MobileFriendly: Story = {
 };
 
 /**
- * 実際のウェブサイトのヘッダーでの使用例です。
+ * 実際のWebサイトのヘッダーでの使用例です。
  */
 export const WebsiteHeader: Story = {
   render: () => (
@@ -478,7 +478,7 @@ export const WebsiteHeader: Story = {
     docs: {
       description: {
         story:
-          '実際のウェブサイトのヘッダーでの使用例です。ブランド名、ナビゲーションメニュー、ログインボタンを含んでいます。',
+          '実際のWebサイトのヘッダーでの使用例です。ブランド名、ナビゲーションメニュー、ログインボタンを含んでいます。',
       },
     },
   },

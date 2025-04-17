@@ -69,7 +69,14 @@ export function Container({
 
   return (
     <div
-      className={cn(maxWidthClass, padding, centeredClass, 'w-full', className)}
+      className={cn(
+        'container',
+        'w-full',
+        maxWidthClass,
+        padding,
+        centeredClass,
+        className
+      )}
       {...props}
     >
       {children}

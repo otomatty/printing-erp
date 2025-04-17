@@ -120,7 +120,7 @@ export default function FAQSection({
                     aria-expanded={openItems[faq.question]}
                   >
                     <div className="flex items-start">
-                      <div className="bg-primary text-white w-7 h-7 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                      <div className="bg-primary text-primary-foreground font-bold w-7 h-7 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                         Q
                       </div>
                       <h3 className="text-xl font-bold text-gray-800 flex-grow group-hover:text-primary transition-colors">
@@ -163,7 +163,7 @@ export default function FAQSection({
                   <button
                     type="button"
                     onClick={() => toggleItem(faq.question)}
-                    className="flex justify-between items-center w-full py-4 text-left font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-primary group cursor-pointer hover:bg-gray-50 rounded-md transition-colors px-2 -mx-2"
+                    className="flex justify-between items-center w-full py-4 text-left font-medium focus:outline-none focus-visible:ring focus-visible:ring-primary group cursor-pointer hover:bg-gray-50 rounded-md transition-colors px-2 -mx-2"
                     aria-expanded={openItems[faq.question]}
                   >
                     <span className="text-lg group-hover:text-primary transition-colors">

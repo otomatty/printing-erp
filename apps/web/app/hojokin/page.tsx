@@ -22,7 +22,7 @@ const subsidies = [
     name: '小規模事業者持続化補助金',
     description:
       '販路開拓や業務効率化の取り組みを支援。Webサイト関連費も対象に。',
-    target: '広報費、ウェブサイト関連費、開発費、委託・外注費など',
+    target: '広報費、Webサイト関連費、開発費、委託・外注費など',
     link: '/hojokin/jizokuka',
   },
   {

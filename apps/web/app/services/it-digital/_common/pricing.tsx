@@ -18,11 +18,6 @@ export type BasePackageProps = {
   };
   description: string;
   features: string[];
-  color: 'teal' | 'blue' | 'purple';
-  cta: {
-    text: string;
-    link: string;
-  };
   monthlyPayment?: {
     value: number;
     unit: string;
@@ -72,8 +67,6 @@ const BasePackageCard: React.FC<BasePackageProps> = ({
   startingPrice,
   description,
   features,
-  color,
-  cta,
   monthlyPayment,
 }) => {
   // 色に基づいたクラス名を定義
@@ -105,16 +98,15 @@ const BasePackageCard: React.FC<BasePackageProps> = ({
   };
 
   // 選択された色のクラスを取得
-  const selectedColor = colorClasses[color];
 
   return (
     <div
-      className={`flex flex-col justify-between bg-white rounded-lg shadow-lg border-2 ${selectedColor.border} overflow-hidden h-full`}
+      className={
+        'flex flex-col justify-between bg-white rounded-lg shadow-lg border border-primary overflow-hidden h-full'
+      }
     >
       <div>
-        <div
-          className={`${selectedColor.bg} text-white text-center py-2 text-sm font-medium`}
-        >
+        <div className="bg-primary text-white text-center py-2 text-sm font-medium">
           ベースパッケージ
         </div>
         <div className="p-6">
@@ -122,9 +114,7 @@ const BasePackageCard: React.FC<BasePackageProps> = ({
 
           <div className="text-center mb-6">
             {/* 価格表示エリア - 洗練されたデザイン */}
-            <div
-              className={`${selectedColor.priceBg} rounded-lg p-4 shadow-sm mb-3`}
-            >
+            <div className="rounded-lg p-4 shadow-sm mb-3">
               {/* 通常価格（打ち消し線付き） */}
               <div className="mb-1 text-gray-500">
                 <span className="line-through text-lg">
@@ -135,14 +125,8 @@ const BasePackageCard: React.FC<BasePackageProps> = ({
 
               {/* メイン価格表示 - 大きく目立つように */}
               <div className="flex justify-center items-baseline">
-                <div
-                  className={`text-4xl font-bold ${selectedColor.priceText}`}
-                >
-                  {startingPrice.value}
-                </div>
-                <div className={`text-xl ${selectedColor.priceText} ml-1`}>
-                  {startingPrice.unit}
-                </div>
+                <div className="text-4xl font-bold">{startingPrice.value}</div>
+                <div className="text-xl ml-1">{startingPrice.unit}</div>
                 <div className="text-gray-500 ml-2 text-lg">〜</div>
               </div>
 
@@ -199,14 +183,6 @@ const BasePackageCard: React.FC<BasePackageProps> = ({
         </div>
       </div>
       <div>
-        <div className="text-center pb-6 px-6">
-          <Link
-            href={cta.link}
-            className={`inline-block w-full py-2 px-4 bg-gradient-to-r ${selectedColor.gradient} text-white font-medium rounded-md transition-all duration-200 ${selectedColor.hoverGradient}`}
-          >
-            {cta.text}
-          </Link>
-        </div>
         <div className="bg-blue-50 p-3 text-center text-sm text-blue-700">
           <p>お客様の要件に合わせてカスタマイズ可能</p>
         </div>

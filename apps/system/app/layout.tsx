@@ -10,6 +10,9 @@ import '../styles/globals.css';
 export const metadata: Metadata = {
   title: '印刷業務管理システム | ニイヌマ企画印刷',
   description: 'ニイヌマ企画印刷の業務管理システム',
+  other: {
+    'apple-mobile-web-app-title': 'ニイヌマ企画印刷 業務管理',
+  },
 };
 
 export default async function RootLayout({

@@ -44,7 +44,7 @@ export interface PrintServicesFormData extends BaseFormData {
 
 // IT・デジタルサービスに関するお問い合わせフォーム
 export interface DigitalServicesFormData extends BaseFormData {
-  serviceType: string; // ウェブサイト制作、アプリ開発、システム開発など
+  serviceType: string; // Webサイト制作、アプリ開発、システム開発など
   projectDescription: string;
   deadline: string;
   budget: string;

@@ -245,7 +245,7 @@ export default function CompanyInfo() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.6 }}
                 >
-                  ニイヌマ企画印刷は1985年の創業以来、お客様のコミュニケーションを支える印刷屋として成長してきました。
+                  ニイヌマ企画印刷は1985年の創業以来、お客様のコミュニケーションを支える印刷のプロとして成長してきました。
                   各種印刷・製本、編集・デザインなど、印刷にかかわることならなんでもお受けします。
                 </motion.p>
                 <motion.p

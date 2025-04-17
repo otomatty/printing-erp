@@ -13,7 +13,7 @@ const HomepageHeroSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div className="text-center lg:text-left">
             <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900">
-              集客に<span className="text-indigo-600">強い</span>
+              集客に<span className="text-primary">強い</span>
               <br />
               ホームページ制作
             </h1>
@@ -32,7 +32,7 @@ const HomepageHeroSection = () => {
           </div>
           <div className="relative h-[300px] lg:h-[450px] rounded-xl overflow-hidden">
             <Image
-              src="/images/homepage-hero.jpg" // 仮画像パス、実際の画像に置き換えが必要
+              src="/images/it-digital/website.webp" // 仮画像パス、実際の画像に置き換えが必要
               alt="ホームページ制作イメージ"
               fill
               className="object-cover"

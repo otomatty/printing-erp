@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import logo from '~/public/images/logo/site-logo.webp';
 
 import { ArrowLeft, MessageCircle } from 'lucide-react';
 
@@ -25,7 +27,7 @@ const ErrorPage = ({
       >
         <div className={'flex flex-col items-center space-y-8'}>
           <div>
-            <h1 className={'font-heading text-9xl font-semibold'}>エラー</h1>
+            <Image src={logo} alt="404" height={80} />
           </div>
 
           <div className={'flex flex-col items-center space-y-8'}>
@@ -36,12 +38,16 @@ const ErrorPage = ({
             >
               <div>
                 <Heading level={2}>
-                  申し訳ありません。エラーが発生しました。
+                  申し訳ありません。
+                  <br />
+                  エラーが発生しました。
                 </Heading>
               </div>
 
               <p className={'text-muted-foreground text-lg'}>
-                ページの読み込み中に問題が発生しました。もう一度お試しいただくか、お問い合わせください。
+                ページの読み込み中に問題が発生しました。
+                <br />
+                もう一度お試しいただくか、お問い合わせください。
               </p>
             </div>
 

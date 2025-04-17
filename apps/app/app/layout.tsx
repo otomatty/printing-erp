@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   description:
     '印刷業務をスマートに管理するニイヌマ企画印刷のオンラインシステム',
   keywords: ['印刷'],
+  other: {
+    'apple-mobile-web-app-title': 'ニイヌマ企画印刷 アプリ',
+  },
 };
 
 export default async function RootLayout({

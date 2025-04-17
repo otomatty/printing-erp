@@ -41,4 +41,4 @@ export const meishiHagakiCardFaqData: FAQItem[] = [
   // TODO: 名刺・ハガキ・カード固有の質問を追加する必要があれば、同様に id と 文字列の answer で追加する
 ];
 
-export const faqTitle = '名刺・ハガキ・カード印刷のよくあるご質問';
+export const faqTitle = 'よくあるご質問';

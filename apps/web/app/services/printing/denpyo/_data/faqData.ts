@@ -29,4 +29,4 @@ export const denpyoSeihonFaqData: FAQItem[] = [
   // TODO: 伝票・製本固有の質問を追加 (例: そっくり印刷の詳細、製本可能な最大厚みなど)
 ];
 
-export const faqTitle = '伝票印刷・製本のよくあるご質問';
+export const faqTitle = 'よくあるご質問';

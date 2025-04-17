@@ -1,9 +1,9 @@
 import ContactFormProgressIndicator from './contact-form-progress-indicator';
-import StepInquiryType from './step-inquiry-type';
-import StepUserInfo from './step-user-info';
-import StepDetails from './step-details';
-import StepConfirmation from './step-confirmation';
-import StepComplete from './step-complete';
+import StepInquiryType from './steps/inquiry-type';
+import StepUserInfo from './steps/user-info';
+import StepDetails from './steps/details';
+import StepConfirmation from './steps/confirmation';
+import StepComplete from './steps/complete';
 import FormNavigation from './form-navigation';
 
 export {

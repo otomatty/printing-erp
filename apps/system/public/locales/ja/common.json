@@ -75,7 +75,7 @@
   },
   "cookieBanner": {
     "title": "Cookieを使用しています 🍪",
-    "description": "このウェブサイトでは、最高の体験を提供するためにCookieを使用しています。",
+    "description": "このWebサイトでは、最高の体験を提供するためにCookieを使用しています。",
     "reject": "拒否",
     "accept": "同意"
   }

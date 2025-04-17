@@ -2,7 +2,6 @@
 
 import React from 'react';
 import TimelineFlow from '~/components/custom/timeline-flow';
-import Container from '~/components/custom/container';
 
 // システム開発の流れデータ
 const systemWorkflowSteps = [
@@ -73,44 +72,6 @@ export default function SystemWorkflowSection() {
         backgroundColor="bg-white"
         cumulativeDuration={false}
       />
-      {/* <div className="mt-16 bg-primary/5 rounded-lg p-8 max-w-3xl mx-auto">
-        <h3 className="text-xl font-semibold mb-4 text-center">
-          <span className="text-primary">
-            小さく始めて
-            <br className="sm:hidden" />
-            素早く改善する方法
-          </span>
-          を採用
-        </h3>
-        <p className="text-gray-700 mb-4">
-          当社では、「まずは必要最小限の機能から始める」「小さく区切って少しずつ作る」という方法で、
-          短期間で目に見える成果をお届けします。この方法には以下のメリットがあります：
-        </p>
-        <ul className="space-y-2 text-gray-700 ml-5 list-disc">
-          <li>
-            <span className="font-medium">すぐに効果を実感</span>
-            ：最短7〜10日で最初の機能が使えるようになります
-          </li>
-          <li>
-            <span className="font-medium">こまめな修正が可能</span>
-            ：毎日〜毎週の確認で「ちょっと違う」を早めに修正できます
-          </li>
-          <li>
-            <span className="font-medium">確実な成果</span>
-            ：重要な機能から先に作るので、投資効果が高いです
-          </li>
-          <li>
-            <span className="font-medium">少しずつ形になる</span>
-            ：必要な機能から順に作り、約1ヶ月で基本システムが完成します
-          </li>
-        </ul>
-      </div>
-      <div className="mt-8 text-center">
-        <p className="text-sm text-gray-500">
-          ※
-          上記の期間はシステムの規模や複雑さによって変わります。シンプルなシステムなら約1ヶ月で使い始められます。
-        </p>
-      </div> */}
     </div>
   );
 }

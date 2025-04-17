@@ -47,7 +47,7 @@ export default function SystemPage() {
       {/* 10. 料金表 */}
       <SystemPricingSection id="pricing" />
 
-      {/* 11. よくある質問 - SystemFaqSection の代わりに FAQSection を直接使用 */}
+      {/* 11. よくあるご質問 - SystemFaqSection の代わりに FAQSection を直接使用 */}
       <FAQSection faqs={systemFAQs} title="よくあるご質問" withQAStyle={true} />
 
       {/* 12. CTA */}

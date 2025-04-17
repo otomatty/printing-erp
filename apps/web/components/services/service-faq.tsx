@@ -13,7 +13,7 @@ interface ServiceFAQProps {
 }
 
 const ServiceFAQ: React.FC<ServiceFAQProps> = ({
-  title = 'よくある質問',
+  title = 'よくあるご質問',
   faqs,
 }) => {
   return (

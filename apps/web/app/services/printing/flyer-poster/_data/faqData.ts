@@ -41,4 +41,4 @@ export const flyerPosterFaqData: FAQItem[] = [
   // TODO: チラシ・ポスター固有の質問を追加 (例: 用紙の選び方は？ PP加工とは？など)
 ];
 
-export const faqTitle = 'チラシ・ポスター印刷のよくあるご質問'; // FAQ セクションのタイトルを追加
+export const faqTitle = 'よくあるご質問'; // FAQ セクションのタイトルを追加

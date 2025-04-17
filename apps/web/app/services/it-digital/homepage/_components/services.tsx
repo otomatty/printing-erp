@@ -3,10 +3,9 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Container from '~/components/custom/container';
-import { Button } from '@kit/ui/button';
-import Link from 'next/link';
 import { categories, allSites, type SiteItem } from '../_data';
 import { ChevronDown } from 'lucide-react';
+import SectionTitle from '../../_common/section-title';
 
 export function HomepageServicesSection() {
   const [activeCategory, setActiveCategory] = useState('corporate');
@@ -32,21 +31,17 @@ export function HomepageServicesSection() {
   return (
     <section className="py-16 lg:py-32 bg-gray-50">
       <Container>
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-            <span className="text-indigo-600">お客様のビジネスに合った</span>
-            ホームページ制作
-          </h2>
-          <p className="max-w-3xl mx-auto mt-6 text-lg text-gray-600">
-            集客や問い合わせにつながるホームページを制作します。
-            お客様のビジネスに最適なデザインと機能で、目的達成をサポートします。
-          </p>
-        </div>
+        <SectionTitle
+          title="お客様のビジネスに"
+          highlightedText="合った"
+          afterHighlightedText="ホームページ制作"
+          description="集客や問い合わせにつながるホームページを制作します。お客様のビジネスに最適なデザインと機能で、目的達成をサポートします。"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="relative h-[400px] lg:h-[500px] rounded-xl overflow-hidden shadow-xl">
+          <div className="relative h-[400px] lg:h-[500px] rounded-xl overflow-hidden">
             <Image
-              src="/images/homepage-development.jpg" // 実際の画像パスに置き換えが必要
+              src="/images/it-digital/screen-discussion.webp" // 実際の画像パスに置き換えが必要
               alt="ホームページ制作のイメージ"
               fill
               className="object-cover"
@@ -55,9 +50,7 @@ export function HomepageServicesSection() {
 
           <div>
             <h3 className="text-2xl lg:text-3xl font-bold mb-6">
-              <span className="text-indigo-600">
-                デザインと機能性を両立した
-              </span>
+              <span className="text-primary">デザインと機能性を両立した</span>
               <br />
               Webサイト制作
             </h3>
@@ -68,10 +61,10 @@ export function HomepageServicesSection() {
 
             <div className="space-y-6 mb-8">
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-indigo-600"
+                    className="h-6 w-6 text-primary"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -96,10 +89,10 @@ export function HomepageServicesSection() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-indigo-600"
+                    className="h-6 w-6 text-primary"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -124,10 +117,10 @@ export function HomepageServicesSection() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-indigo-600"
+                    className="h-6 w-6 text-primary"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -155,10 +148,12 @@ export function HomepageServicesSection() {
         </div>
 
         <div className="mt-20">
-          <h3 className="text-2xl lg:text-3xl font-bold mb-8 text-center">
-            こんな<span className="text-indigo-600">Webサイト</span>
-            を作れます
-          </h3>
+          <SectionTitle
+            title="こんな"
+            highlightedText="お役立ちサイト"
+            afterHighlightedText="を作れます"
+            className="mb-8"
+          />
 
           {/* モバイル用ドロップダウン (md未満で表示) */}
           <div className="md:hidden mb-8">
@@ -182,7 +177,7 @@ export function HomepageServicesSection() {
                   <button
                     type="button"
                     key={category.id}
-                    className={`w-full text-left px-4 py-3 hover:bg-gray-100 ${activeCategory === category.id ? 'text-indigo-600 font-medium' : 'text-gray-700'}`}
+                    className={`w-full text-left px-4 py-3 hover:bg-gray-100 ${activeCategory === category.id ? 'text-primary font-medium' : 'text-gray-700'}`}
                     onClick={() => handleCategorySelect(category.id)}
                   >
                     {category.name}
@@ -201,14 +196,14 @@ export function HomepageServicesSection() {
                   type="button"
                   className={`inline-block py-4 px-6 text-sm font-medium text-center rounded-t-lg border-b-2 ${
                     activeCategory === category.id
-                      ? 'text-indigo-600 border-indigo-600'
+                      ? 'text-primary border-primary'
                       : 'text-gray-500 border-transparent hover:text-gray-600 hover:border-gray-300'
                   } relative`}
                   onClick={() => setActiveCategory(category.id)}
                 >
                   {category.name}
                   {activeCategory === category.id && (
-                    <span className="absolute bottom-0 left-0 w-full h-1 bg-indigo-600" />
+                    <span className="absolute bottom-0 left-0 w-full h-1 bg-primary" />
                   )}
                 </button>
               ))}
@@ -236,12 +231,12 @@ export function HomepageServicesSection() {
           </div>
 
           {/* カスタムサイト構築のボックス */}
-          <div className="mt-12 bg-indigo-50 border-2 border-indigo-200 p-8 rounded-xl shadow-lg">
+          <div className="mt-12 bg-primary/5 border border-primary/30 p-8 rounded-lg">
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="flex-shrink-0 w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center">
+              <div className="flex-shrink-0 w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-10 w-10 text-indigo-600"
+                  className="h-10 w-10 text-primary"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -255,17 +250,15 @@ export function HomepageServicesSection() {
                   />
                 </svg>
               </div>
-              <div className="flex-grow text-center md:text-left">
-                <h3 className="text-xl md:text-2xl font-bold mb-2">
-                  上記にないサイトもご相談ください！
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-2xl font-bold mb-2">
+                  <span className="text-primary">「これが欲しかった！」</span>
+                  と言われるサイトを
                 </h3>
-                <p className="text-gray-700 mb-4">
-                  お客様のビジネスに最適な機能を備えたオリジナルWebサイトを開発いたします。
-                  一般的なテンプレートでは実現できない独自の機能やデザインも可能です。
+                <p className="text-lg text-gray-700">
+                  上に挙げたのはほんの一例です。企業サイト、採用サイト、ECサイトなど、どんな業種でも、あなたの会社の「困った」を解決するWebサイトをお作りします。
+                  いまあるサイトの改良から、まったく新しいサイトまで、集客や売上アップを実現する仕組みをご提案します。
                 </p>
-                <Button asChild size="lg">
-                  <Link href="/estimate?service=homepage">無料でお見積り</Link>
-                </Button>
               </div>
             </div>
           </div>

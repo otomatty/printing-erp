@@ -217,7 +217,7 @@ export default function ShinjigyoSubsidyPage() {
           <p className="mb-6 text-gray-600">
             現時点では詳細未定のため、公式サイト等のリンクはありません。
             <br />
-            公募開始が近づきましたら、経済産業省や中小企業庁のウェブサイトをご確認ください。
+            公募開始が近づきましたら、経済産業省や中小企業庁のWebサイトをご確認ください。
           </p>
 
           {/* TODO: 実際のCtaSectionコンポーネントに置き換える */}

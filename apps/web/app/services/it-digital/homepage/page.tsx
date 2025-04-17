@@ -7,7 +7,6 @@ import HomepageChallengesSection from './_components/challenges';
 import { HomepageServicesSection } from './_components/services';
 import HomepageCostPerformanceSection from './_components/cost-performance';
 import HomepageBenefitsSection from './_components/benefits';
-import HomepageCaseStudiesSection from './_components/case-studies';
 import HomepageWhyChooseUsSection from './_components/why-choose-us';
 import HomepageWorkflowSection from './_components/workflow';
 import HomepagePricingSection from './_components/pricing';
@@ -40,26 +39,23 @@ export default function HomepagePage() {
       {/* 6. 導入企業が実感した4つのメリット */}
       <HomepageBenefitsSection />
 
-      {/* 7. 実績とお客様の声 */}
-      <HomepageCaseStudiesSection />
-
-      {/* 8. 選ばれる理由 */}
+      {/* 7. 選ばれる理由 */}
       <HomepageWhyChooseUsSection />
 
-      {/* 9. 仕事の流れ */}
+      {/* 8. 仕事の流れ */}
       <HomepageWorkflowSection />
 
-      {/* 10. 料金表 */}
+      {/* 9. 料金表 */}
       <HomepagePricingSection id="pricing" />
 
-      {/* 11. よくある質問 - HomepageFaqSection の代わりに FAQSection を直接使用 */}
+      {/* 10. よくあるご質問 - HomepageFaqSection の代わりに FAQSection を直接使用 */}
       <FAQSection
         faqs={homepageFAQs}
-        title="ホームページ制作のよくあるご質問"
-        withQAStyle={false}
+        title="よくあるご質問"
+        withQAStyle={true}
       />
 
-      {/* 12. CTA */}
+      {/* 11. CTA */}
       <CtaSection
         title="ホームページ制作のご相談はこちら"
         message="ホームページ制作について、お気軽にご相談ください"

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   Menu,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 import DesktopNav from './desktop-nav';
 import MobileNav from './mobile-nav';
+import logo from '~/public/images/logo/site-logo.webp';
 
 type NavItemBase = {
   label: string;
@@ -141,7 +143,7 @@ export function Header() {
       <div className="container max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center">
           {/* TODO: 会社ロゴを追加 */}
-          <div className="text-xl font-bold text-primary">ニイヌマ企画印刷</div>
+          <Image src={logo} alt="ニイヌマ企画印刷" className="h-12 w-auto" />
         </Link>
 
         {/* デスクトップ用のコンテナ */}

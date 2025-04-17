@@ -3,7 +3,7 @@
 import FAQSection from '~/components/custom/faq/faq-section';
 import { motion } from 'framer-motion';
 
-// よくある質問データ
+// よくあるご質問データ
 const faqs = [
   {
     id: 'faq-1',
@@ -48,7 +48,7 @@ export default function Faq() {
           transition={{ duration: 0.6 }}
         >
           <FAQSection
-            title="よくある質問"
+            title="よくあるご質問"
             faqs={faqs}
             withBackground={false}
             withQAStyle={true}
