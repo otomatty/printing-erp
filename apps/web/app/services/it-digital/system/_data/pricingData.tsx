@@ -88,7 +88,7 @@ export const serviceData = {
 
 // 自動見積もりデータ
 export const estimateData = {
-  title: 'AIによる自動見積もりシステム',
+  title: 'かんたん自動見積もり',
   description:
     'お客様の業務課題や規模に応じた最適な見積もりを、AIが短時間で算出します。システム開発の効果予測や投資対効果(ROI)も同時に確認でき、ビジネスにもたらす具体的な価値を数値で把握できます。',
   features: [

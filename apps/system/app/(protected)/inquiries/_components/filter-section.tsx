@@ -7,7 +7,7 @@ export function FilterSection() {
         <input
           type="text"
           placeholder="問い合わせ番号、名前、メールで検索..."
-          className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary"
         />
         <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
       </div>
@@ -21,7 +21,7 @@ export function FilterSection() {
           絞り込み
         </button>
 
-        <select className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+        <select className="border rounded-md px-4 py-2 focus:outline-none focus:ring focus:ring-primary">
           <option value="">すべてのステータス</option>
           <option value="new">新規</option>
           <option value="in_progress">対応中</option>
@@ -30,7 +30,7 @@ export function FilterSection() {
           <option value="closed">完了</option>
         </select>
 
-        <select className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+        <select className="border rounded-md px-4 py-2 focus:outline-none focus:ring focus:ring-primary">
           <option value="">すべての優先度</option>
           <option value="urgent">緊急</option>
           <option value="high">高</option>

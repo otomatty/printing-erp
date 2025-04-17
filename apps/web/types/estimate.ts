@@ -104,6 +104,22 @@ export interface ImplementationRequirements {
 
   // コンテンツ関連
   hasContent: boolean | 'entrust' | 'collaborate';
+
+  // コスト計算結果（PDFレンダリング用）
+  designCost?: {
+    amount: number;
+    duration: number;
+  };
+  assetsCost?: {
+    amount: number;
+    duration: number;
+  };
+  contentCost?: {
+    amount: number;
+    duration: number;
+  };
+  totalAdditionalCost?: number;
+  additionalDuration?: number;
 }
 
 // 実装要件による追加コストの計算結果
@@ -302,6 +318,7 @@ export interface EstimateItem {
   quantity: number;
   amount: number;
   note?: string;
+  duration?: number; // 工数（日数）
 }
 
 // 見積書データの型定義
@@ -321,9 +338,13 @@ export interface EstimateWithItems {
   paymentTerms?: string;
   salesPerson?: string;
   totalAmount: number;
+  originalPrice?: number; // 従来の開発手法での価格（割引前）
   totalDuration?: number;
   rushFee?: number;
   rushFeeNote?: string;
   notes?: string[] | string;
   items: EstimateItem[];
+
+  // 実装要件情報（オプショナル）
+  implementationRequirements?: ImplementationRequirements;
 }

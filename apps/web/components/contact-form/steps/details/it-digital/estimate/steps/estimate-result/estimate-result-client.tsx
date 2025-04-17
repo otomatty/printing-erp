@@ -3,20 +3,19 @@
 import { useState, useTransition } from 'react';
 import { useAtom } from 'jotai';
 import { Button } from '@kit/ui/button';
-import { Download, Send, ArrowLeft } from 'lucide-react';
-import { currentStepAtom } from '~/store/estimate';
-import type { EstimateWithItems } from '~/types/estimate';
+import { Download, Send, Check } from 'lucide-react';
+import { formDataAtom } from '~/store/estimate';
+import type { EstimateWithItems, EstimateFormData } from '~/types/estimate';
 
 interface EstimateActionsProps {
   isPdfGenerating: boolean;
-  estimateData: EstimateWithItems;
   pdfUrl: string | null;
   onGeneratePdf: () => Promise<{
     buffer: Buffer | null;
     estimateData: EstimateWithItems;
   } | null>;
   onSendInquiry: () => void;
-  onAdjustDeadline: () => void;
+  onSetFlexibleDeadline: () => void;
   hasRushFee: boolean;
 }
 
@@ -25,14 +24,13 @@ interface EstimateActionsProps {
  */
 export function EstimateResultActions({
   isPdfGenerating: initialLoading,
-  estimateData,
   pdfUrl: initialUrl,
   onGeneratePdf,
   onSendInquiry,
-  onAdjustDeadline,
+  onSetFlexibleDeadline,
   hasRushFee,
 }: EstimateActionsProps) {
-  const [, setCurrentStep] = useAtom(currentStepAtom);
+  const [formData, setFormData] = useAtom(formDataAtom);
   const [isPending, startTransition] = useTransition();
   const [isDownloading, setIsDownloading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(initialUrl);
@@ -76,9 +74,18 @@ export function EstimateResultActions({
     }
   };
 
-  // 開発期間調整へ戻る
-  const handleAdjustDeadline = () => {
-    setCurrentStep('deadline');
+  // 開発期間を柔軟に設定
+  const handleSetFlexibleDeadline = () => {
+    // deadlineをflexibleに設定
+    setFormData((prev: EstimateFormData) => ({
+      ...prev,
+      deadline: 'flexible',
+    }));
+
+    // コールバック呼び出し
+    if (onSetFlexibleDeadline) {
+      onSetFlexibleDeadline();
+    }
   };
 
   // 問い合わせ送信
@@ -94,10 +101,10 @@ export function EstimateResultActions({
           <Button
             variant="outline"
             className="w-full"
-            onClick={handleAdjustDeadline}
+            onClick={handleSetFlexibleDeadline}
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            開発期間を調整する
+            <Check className="w-4 h-4 mr-2" />
+            適切な開発期間にする
           </Button>
         </div>
       )}

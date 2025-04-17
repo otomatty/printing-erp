@@ -36,10 +36,21 @@ const registerFonts = async () => {
     console.error(
       `Please ensure font files exist at: ${REGULAR_FONT_PATH} and ${BOLD_FONT_PATH}`
     );
-    // ここでエラーを投げるか、フォールバック処理をするか検討
-    throw new Error(
-      `Font registration failed. Check if fonts exist at ${FONT_DIR}`
-    );
+    // フォールバック処理: デフォルトのフォントを登録
+    try {
+      Font.register({
+        family: 'NotoSansJP',
+        fonts: [
+          { src: 'Helvetica', fontWeight: 'normal' },
+          { src: 'Helvetica-Bold', fontWeight: 'bold' },
+        ],
+      });
+      fontsRegistered = true;
+      console.log('Fallback fonts registered.');
+    } catch (fallbackError) {
+      console.error('Failed to register fallback fonts:', fallbackError);
+      // ここでエラーを投げるのではなく、デフォルトフォントに任せる
+    }
   }
 };
 
@@ -52,6 +63,12 @@ export const generatePdfAction = async (
   estimateData: EstimateWithItems
 ): Promise<Buffer | null> => {
   try {
+    // 必要な値のバリデーション
+    if (!estimateData || !estimateData.items) {
+      console.error('Invalid estimate data provided');
+      return null;
+    }
+
     // フォントを登録 (まだ登録されていなければ)
     await registerFonts();
 
@@ -63,7 +80,11 @@ export const generatePdfAction = async (
     return pdfBuffer;
   } catch (error) {
     console.error('Failed to generate PDF:', error);
-    // TODO: より詳細なエラーハンドリング (例: Sentryへの送信など)
-    return null; // エラー時は null を返す (あるいはエラーオブジェクトを返す)
+    // より詳細なエラー情報をログに出力
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    return null; // エラー時は null を返す
   }
 };

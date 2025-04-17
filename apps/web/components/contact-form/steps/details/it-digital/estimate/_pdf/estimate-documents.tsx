@@ -92,11 +92,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     padding: 5,
   },
-  colName: { width: '40%' }, // 幅調整
-  colUnitPrice: { width: '15%', textAlign: 'right' },
-  colQuantity: { width: '10%', textAlign: 'right' },
-  colAmount: { width: '20%', textAlign: 'right' },
-  colNote: { width: '15%' }, // Note列を追加する場合
+  colName: { width: '40%' }, // 幅を調整
+  colAmount: { width: '15%', textAlign: 'right' },
+  colQuantity: { width: '10%', textAlign: 'right' }, // 使わないが型定義のために残す
+  colUnitPrice: { width: '15%', textAlign: 'right' }, // 使わないが型定義のために残す
+  colDuration: { width: '10%', textAlign: 'center' }, // 工数表示用
+  colNote: { width: '20%' }, // 幅を調整
   totals: {
     marginTop: 20,
     textAlign: 'right',
@@ -138,6 +139,35 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'grey',
   },
+  highlight: {
+    color: '#107C10', // 緑色で割引を強調
+  },
+  discountText: {
+    fontSize: 9,
+    color: '#107C10',
+  },
+  strikethrough: {
+    textDecoration: 'line-through',
+    fontSize: 9,
+    color: '#666666',
+  },
+  infoBox: {
+    marginTop: 15,
+    marginBottom: 15,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 4,
+    backgroundColor: '#f9fafb',
+  },
+  infoTitle: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  infoContent: {
+    fontSize: 9,
+  },
 });
 
 // 日付をフォーマットするヘルパー関数
@@ -156,6 +186,15 @@ const formatCurrency = (amount: number | undefined): string => {
   return `¥${amount.toLocaleString()}`;
 };
 
+// 割引率を計算するヘルパー関数
+const calculateDiscountRate = (
+  originalPrice: number,
+  discountedPrice: number
+): number => {
+  if (originalPrice === 0) return 0;
+  return Math.round((1 - discountedPrice / originalPrice) * 100);
+};
+
 interface EstimateDocumentProps {
   estimate: EstimateWithItems;
 }
@@ -163,45 +202,119 @@ interface EstimateDocumentProps {
 export const EstimateDocument: React.FC<EstimateDocumentProps> = ({
   estimate,
 }) => {
+  // 元の価格を計算（メタデータから）
+  const hasDiscount =
+    estimate.originalPrice !== undefined &&
+    estimate.originalPrice > estimate.totalAmount;
+  const discountRate = hasDiscount
+    ? calculateDiscountRate(estimate.originalPrice || 0, estimate.totalAmount)
+    : 0;
+  const savingsAmount = hasDiscount
+    ? (estimate.originalPrice || 0) - estimate.totalAmount
+    : 0;
+
   // 明細アイテムのレンダリング
   const renderItem = (item: EstimateItem, index: number) => (
     <View style={styles.tableRow} key={item.id || `item-${index}`} wrap={false}>
       <Text style={{ ...styles.tableCol, ...styles.colName }}>{item.name}</Text>
-      <Text style={{ ...styles.tableCol, ...styles.colUnitPrice }}>
-        {formatCurrency(item.unitPrice)}
-      </Text>
-      <Text style={{ ...styles.tableCol, ...styles.colQuantity }}>
-        {item.quantity}
-      </Text>
       <Text style={{ ...styles.tableCol, ...styles.colAmount }}>
         {formatCurrency(item.amount)}
       </Text>
-      {/* <Text style={{...styles.tableCol, ...styles.colNote}}>{item.note ?? ''}</Text> */}
+      <Text style={{ ...styles.tableCol, ...styles.colDuration }}>
+        {item.duration ? `${item.duration}人日` : '-'}
+      </Text>
+      <Text style={{ ...styles.tableCol, ...styles.colNote }}>
+        {/* 割引率を表示せず、必須機能/任意機能のみ表示 */}
+        {item.note?.includes('必須機能')
+          ? '必須機能'
+          : item.note?.includes('（')
+            ? '任意機能'
+            : item.note || ''}
+      </Text>
     </View>
   );
 
   // 合計金額の表示
-  const renderTotals = () => (
-    <View style={styles.totals}>
-      {/* 必要に応じて小計や税などを追加 */}
-      {estimate.rushFee !== undefined && estimate.rushFee > 0 && (
+  const renderTotals = () => {
+    // 税抜き価格（割引適用済み）
+    const subtotalPrice = estimate.totalAmount;
+    // 消費税（10%）
+    const taxAmount = Math.round(subtotalPrice * 0.1);
+    // 税込み合計
+    const totalWithTax = subtotalPrice + taxAmount;
+
+    // 総工数を計算
+    const totalDuration = estimate.items.reduce(
+      (sum, item) => sum + (item.duration || 0),
+      0
+    );
+
+    return (
+      <View style={styles.totals}>
+        {/* 割引情報の表示 */}
+        {hasDiscount && (
+          <>
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>従来価格:</Text>
+              <Text style={styles.totalValue}>
+                <Text style={styles.strikethrough}>
+                  {formatCurrency(estimate.originalPrice)}
+                </Text>
+              </Text>
+            </View>
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>コスト削減額:</Text>
+              <Text style={styles.totalValue}>
+                <Text style={styles.highlight}>
+                  -{formatCurrency(savingsAmount)}
+                </Text>
+              </Text>
+            </View>
+          </>
+        )}
+
+        {/* 総工数 */}
         <View style={styles.totalRow}>
-          <Text style={styles.totalLabel}>特急料金:</Text>
-          <Text style={styles.totalValue}>
-            {formatCurrency(estimate.rushFee)}
+          <Text style={styles.totalLabel}>総工数:</Text>
+          <Text style={styles.totalValue}>{totalDuration}人日</Text>
+        </View>
+
+        {/* 税抜き価格 */}
+        <View style={styles.totalRow}>
+          <Text style={styles.totalLabel}>割引後価格（税抜）:</Text>
+          <Text style={styles.totalValue}>{formatCurrency(subtotalPrice)}</Text>
+        </View>
+
+        {/* 特急料金がある場合 */}
+        {estimate.rushFee !== undefined && estimate.rushFee > 0 && (
+          <View style={styles.totalRow}>
+            <Text style={styles.totalLabel}>特急料金:</Text>
+            <Text style={styles.totalValue}>
+              {formatCurrency(estimate.rushFee)}
+            </Text>
+          </View>
+        )}
+
+        {/* 消費税 */}
+        <View style={styles.totalRow}>
+          <Text style={styles.totalLabel}>消費税（10%）:</Text>
+          <Text style={styles.totalValue}>{formatCurrency(taxAmount)}</Text>
+        </View>
+
+        {/* 最終合計（税込） */}
+        <View style={{ ...styles.totalRow, marginTop: 5 }}>
+          <Text style={{ ...styles.totalLabel, fontSize: 12 }}>
+            合計金額（税込）:
+          </Text>
+          <Text
+            style={{ ...styles.totalValue, fontSize: 12, fontWeight: 'bold' }}
+          >
+            {formatCurrency(totalWithTax)}
           </Text>
         </View>
-      )}
-      <View style={{ ...styles.totalRow, marginTop: 5 }}>
-        <Text style={{ ...styles.totalLabel, fontSize: 12 }}>合計金額:</Text>
-        <Text
-          style={{ ...styles.totalValue, fontSize: 12, fontWeight: 'bold' }}
-        >
-          {formatCurrency(estimate.totalAmount)}
-        </Text>
       </View>
-    </View>
-  );
+    );
+  };
 
   // 備考の表示
   const renderNotes = () => {
@@ -244,7 +357,7 @@ export const EstimateDocument: React.FC<EstimateDocumentProps> = ({
   return (
     <Document
       title={`見積書_${estimate.estimateNumber}`}
-      author="Niinuma Kikaku Inc."
+      author="ニイヌマ企画印刷"
     >
       <Page size="A4" style={styles.page} wrap>
         {/* ヘッダー */}
@@ -255,9 +368,7 @@ export const EstimateDocument: React.FC<EstimateDocumentProps> = ({
         {/* 顧客情報と見積もりメタ情報 */}
         <View style={styles.subHeader}>
           <View style={styles.customerInfo}>
-            <Text style={{ marginBottom: 5 }}>
-              {estimate.customerName} 御中
-            </Text>
+            <Text style={{ marginBottom: 5 }}>{estimate.customerName} 様</Text>
             {estimate.customerDepartment && (
               <Text>{estimate.customerDepartment}</Text>
             )}
@@ -289,6 +400,29 @@ export const EstimateDocument: React.FC<EstimateDocumentProps> = ({
             <Text>{estimate.projectName}</Text>
           </View>
         )}
+
+        {/* 開発期間表示 */}
+        {estimate.deadline && (
+          <View style={{ marginBottom: 15 }}>
+            <Text style={styles.sectionTitle}>開発期間</Text>
+            <Text>
+              {estimate.deadline === 'flexible'
+                ? '柔軟に対応'
+                : estimate.deadline === 'asap'
+                  ? 'できるだけ早く'
+                  : estimate.deadline === '1month'
+                    ? '1ヶ月以内'
+                    : estimate.deadline === '3months'
+                      ? '3ヶ月以内'
+                      : estimate.deadline === '6months'
+                        ? '6ヶ月以内'
+                        : '未定'}
+              {estimate.totalDuration &&
+                ` （想定作業日数: 約${estimate.totalDuration}人日）`}
+            </Text>
+          </View>
+        )}
+
         {estimate.deliveryDate && (
           <View style={{ marginBottom: 15 }}>
             <Text style={styles.sectionTitle}>納品予定日</Text>
@@ -302,6 +436,190 @@ export const EstimateDocument: React.FC<EstimateDocumentProps> = ({
           </View>
         )}
 
+        {/* プロジェクト詳細情報を先に表示 */}
+        {estimate.description && (
+          <View style={{ marginBottom: 20 }}>
+            <Text style={styles.sectionTitle}>プロジェクト詳細</Text>
+            <Text>{estimate.description}</Text>
+          </View>
+        )}
+
+        {/* 実装要件情報 */}
+        {estimate.implementationRequirements && (
+          <View style={{ marginBottom: 20 }}>
+            <Text style={styles.sectionTitle}>実装要件</Text>
+            <View style={styles.infoBox}>
+              {/* デザイン関連 */}
+              <Text style={styles.infoTitle}>デザイン関連</Text>
+              <View style={{ marginBottom: 8 }}>
+                <Text style={styles.infoContent}>
+                  ・デザイン:{' '}
+                  {estimate.implementationRequirements.hasDesign === true
+                    ? 'お客様が提供'
+                    : estimate.implementationRequirements.hasDesign ===
+                        'entrust'
+                      ? '弊社に一任'
+                      : '協働で作成'}
+                  {estimate.implementationRequirements.designFormat &&
+                    estimate.implementationRequirements.designFormat !==
+                      'none' &&
+                    ` (${estimate.implementationRequirements.designFormat})`}
+                </Text>
+                <Text style={styles.infoContent}>
+                  ・ブランドガイドライン:{' '}
+                  {estimate.implementationRequirements.hasBrandGuidelines ===
+                  true
+                    ? 'お客様が提供'
+                    : estimate.implementationRequirements.hasBrandGuidelines ===
+                        'entrust'
+                      ? '弊社に一任'
+                      : '協働で作成'}
+                </Text>
+                {estimate.implementationRequirements.designCost &&
+                  estimate.implementationRequirements.designCost.amount > 0 && (
+                    <Text
+                      style={{
+                        ...styles.infoContent,
+                        color: '#107C10',
+                        fontSize: 8,
+                        marginTop: 2,
+                      }}
+                    >
+                      → 追加費用:{' '}
+                      {formatCurrency(
+                        estimate.implementationRequirements.designCost.amount
+                      )}{' '}
+                      / 工数:{' '}
+                      {estimate.implementationRequirements.designCost.duration}
+                      人日
+                    </Text>
+                  )}
+              </View>
+
+              {/* アセット関連 */}
+              <Text style={styles.infoTitle}>アセット関連</Text>
+              <View style={{ marginBottom: 8 }}>
+                <Text style={styles.infoContent}>
+                  ・ロゴ:{' '}
+                  {estimate.implementationRequirements.hasLogo === true
+                    ? 'お客様が提供'
+                    : estimate.implementationRequirements.hasLogo === 'entrust'
+                      ? '弊社に一任'
+                      : '協働で作成'}
+                </Text>
+                <Text style={styles.infoContent}>
+                  ・画像素材:{' '}
+                  {estimate.implementationRequirements.hasImages === true
+                    ? 'お客様が提供'
+                    : estimate.implementationRequirements.hasImages ===
+                        'entrust'
+                      ? '弊社に一任'
+                      : '協働で作成'}
+                </Text>
+                <Text style={styles.infoContent}>
+                  ・アイコン:{' '}
+                  {estimate.implementationRequirements.hasIcons === true
+                    ? 'お客様が提供'
+                    : estimate.implementationRequirements.hasIcons === 'entrust'
+                      ? '弊社に一任'
+                      : '協働で作成'}
+                </Text>
+                <Text style={styles.infoContent}>
+                  ・カスタムフォント:{' '}
+                  {estimate.implementationRequirements.hasCustomFonts === true
+                    ? 'お客様が提供'
+                    : estimate.implementationRequirements.hasCustomFonts ===
+                        'entrust'
+                      ? '弊社に一任'
+                      : '協働で作成'}
+                </Text>
+                {estimate.implementationRequirements.assetsCost &&
+                  estimate.implementationRequirements.assetsCost.amount > 0 && (
+                    <Text
+                      style={{
+                        ...styles.infoContent,
+                        color: '#107C10',
+                        fontSize: 8,
+                        marginTop: 2,
+                      }}
+                    >
+                      → 追加費用:{' '}
+                      {formatCurrency(
+                        estimate.implementationRequirements.assetsCost.amount
+                      )}{' '}
+                      / 工数:{' '}
+                      {estimate.implementationRequirements.assetsCost.duration}
+                      人日
+                    </Text>
+                  )}
+              </View>
+
+              {/* コンテンツ関連 */}
+              <Text style={styles.infoTitle}>コンテンツ関連</Text>
+              <View>
+                <Text style={styles.infoContent}>
+                  ・テキストコンテンツ:{' '}
+                  {estimate.implementationRequirements.hasContent === true
+                    ? 'お客様が提供'
+                    : estimate.implementationRequirements.hasContent ===
+                        'entrust'
+                      ? '弊社に一任'
+                      : '協働で作成'}
+                </Text>
+                {estimate.implementationRequirements.contentCost &&
+                  estimate.implementationRequirements.contentCost.amount >
+                    0 && (
+                    <Text
+                      style={{
+                        ...styles.infoContent,
+                        color: '#107C10',
+                        fontSize: 8,
+                        marginTop: 2,
+                      }}
+                    >
+                      → 追加費用:{' '}
+                      {formatCurrency(
+                        estimate.implementationRequirements.contentCost.amount
+                      )}{' '}
+                      / 工数:{' '}
+                      {estimate.implementationRequirements.contentCost.duration}
+                      人日
+                    </Text>
+                  )}
+              </View>
+
+              {/* 実装要件の合計 */}
+              {estimate.implementationRequirements.totalAdditionalCost &&
+                estimate.implementationRequirements.totalAdditionalCost > 0 && (
+                  <View
+                    style={{
+                      marginTop: 12,
+                      paddingTop: 8,
+                      borderTopWidth: 1,
+                      borderTopColor: '#cccccc',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        ...styles.infoContent,
+                        fontWeight: 'bold',
+                        fontSize: 9,
+                      }}
+                    >
+                      実装要件による追加費用合計:{' '}
+                      {formatCurrency(
+                        estimate.implementationRequirements.totalAdditionalCost
+                      )}{' '}
+                      / 追加工数:{' '}
+                      {estimate.implementationRequirements.additionalDuration}
+                      人日
+                    </Text>
+                  </View>
+                )}
+            </View>
+          </View>
+        )}
+
         {/* 明細テーブル */}
         <Text style={styles.sectionTitle}>見積明細</Text>
         <View style={styles.table}>
@@ -310,16 +628,15 @@ export const EstimateDocument: React.FC<EstimateDocumentProps> = ({
             <Text style={{ ...styles.tableColHeader, ...styles.colName }}>
               項目
             </Text>
-            <Text style={{ ...styles.tableColHeader, ...styles.colUnitPrice }}>
-              単価
-            </Text>
-            <Text style={{ ...styles.tableColHeader, ...styles.colQuantity }}>
-              数量
-            </Text>
             <Text style={{ ...styles.tableColHeader, ...styles.colAmount }}>
               金額
             </Text>
-            {/* <Text style={{...styles.tableColHeader, ...styles.colNote}}>備考</Text> */}
+            <Text style={{ ...styles.tableColHeader, ...styles.colDuration }}>
+              工数
+            </Text>
+            <Text style={{ ...styles.tableColHeader, ...styles.colNote }}>
+              備考
+            </Text>
           </View>
           {/* テーブルボディ */}
           {estimate.items.map(renderItem)}

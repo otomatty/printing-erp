@@ -1,14 +1,9 @@
 'use client';
 
-import { Card } from '@kit/ui/card';
-import { Badge } from '@kit/ui/badge';
-import { AlertTriangle } from 'lucide-react';
-import { Alert, AlertDescription } from '@kit/ui/alert';
 import { generatePdfAction } from '~/actions/estimate/generatePdf';
 import { calculateRushFee } from '../../_utils/calculateRushFee';
 import { calculateImplementationCosts } from '../../_utils/calculateImplementationCosts';
 import { v4 as uuidv4 } from 'uuid';
-import { EstimateResultActions } from './estimate-result-client';
 import { useAtom } from 'jotai';
 import {
   formDataAtom,
@@ -21,10 +16,14 @@ import type {
   ProjectType,
   Deadline,
   ImplementationCosts,
-  EstimateFormData,
-  FeatureProposal,
 } from '~/types/estimate';
-import { useMemo } from 'react';
+import { useCallback } from 'react';
+import {
+  EstimateSummary,
+  FeatureList,
+  ImplementationRequirements,
+  TotalSummary,
+} from './components';
 
 /**
  * 見積もり結果表示およびPDFダウンロード/問い合わせを行うステップコンポーネント
@@ -61,23 +60,49 @@ export function EstimateResultStep() {
     console.error('実装要件コスト計算エラー:', error);
   }
 
-  // 合計金額と期間を計算
-  const totalPrice =
-    basePrice + (implementationCosts?.totalAdditionalCost || 0);
-  const totalDuration =
-    baseDuration + (implementationCosts?.additionalDuration || 0);
+  // デザイン部分の追加コスト
+  const designAdditionalPrice = implementationCosts?.totalAdditionalCost || 0;
+  const additionalDuration = implementationCosts?.additionalDuration || 0;
 
-  // 特急料金の計算
+  // 従来の合計金額と期間を計算
+  const traditionalTotalPrice = basePrice + designAdditionalPrice;
+  const totalDuration = baseDuration + additionalDuration;
+
+  // 最新の開発手法による割引を計算
+  const calculateModernPrice = useCallback(() => {
+    // 開発部分のみ50%割引
+    const discountedDevelopment = Math.round(basePrice * 0.5);
+    // 一括払いの場合、開発部分のみさらに5%割引
+    const finalDevelopmentPrice = Math.round(discountedDevelopment * 0.95);
+    // デザイン部分は割引なし
+    return finalDevelopmentPrice + designAdditionalPrice;
+  }, [basePrice, designAdditionalPrice]);
+
+  // 割引率を計算
+  const calculateDiscountRate = useCallback(() => {
+    if (traditionalTotalPrice === 0) return 0;
+
+    const modernPrice = calculateModernPrice();
+    return Math.round((1 - modernPrice / traditionalTotalPrice) * 100);
+  }, [traditionalTotalPrice, calculateModernPrice]);
+
+  // 最新開発手法での価格
+  const modernTotalPrice = calculateModernPrice();
+  // 実際の割引率
+  const actualDiscountRate = calculateDiscountRate();
+
+  // 特急料金の計算（modernTotalPriceを使用）
   const rushFeeCalculation = calculateRushFee(
-    totalPrice,
+    modernTotalPrice, // 従来価格ではなく最新手法での価格を使用
     totalDuration,
     formData.deadline
   );
 
   // PDF生成のサーバーアクション
   const generatePdf = async () => {
-    if (!implementationCosts || !rushFeeCalculation) {
-      console.error('必要なデータが不足しています。');
+    // より堅牢なチェック - 必要なデータが揃っていることを確認
+    if (!rushFeeCalculation) {
+      console.error('特急料金の計算結果が不足しています。');
       return null;
     }
 
@@ -86,46 +111,69 @@ export function EstimateResultStep() {
         id: feature.id,
         name: feature.name,
         description: feature.description,
-        unitPrice: feature.price,
+        unitPrice: Math.round(feature.price * 0.5 * 0.95), // 割引後の単価
         quantity: 1,
-        amount: feature.price,
-        note: feature.isRequired ? '必須機能' : undefined,
+        amount: Math.round(feature.price * 0.5 * 0.95), // 割引後の金額
+        note: feature.isRequired ? '必須機能' : '任意機能',
+        duration: feature.duration, // 工数（日数）を追加
       }));
 
-      const implementationCostItems: EstimateItem[] = [];
-      if (implementationCosts.designCost.amount > 0) {
-        implementationCostItems.push({
-          id: 'impl-design',
-          name: 'デザイン関連費用',
-          description: implementationCosts.designCost.reason,
-          unitPrice: implementationCosts.designCost.amount,
-          quantity: 1,
-          amount: implementationCosts.designCost.amount,
-          note: `期間影響: ${implementationCosts.designCost.duration}日`,
-        });
-      }
-      if (implementationCosts.assetsCost.amount > 0) {
-        implementationCostItems.push({
-          id: 'impl-assets',
-          name: 'アセット関連費用',
-          description: implementationCosts.assetsCost.reason,
-          unitPrice: implementationCosts.assetsCost.amount,
-          quantity: 1,
-          amount: implementationCosts.assetsCost.amount,
-          note: `期間影響: ${implementationCosts.assetsCost.duration}日`,
-        });
-      }
-      if (implementationCosts.contentCost.amount > 0) {
-        implementationCostItems.push({
-          id: 'impl-content',
-          name: 'コンテンツ関連費用',
-          description: implementationCosts.contentCost.reason,
-          unitPrice: implementationCosts.contentCost.amount,
-          quantity: 1,
-          amount: implementationCosts.contentCost.amount,
-          note: `期間影響: ${implementationCosts.contentCost.duration}日`,
-        });
-      }
+      // 実装コスト項目を追加する関数
+      const createImplementationItems = (): EstimateItem[] => {
+        const items: EstimateItem[] = [];
+
+        // implementationCostsが存在し、各プロパティが存在して金額が正の数の場合のみ追加
+        if (implementationCosts) {
+          const { designCost, assetsCost, contentCost } = implementationCosts;
+
+          // デザインコスト
+          if (designCost && designCost.amount > 0) {
+            items.push({
+              id: 'impl-design',
+              name: 'デザイン関連費用',
+              description: designCost.reason || 'デザイン関連の追加コスト',
+              unitPrice: designCost.amount,
+              quantity: 1,
+              amount: designCost.amount,
+              note: `期間影響: ${designCost.duration}日（割引対象外）`,
+              duration: designCost.duration,
+            });
+          }
+
+          // アセットコスト
+          if (assetsCost && assetsCost.amount > 0) {
+            items.push({
+              id: 'impl-assets',
+              name: 'アセット関連費用',
+              description: assetsCost.reason || 'アセット関連の追加コスト',
+              unitPrice: assetsCost.amount,
+              quantity: 1,
+              amount: assetsCost.amount,
+              note: `期間影響: ${assetsCost.duration}日（割引対象外）`,
+              duration: assetsCost.duration,
+            });
+          }
+
+          // コンテンツコスト
+          if (contentCost && contentCost.amount > 0) {
+            items.push({
+              id: 'impl-content',
+              name: 'コンテンツ関連費用',
+              description: contentCost.reason || 'コンテンツ関連の追加コスト',
+              unitPrice: contentCost.amount,
+              quantity: 1,
+              amount: contentCost.amount,
+              note: `期間影響: ${contentCost.duration}日（割引対象外）`,
+              duration: contentCost.duration,
+            });
+          }
+        }
+
+        return items;
+      };
+
+      // 実装コスト項目を生成
+      const implementationCostItems = createImplementationItems();
 
       const estimateDataForPdf: EstimateWithItems = {
         id: uuidv4(),
@@ -138,8 +186,9 @@ export function EstimateResultStep() {
         description: formData?.description,
         validUntil: new Date(new Date().setMonth(new Date().getMonth() + 1)),
         paymentTerms: '納品後30日以内にお支払いください。',
-        salesPerson: '担当: 新沼 企画',
+        salesPerson: 'ニイヌマ企画印刷',
         totalAmount: rushFeeCalculation.totalPrice,
+        originalPrice: traditionalTotalPrice,
         totalDuration: totalDuration,
         rushFee: rushFeeCalculation.rushFee,
         rushFeeNote:
@@ -149,8 +198,11 @@ export function EstimateResultStep() {
         notes: [
           'この見積もりは概算です。',
           '詳細な要件定義後に最終的な金額と期間が確定します。',
+          '最新の開発手法により、開発費用は52.5%割引されています（デザイン費用は割引対象外）。',
+          `合計${actualDiscountRate}%のコスト削減を実現しました。`,
         ],
         items: [...featureItems, ...implementationCostItems],
+        implementationRequirements: formData.implementationRequirements,
       };
 
       // サーバーアクションをimportしてそのまま呼び出す
@@ -162,252 +214,44 @@ export function EstimateResultStep() {
     }
   };
 
-  // PDF生成・表示用のクライアントコンポーネントに渡すestimateDataの作成
-  const estimateData: EstimateWithItems = {
-    id: uuidv4(),
-    estimateNumber: `EST-${new Date().toISOString().slice(0, 10)}`,
-    issueDate: new Date(),
-    customerName: formData.customerName || 'お客様',
-    projectName: `プロジェクト見積もり (${formData.projectType})`,
-    projectType: formData.projectType as ProjectType,
-    deadline: formData.deadline as Deadline,
-    description: formData.description,
-    totalAmount: rushFeeCalculation.totalPrice,
-    totalDuration: totalDuration,
-    items: [],
-  };
+  // 開発期間を柔軟に設定するための処理
+  const handleSetFlexibleDeadline = () => {
+    // 開発期間をflexibleに設定して、特急料金を再計算
+    const newRushFee = calculateRushFee(
+      modernTotalPrice,
+      totalDuration,
+      'flexible'
+    );
 
-  // PDF生成・表示用のestimateDataをメモ化
-  const estimateDataMemo = useMemo((): EstimateWithItems => {
-    return {
-      id: uuidv4(),
-      estimateNumber: `EST-${new Date().toISOString().slice(0, 10)}`,
-      issueDate: new Date(),
-      customerName: formData.customerName || 'お客様',
-      projectName: `プロジェクト見積もり (${formData.projectType})`,
-      projectType: formData.projectType as ProjectType,
-      deadline: formData.deadline as Deadline,
-      description: formData.description,
-      totalAmount: rushFeeCalculation.totalPrice,
-      totalDuration: totalDuration,
-      items: [],
-    };
-  }, [
-    formData.customerName,
-    formData.projectType,
-    formData.deadline,
-    formData.description,
-    rushFeeCalculation.totalPrice,
-    totalDuration,
-  ]);
+    // コンソールに新しい計算結果を表示（デバッグ用）
+    console.log('適切な開発期間に設定:', newRushFee);
+  };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-bold mb-4">見積もり概要</h3>
-        <Card className="p-4 space-y-4">
-          <div>
-            <div className="text-sm text-muted-foreground mb-1">
-              プロジェクトの種類
-            </div>
-            <div className="font-medium">
-              {formData.projectType === 'website'
-                ? 'Webサイト'
-                : formData.projectType === 'business_system'
-                  ? '業務システム'
-                  : formData.projectType === 'application'
-                    ? 'Webアプリケーション'
-                    : 'その他'}
-            </div>
-          </div>
-          <div>
-            <div className="text-sm text-muted-foreground mb-1">開発期間</div>
-            <div className="font-medium">
-              {formData.deadline === 'asap'
-                ? 'できるだけ早く'
-                : formData.deadline === '1month'
-                  ? '1ヶ月以内'
-                  : formData.deadline === '3months'
-                    ? '3ヶ月以内'
-                    : formData.deadline === '6months'
-                      ? '6ヶ月以内'
-                      : '柔軟に対応可能'}
-            </div>
-          </div>
-          <div>
-            <div className="text-sm text-muted-foreground mb-1">
-              プロジェクトの概要
-            </div>
-            <div className="font-medium whitespace-pre-wrap">
-              {formData.description}
-            </div>
-          </div>
-        </Card>
-      </div>
+      {/* 見積もり概要 */}
+      <EstimateSummary
+        projectType={formData.projectType}
+        deadline={formData.deadline}
+        description={formData.description}
+      />
 
-      <div>
-        <h3 className="text-lg font-bold mb-4">選択された機能</h3>
-        <div className="grid gap-4">
-          {selectedFeatures.map((feature) => (
-            <Card key={feature.id} className="p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="font-medium">{feature.name}</div>
-                    {feature.isRequired && <Badge>必須</Badge>}
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    {feature.description}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <div className="font-medium">
-                    {feature.price.toLocaleString()}円
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    約{feature.duration.toFixed(1)}日
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </div>
+      {/* 機能一覧 */}
+      <FeatureList features={selectedFeatures} />
 
-      {implementationCosts &&
-        (implementationCosts.designCost.amount > 0 ||
-          implementationCosts.assetsCost.amount > 0 ||
-          implementationCosts.contentCost.amount > 0) && (
-          <div>
-            <h3 className="text-lg font-bold mb-4">追加実装要件</h3>
-            <div className="grid gap-4">
-              {implementationCosts &&
-                implementationCosts.designCost.amount > 0 && (
-                  <Card className="p-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="font-medium">デザイン関連</div>
-                        <p className="text-sm text-muted-foreground">
-                          {implementationCosts?.designCost.reason}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-medium">
-                          {implementationCosts?.designCost.amount.toLocaleString()}
-                          円
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                )}
-              {implementationCosts &&
-                implementationCosts.assetsCost.amount > 0 && (
-                  <Card className="p-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="font-medium">アセット関連</div>
-                        <p className="text-sm text-muted-foreground">
-                          {implementationCosts?.assetsCost.reason}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-medium">
-                          {implementationCosts?.assetsCost.amount.toLocaleString()}
-                          円
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                )}
-              {implementationCosts &&
-                implementationCosts.contentCost.amount > 0 && (
-                  <Card className="p-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="font-medium">コンテンツ関連</div>
-                        <p className="text-sm text-muted-foreground">
-                          {implementationCosts?.contentCost.reason}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-medium">
-                          {implementationCosts?.contentCost.amount.toLocaleString()}
-                          円
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                )}
-            </div>
-          </div>
-        )}
+      {/* 実装要件 */}
+      <ImplementationRequirements costs={implementationCosts} />
 
-      <Card className="p-4">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h3 className="text-lg font-bold mb-1">見積もり合計</h3>
-            <p className="text-sm text-muted-foreground">
-              選択した機能と追加実装要件の合計金額と想定開発期間
-            </p>
-          </div>
-          <div className="text-right">
-            {rushFeeCalculation.rushFee > 0 ? (
-              <>
-                <div className="text-base line-through text-muted-foreground mb-1">
-                  {rushFeeCalculation.basePrice.toLocaleString()}円
-                </div>
-                <div className="text-2xl font-bold mb-1 text-primary">
-                  {rushFeeCalculation.totalPrice.toLocaleString()}円
-                </div>
-                <div className="text-sm text-muted-foreground mb-2">
-                  （特急料金：{rushFeeCalculation.rushFee.toLocaleString()}
-                  円）
-                </div>
-              </>
-            ) : (
-              <div className="text-2xl font-bold mb-1">
-                {rushFeeCalculation.totalPrice.toLocaleString()}円
-              </div>
-            )}
-            <div className="text-sm text-muted-foreground">
-              想定開発期間：約{totalDuration.toFixed(1)}日
-            </div>
-          </div>
-        </div>
-
-        {rushFeeCalculation.rushFee > 0 && (
-          <div className="space-y-4 mb-6">
-            {rushFeeCalculation.isTimelineDangerous ? (
-              <Alert
-                variant="destructive"
-                className="bg-destructive/10 border-none"
-              >
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>{rushFeeCalculation.reason}</AlertDescription>
-              </Alert>
-            ) : (
-              <div className="p-3 bg-primary/5 rounded-md text-sm">
-                {rushFeeCalculation.reason}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* クライアントコンポーネントに処理を委譲 */}
-        <EstimateResultActions
-          isPdfGenerating={false}
-          estimateData={estimateDataMemo}
-          pdfUrl={null}
-          onGeneratePdf={generatePdf}
-          onSendInquiry={() => {
-            // 問い合わせ処理
-          }}
-          onAdjustDeadline={() => {
-            // 開発期間調整
-          }}
-          hasRushFee={rushFeeCalculation.rushFee > 0}
-        />
-      </Card>
+      {/* 合計金額 */}
+      <TotalSummary
+        traditionalTotalPrice={traditionalTotalPrice}
+        modernTotalPrice={modernTotalPrice}
+        actualDiscountRate={actualDiscountRate}
+        totalDuration={totalDuration}
+        rushFeeCalculation={rushFeeCalculation}
+        generatePdf={generatePdf}
+        onSetFlexibleDeadline={handleSetFlexibleDeadline}
+      />
 
       <div className="text-sm text-muted-foreground">
         <p>※ この見積もりは概算です。</p>

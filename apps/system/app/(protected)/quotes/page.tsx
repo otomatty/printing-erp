@@ -173,7 +173,7 @@ export default function QuotesPage() {
               <input
                 type="text"
                 placeholder="見積番号、顧客名、タイトルで検索..."
-                className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary"
               />
               <Search
                 className="absolute left-3 top-2.5 text-gray-400"
@@ -190,7 +190,7 @@ export default function QuotesPage() {
                 絞り込み
               </button>
 
-              <select className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+              <select className="border rounded-md px-4 py-2 focus:outline-none focus:ring focus:ring-primary">
                 <option value="">すべてのステータス</option>
                 <option value="draft">下書き</option>
                 <option value="sent">送信済み</option>
