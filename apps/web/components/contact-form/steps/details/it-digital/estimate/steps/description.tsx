@@ -1,9 +1,8 @@
 'use client';
 
 import { useAtom } from 'jotai';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { formDataAtom } from '~/store/estimate';
-import { Label } from '@kit/ui/label';
 import { Textarea } from '@kit/ui/textarea';
 import { Card } from '@kit/ui/card';
 import { Button } from '@kit/ui/button';

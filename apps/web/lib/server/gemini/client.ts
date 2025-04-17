@@ -70,13 +70,13 @@ const enforceRequestInterval = async () => {
 };
 
 /**
- * Gemini APIにリクエストを送信する（リトライロジック付き）
+ * Gemini APIにリクエストを送信し、パース済みのJSONオブジェクトを返す
  */
-export async function generateGeminiResponse(
+export async function generateGeminiResponse<T = unknown>(
   prompt: string,
   maxRetries = 5, // リトライ回数を増やす
   initialRetryDelay = 2000 // 初期待機時間を増やす
-): Promise<string> {
+): Promise<T> {
   let lastError: Error | null = null;
   let retryCount = 0;
 
@@ -101,10 +101,9 @@ export async function generateGeminiResponse(
       // JSONを抽出して返す
       const jsonText = extractJSON(text);
 
-      // 抽出したJSONが有効かチェック
+      // 抽出したJSONをパースしてオブジェクトを返す
       try {
-        JSON.parse(jsonText);
-        return jsonText;
+        return JSON.parse(jsonText) as T;
       } catch (parseError) {
         console.error('Invalid JSON response:', jsonText);
         throw new Error('Invalid JSON response from Gemini API');

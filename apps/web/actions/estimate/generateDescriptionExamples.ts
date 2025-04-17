@@ -12,16 +12,19 @@ export interface DescriptionExample {
   references: string[];
 }
 
+interface GeminiResponse {
+  examples: DescriptionExample[];
+}
+
 export async function generateDescriptionExamples(
   projectType: ProjectType,
   currentDescription?: string
 ): Promise<DescriptionExample[]> {
   try {
     const prompt = generateDescriptionPrompt(projectType, currentDescription);
-    const response = await generateGeminiResponse(prompt);
-    const { examples } = JSON.parse(response);
+    const response = await generateGeminiResponse<GeminiResponse>(prompt);
 
-    return examples;
+    return response.examples;
   } catch (error) {
     console.error('Error generating description examples:', error);
     throw error;

@@ -1,5 +1,3 @@
-// import type { ProjectType } from '~/types/estimate'; // 古いパスはコメントアウト
-// import type { ProjectType } from '../../../app/services/estimate/_types/estimate'; // 新しいパスを参照
 import type { ProjectType } from '../../../../types/estimate'; // さらに階層を遡る
 
 export function generateDescriptionPrompt(
