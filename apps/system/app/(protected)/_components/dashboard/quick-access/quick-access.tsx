@@ -65,7 +65,7 @@ export default function DashboardQuickAccess({
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">クイックアクセス</h2>
+        <h2 className="text-xl font-semibold">よくやる仕事</h2>
         <Button
           variant="outline"
           size="sm"

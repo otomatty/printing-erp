@@ -6,6 +6,9 @@ const PathsSchema = z.object({
     verifyMfa: z.string().min(1),
     callback: z.string().min(1),
     mustAuthenticate: z.string().min(1),
+    acceptInvitation: z.string().min(1),
+    invalidInvitation: z.string().min(1),
+    error: z.string().min(1),
   }),
   app: z.object({
     home: z.string().min(1),
@@ -28,6 +31,9 @@ const pathsConfig = PathsSchema.parse({
     verifyMfa: '/auth/verify',
     callback: '/auth/callback',
     mustAuthenticate: '/auth/must-authenticate',
+    acceptInvitation: '/auth/accept-invitation',
+    invalidInvitation: '/auth/invalid-invitation',
+    error: '/auth/error',
   },
   app: {
     home: '/',
@@ -46,6 +52,9 @@ const pathsConfig = PathsSchema.parse({
     '/auth/callback',
     '/auth/verify',
     '/auth/must-authenticate',
+    '/auth/accept-invitation',
+    '/auth/invalid-invitation',
+    '/auth/error',
   ],
 } satisfies z.infer<typeof PathsSchema>);
 

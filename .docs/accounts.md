@@ -47,7 +47,7 @@
 |------|------|
 | アカウント名 | Saedgewell(菅井 瑛正アカウント) |
 | 管理ドメイン | niinuma-kikaku.com |
-| 取得日 | 2025/4/16 |
+| 取得日 | 2025/04/16 |
 | 更新日 | 2026/4/16 |
 | 自動更新設定 | あり |
 | ネームサーバー | Vercelに設定 |
@@ -63,7 +63,7 @@
 | デプロイURL | Web: `https://niinuma-kikaku.com`<br>アプリ: `https://app.niinuma-kikaku.com`<br>システム: `https://system.niinuma-kikaku.com` |
 | GitHubリポジトリ連携 | https://github.com/otomatty/niinuma-kikaku |
 | デプロイブランチ | main |
-| 利用開始日 | 2025/4/16 |
+| 利用開始日 | 2025/04/16 |
 | 料金プラン | Hobby(今後Proプランに移行) |
 | 支払い担当者 | Saedgewell(菅井 瑛正) |
 
@@ -76,13 +76,25 @@
 | プロジェクトURL | `https://utqwsibqiealdgvocyie.supabase.co` |
 | アカウント管理者 | Saedgewell(菅井 瑛正) |
 | プロジェクトアカウント | niinuma-kikaku |
-| 利用開始日 | 2025/4/16 |
+| 利用開始日 | 2025/04/16 |
 | 料金プラン | free |
 | APIキー管理 | `.env`ファイルに記載・Vercel環境変数に設定 |
 | バックアップ頻度 | (今後検討) |
 | 支払い担当者 | Saedgewell(菅井 瑛正) |
 
-### 2.6 Mastra(**Saedgewell**)
+### 2.6 Resend(**共用**)
+| 項目 | 情報 |
+|------|------|
+| プロジェクトURL | `https://utqwsibqiealdgvocyie.supabase.co` |
+| アカウント管理者 | Saedgewell(菅井 瑛正) |
+| プロジェクトアカウント | niinuma-kikaku |
+| 利用開始日 | 2025/04/18 |
+| 料金プラン | free |
+| APIキー管理 | `.env`ファイルに記載・Vercel環境変数に設定 |
+| バックアップ頻度 | (今後検討) |
+| 支払い担当者 | Saedgewell(菅井 瑛正) |
+
+### 2.7 Mastra(**Saedgewell**)
 - 菅井が管理しているAPIシステム
 - Vercelにデプロイしている
 | 項目 | 情報 |

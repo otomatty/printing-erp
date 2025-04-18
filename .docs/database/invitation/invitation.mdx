@@ -1,0 +1,172 @@
+# invitations テーブル設計 (更新版)
+
+## 概要
+
+`invitations` テーブルは、システムへの新規ユーザー招待を管理するためのテーブルです。管理者ユーザーが未登録のユーザーを招待し、その招待ステータス（保留中、検証済み、承諾済みなど）を追跡します。
+
+招待されたユーザーは、メール内の招待リンクをクリックすると、まず招待トークンが検証されます。検証後、ユーザーは通常のサインインフロー（Magic Link または Google 認証）に進みます。ユーザーが初めてサインインすると、`auth.users` テーブルへの挿入をトリガーとしてデータベース関数が実行され、有効な招待 (`status = 'verified'`) を持つユーザーが自動的に `system.admin_users` テーブルに `staff` として登録され、招待ステータスが `accepted` に更新されます。
+
+このテーブルは `system.admin_users` テーブルと連携し、どの管理者が招待を発行したかを記録し、また `auth.users` テーブルと連携して、どの認証ユーザーが招待を承諾したかを記録します。
+
+## テーブル構造
+
+```sql
+-- 招待ステータス用のENUM型 (更新: 'verified' を追加)
+CREATE TYPE public.invitation_status AS ENUM (
+  'pending',
+  'accepted',
+  'expired',
+  'revoked',
+  'verified' -- 招待リンク検証済み、サインイン待ち状態
+);
+
+-- invitations テーブル定義 (invitations スキーマ内、更新: accepted_auth_user_id を追加)
+CREATE TABLE invitations.invitations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL,
+  token TEXT NOT NULL UNIQUE,
+  invited_by_user_id UUID NOT NULL REFERENCES system.admin_users(id) ON DELETE CASCADE,
+  status public.invitation_status NOT NULL DEFAULT 'pending',
+  expires_at TIMESTAMPTZ NOT NULL,
+  accepted_auth_user_id UUID NULL REFERENCES auth.users(id) ON DELETE SET NULL, -- 追加: 承諾したユーザーID
+  created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
+COMMENT ON TABLE invitations.invitations IS 'ユーザー招待情報を管理するテーブル';
+COMMENT ON COLUMN invitations.invitations.id IS '招待ID (主キー)';
+COMMENT ON COLUMN invitations.invitations.email IS '招待されたユーザーのメールアドレス';
+COMMENT ON COLUMN invitations.invitations.token IS '招待リンク検証用の一意なトークン';
+COMMENT ON COLUMN invitations.invitations.invited_by_user_id IS '招待を発行した管理者ユーザーID (system.admin_users.id)';
+COMMENT ON COLUMN invitations.invitations.status IS '招待ステータス (pending, verified, accepted, expired, revoked)';
+COMMENT ON COLUMN invitations.invitations.expires_at IS '招待の有効期限';
+COMMENT ON COLUMN invitations.invitations.accepted_auth_user_id IS '招待を承諾した認証ユーザーのID (auth.users.id)'; -- 追加
+COMMENT ON COLUMN invitations.invitations.created_at IS 'レコード作成日時';
+COMMENT ON COLUMN invitations.invitations.updated_at IS 'レコード最終更新日時';
+```
+
+## フィールド詳細
+
+| フィールド名              | 型                       | 説明                                       | NULL許容 | デフォルト値               |
+| :------------------------ | :------------------------- | :----------------------------------------- | :------- | :------------------------- |
+| id                        | UUID                       | プライマリキー                             | 不可     | `gen_random_uuid()`        |
+| email                     | TEXT                       | 招待されたメールアドレス                   | 不可     | なし                       |
+| token                     | TEXT                       | 招待リンク検証用の一意なトークン           | 不可     | なし                       |
+| invited_by_user_id      | UUID                       | 招待した管理者ユーザーのID                 | 不可     | なし                       |
+| status                    | `public.invitation_status` | 招待ステータス                             | 不可     | `'pending'`                |
+| expires_at                | TIMESTAMPTZ                | 招待の有効期限                             | 不可     | なし                       |
+| accepted_auth_user_id | UUID                       | **追加:** 招待を承諾した認証ユーザーのID | 可       | なし                       |
+| created_at                | TIMESTAMPTZ                | 作成日時                                   | 不可     | `timezone('utc', now())`   |
+| updated_at                | TIMESTAMPTZ                | 更新日時                                   | 不可     | `timezone('utc', now())`   |
+
+## ENUM型: `invitation_status`
+
+招待の現在の状態を示すためのENUM型です。
+
+| 値          | 説明                                                           |
+| :---------- | :------------------------------------------------------------- |
+| `pending`   | 招待メール送信済み、ユーザー未クリック                       |
+| `verified`  | **追加:** 招待リンククリック済み、トークン検証成功、サインイン待ち |
+| `accepted`  | ユーザーがサインインし、`admin_users` への登録完了           |
+| `expired`   | 招待の有効期限切れ                                           |
+| `revoked`   | 管理者によって招待が手動で取り消された                       |
+
+## インデックス
+
+クエリパフォーマンス向上のために以下のインデックスを設定します。（変更なし）
+
+```sql
+CREATE UNIQUE INDEX idx_invitations_token ON invitations.invitations(token);
+CREATE INDEX idx_invitations_email ON invitations.invitations(email);
+CREATE INDEX idx_invitations_status ON invitations.invitations(status);
+CREATE INDEX idx_invitations_invited_by_user_id ON invitations.invitations(invited_by_user_id);
+-- 必要であれば accepted_auth_user_id にもインデックスを追加
+-- CREATE INDEX idx_invitations_accepted_auth_user_id ON invitations.invitations(accepted_auth_user_id);
+```
+
+## 制約
+
+- **プライマリキー**: `id` フィールド
+- **ユニーク制約**: `token`
+- **外部キー制約**:
+    - `invited_by_user_id` は `system.admin_users(id)` を参照 (CASCADE DELETE)
+    - `accepted_auth_user_id` は `auth.users(id)` を参照 (SET NULL ON DELETE)
+
+## RLSポリシー
+
+Row Level Security (RLS) を有効化し、アクセス制御を行います。
+
+**注意:** 招待承諾ロジックは API ルート (`service_role`) とデータベーストリガー/関数 (`SECURITY DEFINER`) によって処理されるため、`anon` (未認証ユーザー) ロールに対する明示的なポリシーは不要になりました。
+
+```sql
+-- RLSを有効化
+ALTER TABLE invitations.invitations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE invitations.invitations FORCE ROW LEVEL SECURITY;
+
+-- 管理者 (JWTのis_adminフラグがtrue) 向けのポリシー (操作別に分割)
+
+CREATE POLICY "Admin users can insert invitations"
+ON invitations.invitations FOR INSERT TO authenticated
+WITH CHECK ( (current_setting('request.jwt.claims', true)::json->'app_metadata'->>'is_admin')::boolean = true );
+
+CREATE POLICY "Admin users can select invitations"
+ON invitations.invitations FOR SELECT TO authenticated
+USING ( (current_setting('request.jwt.claims', true)::json->'app_metadata'->>'is_admin')::boolean = true );
+
+CREATE POLICY "Admin users can update invitations"
+ON invitations.invitations FOR UPDATE TO authenticated
+USING ( (current_setting('request.jwt.claims', true)::json->'app_metadata'->>'is_admin')::boolean = true )
+WITH CHECK ( (current_setting('request.jwt.claims', true)::json->'app_metadata'->>'is_admin')::boolean = true );
+
+CREATE POLICY "Admin users can delete invitations"
+ON invitations.invitations FOR DELETE TO authenticated
+USING ( (current_setting('request.jwt.claims', true)::json->'app_metadata'->>'is_admin')::boolean = true );
+
+-- service_role は常に全ての操作が可能 (トリガー関数等が利用)
+GRANT ALL ON TABLE invitations.invitations TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE invitations.invitations TO service_role;
+```
+
+## 自動更新トリガー (`updated_at`)
+
+レコード更新時に `updated_at` フィールドを自動更新するためのトリガーを設定します。（変更なし）
+
+```sql
+-- 既存の public.handle_updated_at() 関数を利用
+CREATE TRIGGER invitations_updated_at
+BEFORE UPDATE ON invitations.invitations
+FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+```
+
+## データベース関数とトリガー (招待承諾処理)
+
+**新規:** 招待承諾の主要ロジックは、`auth.users` テーブルの `INSERT` をトリガーとするデータベース関数によって処理されます。
+
+-   **関数:** `public.handle_new_user_invitation_acceptance()`
+    -   `SECURITY DEFINER` として実行されます。
+    -   新しく作成された `auth.users` レコードのメールアドレスに対応する、`status = 'verified'` の招待レコードを検索します。
+    -   該当する招待が見つかった場合、`system.admin_users` に `staff` としてレコードを挿入し、`invitations` テーブルのステータスを `accepted` に更新します。
+-   **トリガー:** `on_auth_user_created_handle_invitation`
+    -   `auth.users` テーブルに対する `AFTER INSERT` トリガー。
+    -   新しいユーザーレコードが作成されるたびに `handle_new_user_invitation_acceptance()` 関数を実行します。
+
+```sql
+-- 関数定義 (再掲)
+CREATE OR REPLACE FUNCTION public.handle_new_user_invitation_acceptance()
+  RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, system, invitations
+AS $$ ... 省略 ... $$;
+
+-- トリガー定義 (再掲)
+CREATE TRIGGER on_auth_user_created_handle_invitation
+  AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user_invitation_acceptance();
+```
+
+## 使用パターン (更新版)
+
+このテーブルは以下の目的で使用されます：
+
+1.  **招待の作成**: 管理者が `inviteUserAction` を通じてレコードを作成 (`status = 'pending'`)。
+2.  **トークン検証**: API ルート (`accept-invitation`) が招待リンクのトークンを検証し、成功したら `status` を `'verified'` に更新してサインインページへリダイレクト。
+3.  **承諾処理 (トリガー)**: ユーザーがサインインし `auth.users` レコードが作成されると、トリガーが発火。データベース関数が `'verified'` の招待を探し、見つかれば `admin_users` に追加して `status` を `'accepted'` に更新。
+4.  **ステータス追跡**: 招待がどの段階にあるか (`pending`, `verified`, `accepted`, `expired`, `revoked`) を管理。
+5.  **招待履歴の管理**: 誰が誰を招待し、いつ承諾されたか（`accepted_auth_user_id` で）を記録。

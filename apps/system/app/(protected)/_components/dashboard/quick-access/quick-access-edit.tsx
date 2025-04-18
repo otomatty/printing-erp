@@ -389,7 +389,7 @@ export function QuickAccessEdit({ items, onComplete }: QuickAccessEditProps) {
       >
         <DroppableSection
           id="user-items"
-          title="あなたのクイックアクセス"
+          title="あなたのよくやる仕事"
           description="ドラッグ&ドロップで並べ替えまたは削除できます"
         >
           {userItems.length > 0 ? (

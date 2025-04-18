@@ -7,6 +7,61 @@ export type Json =
   | Json[]
 
 export type Database = {
+  invitations: {
+    Tables: {
+      invitations: {
+        Row: {
+          accepted_auth_user_id: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by_user_id: string
+          role: string
+          status: Database["public"]["Enums"]["invitation_status"]
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_auth_user_id?: string | null
+          created_at?: string
+          email: string
+          expires_at: string
+          id?: string
+          invited_by_user_id: string
+          role?: string
+          status?: Database["public"]["Enums"]["invitation_status"]
+          token: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_auth_user_id?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by_user_id?: string
+          role?: string
+          status?: Database["public"]["Enums"]["invitation_status"]
+          token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       contact_inquiries: {
@@ -376,6 +431,12 @@ export type Database = {
     }
     Enums: {
       admin_role: "admin" | "staff"
+      invitation_status:
+        | "pending"
+        | "accepted"
+        | "expired"
+        | "revoked"
+        | "verified"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -661,9 +722,19 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  invitations: {
+    Enums: {},
+  },
   public: {
     Enums: {
       admin_role: ["admin", "staff"],
+      invitation_status: [
+        "pending",
+        "accepted",
+        "expired",
+        "revoked",
+        "verified",
+      ],
     },
   },
   system: {

@@ -32,13 +32,13 @@ export default async function InquiriesPage() {
         }}
         actions={
           <div className="flex gap-2">
-            <Link href="/system/inquiries/reports">
+            <Link href="/inquiries/reports">
               <Button variant="outline">
                 <BarChart className="h-4 w-4 mr-2" />
                 レポート
               </Button>
             </Link>
-            <Link href="/system/inquiries/new">
+            <Link href="/inquiries/new">
               <Button>
                 <PlusCircle className="h-4 w-4 mr-2" />
                 新規作成

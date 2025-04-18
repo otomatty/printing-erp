@@ -211,7 +211,7 @@ export default function NavigationMenu() {
       status: 'unavailable',
     },
 
-    // 管理カテゴリ
+    // システム管理カテゴリ
     {
       href: '/notifications',
       title: '通知',
@@ -223,6 +223,13 @@ export default function NavigationMenu() {
       href: '/settings',
       title: '設定',
       icon: <Settings className="h-6 w-6" />,
+      category: 'admin',
+      status: 'available',
+    },
+    {
+      href: '/users',
+      title: 'ユーザー管理',
+      icon: <Users className="h-6 w-6" />,
       category: 'admin',
       status: 'available',
     },

@@ -91,13 +91,9 @@ export function createMiddlewareClient<GenericSchema = Database>(
     if (host.startsWith('localhost')) {
       domain = 'localhost'; // ポートなし、ドットなし
     }
-    // 開発環境の場合 (.saedgewell.test)
-    else if (host.includes('saedgewell.test')) {
-      domain = '.saedgewell.test';
-    }
-    // 本番環境の場合 (.saedgewell.net)
-    else if (host.includes('saedgewell.net')) {
-      domain = '.saedgewell.net';
+    // 本番環境の場合 (.niinuma-kikaku.com)
+    else if (host.includes('niinuma-kikaku.com')) {
+      domain = '.niinuma-kikaku.com';
     }
     // その他のドメインの場合: トップレベルドメインを抽出
     else if (host.includes('.')) {
@@ -106,6 +102,12 @@ export function createMiddlewareClient<GenericSchema = Database>(
         domain = `.${parts.slice(-2).join('.')}`;
       }
     }
+
+    // --- デバッグログ追加 ---
+    console.log('[Middleware Client] Detected host:', host);
+    console.log('[Middleware Client] Determined cookie domain:', domain);
+    // --- デバッグログ追加ここまで ---
+
     // 環境変数によるドメイン設定の上書き (コメントアウトされたまま)
     /*
     if (process.env.AUTH_COOKIE_DOMAIN) {
@@ -150,6 +152,14 @@ export function createMiddlewareClient<GenericSchema = Database>(
                   process.env.NODE_ENV === 'production' ||
                   !host.startsWith('localhost'),
               };
+
+              // --- デバッグログ追加 ---
+              console.log(`[Middleware Client] Setting cookie: ${name}`, {
+                value: value.substring(0, 10) + '...', // 値は長すぎるので一部表示
+                options: cookieOptions,
+                envNodeEnv: process.env.NODE_ENV, // NODE_ENVも確認
+              });
+              // --- デバッグログ追加ここまで ---
 
               response.cookies.set(name, value, cookieOptions);
             }
