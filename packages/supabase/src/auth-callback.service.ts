@@ -535,16 +535,8 @@ class AuthCallbackService {
 
       // この例では静的なURLリストを返します
       return [
-        'http://localhost:3000',
-        'http://saedgewell.test',
-        'http://docs.saedgewell.test',
-        'http://admin.saedgewell.test',
-        'https://saedgewell.test',
-        'https://docs.saedgewell.test',
-        'https://admin.saedgewell.test',
-        'https://saedgewell.net',
-        'https://docs.saedgewell.net',
-        'https://admin.saedgewell.net',
+        'https://system.niinuma-kikaku.com',
+        'https://app.niinuma-kikaku.com',
       ];
     } catch (error) {
       return [];
