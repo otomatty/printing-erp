@@ -59,6 +59,8 @@ export function Pagination({
     return pages;
   };
 
+  const pageNumbers = getPageNumbers(); // Get the array once
+
   return (
     <div className="flex items-center justify-between px-2 py-4">
       <div className="text-sm text-muted-foreground">
@@ -75,14 +77,19 @@ export function Pagination({
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        {getPageNumbers().map((pageNum, index) =>
-          pageNum === -1 ? (
-            <span key={`ellipsis-${index}`} className="px-2">
-              ...
-            </span>
-          ) : (
+        {pageNumbers.map((pageNum, index) => {
+          if (pageNum === -1) {
+            // Generate a more stable key for ellipsis
+            const key = `ellipsis-${index === 1 ? 'start' : 'end'}`;
+            return (
+              <span key={key} className="px-2">
+                ...
+              </span>
+            );
+          }
+          return (
             <Button
-              key={pageNum}
+              key={pageNum} // Use pageNum as key
               variant={currentPage === pageNum ? 'default' : 'outline'}
               size="icon"
               onClick={() => onPageChange(pageNum)}
@@ -90,13 +97,13 @@ export function Pagination({
             >
               {pageNum}
             </Button>
-          )
-        )}
+          );
+        })}
         <Button
           variant="outline"
           size="icon"
           onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          disabled={currentPage === totalPages || totalPages === 0} // Added check for totalPages === 0
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

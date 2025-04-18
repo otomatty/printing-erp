@@ -25,7 +25,7 @@ const navigationItems = [
   // { href: '/settings/system', label: 'システム管理', icon: Cog },
 ];
 
-export default function SettingsNavigation() {
+export function SettingsNavigation() {
   const pathname = usePathname();
 
   return (
