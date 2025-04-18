@@ -5,21 +5,34 @@ import { useAtom } from 'jotai';
 import { inquiryTypeAtom, currentFormDataAtom } from '~/store/contact-form';
 import type {
   UserInfo,
-  InquiryType,
   PrintServicesFormData,
+  InquiryType,
+  PrintServicesDetails,
+  DigitalServicesDetails,
+  GeneralInquiryDetails,
 } from '~/types/contact-form';
 
 type StepCompleteProps = {
   userInfo: UserInfo;
+  inquiryType: InquiryType;
+  formDetails:
+    | PrintServicesDetails
+    | DigitalServicesDetails
+    | GeneralInquiryDetails
+    | Record<string, never>;
 };
 
 /**
  * 送信完了画面コンポーネント
  * お問い合わせ送信後の完了メッセージを表示する
  */
-export default function StepComplete({ userInfo }: StepCompleteProps) {
-  const [inquiryType] = useAtom(inquiryTypeAtom);
-  const [currentFormData] = useAtom(currentFormDataAtom);
+export default function StepComplete({
+  userInfo,
+  inquiryType,
+  formDetails,
+}: StepCompleteProps) {
+  // const [inquiryType] = useAtom(inquiryTypeAtom);
+  // const [currentFormData] = useAtom(currentFormDataAtom);
 
   // 会社名と氏名から表示名を生成
   const displayName = userInfo.companyName
@@ -31,7 +44,7 @@ export default function StepComplete({ userInfo }: StepCompleteProps) {
     switch (inquiryType) {
       case 'print-services': {
         // currentFormDataを取得して、printInquiryTypeに基づいたメッセージを返す
-        const formData = currentFormData as PrintServicesFormData;
+        const formData = formDetails as PrintServicesDetails;
         if (formData.printInquiryType === 'estimate') {
           return '印刷サービスに関する見積もりのご依頼';
         }

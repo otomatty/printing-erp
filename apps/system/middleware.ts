@@ -12,7 +12,6 @@ import { NextResponse } from 'next/server';
 import { CsrfError, createCsrfProtect } from '@edge-csrf/nextjs';
 
 import { createMiddlewareClient } from '@kit/supabase/middleware-client';
-import { checkIsAdmin } from '@kit/next/actions';
 
 import appConfig from '~/config/app.config';
 import pathsConfig from '~/config/paths.config';
@@ -40,8 +39,8 @@ const intlMiddleware = createNextIntlMiddleware({
  */
 export const config = {
   matcher: [
-    // 静的ファイル、画像、APIルートなどを除外
-    '/((?!_next/static|_next/image|images|locales|assets|api/).*)',
+    // 静的ファイル、画像、APIルート、manifest.jsonなどを除外
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|sw.js|workbox-.*.js).*)',
   ],
 };
 
@@ -144,20 +143,25 @@ function setRequestId(request: Request) {
  */
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
-  const supabase = createMiddlewareClient(request, response);
   const pathname = request.nextUrl.pathname;
 
-  // 認証セッションを取得（これ自体は必要）
-  await supabase.auth.getSession();
+  const supabase = createMiddlewareClient(request, response);
+
+  // セッション更新（これは必要）
+  // getUserの前に実行してセッションを確実に最新にする
+  const { error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) {
+    console.error('[Middleware] Error refreshing session:', sessionError);
+    // セッション取得エラー時の処理 (例: エラーページへリダイレクト)
+    // return NextResponse.redirect(new URL('/error', request.url));
+  }
 
   // 各リクエストに一意のIDを設定
   setRequestId(request);
 
   // 認証が不要なパスはそのまま通す
   const publicPaths = pathsConfig.publicPaths;
-
   if (publicPaths.includes(pathname) || pathname.startsWith('/api/')) {
-    // CSRF 保護は公開パスでも必要に応じて適用 (ここでは省略)
     return response; // 認証不要ならここで終了
   }
 
@@ -165,39 +169,81 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
     error: userError,
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getUser(); // ここでユーザー情報を取得
+
   let isAdmin = false;
   let userId: string | undefined = undefined;
   let userEmail: string | undefined = undefined;
 
-  if (user && !userError) {
+  if (userError && !user) {
+    // エラーがあり、かつユーザーがnullの場合のみログ出力（エラーハンドリングは改善の余地あり）
+    console.error(
+      '[Middleware] Error fetching user and user is null:',
+      userError
+    );
+    // ここでリダイレクトするかどうかは要検討。現状は先に進む
+  }
+
+  if (user) {
     userId = user.id;
     userEmail = user.email;
     try {
-      // サーバーアクションのcheckIsAdmin関数を使用
-      isAdmin = await checkIsAdmin();
+      // --- ★変更点: ここで直接RPCを呼び出す ---
+      // ミドルウェアで作成した supabase クライアントを使用する
+
+      const { data: isAdminResult, error: rpcError } =
+        await supabase.rpc('check_is_admin');
+
+      if (rpcError) {
+        console.error(
+          '[Middleware] Error calling check_is_admin RPC:',
+          rpcError
+        );
+        isAdmin = false; // エラー時は管理者ではないと判断
+      } else {
+        isAdmin = !!isAdminResult; // 結果をbooleanに変換
+      }
+      // --- ★変更点ここまで ---
     } catch (error) {
-      console.error('[ADMIN MIDDLEWARE] Error checking admin status:', error);
-      // エラーの場合は権限なしとして扱う
+      // rpc呼び出し自体の予期せぬエラー
+      console.error(
+        '[Middleware] Unexpected error checking admin status:',
+        error
+      );
       isAdmin = false;
     }
   }
-  // ===========================================
 
   // ユーザー未認証の場合
   if (!user) {
     console.log(
-      '[ADMIN MIDDLEWARE] User not authenticated, redirecting to must-authenticate page'
+      '[Middleware] User not authenticated (user object is null), redirecting to must-authenticate page'
     );
-    return redirectToMustAuthenticatePage(request); // 認証案内ページへ
+    // 未認証なら認証ページへリダイレクト
+    // リダイレクトループを防ぐために、認証ページ自体へのアクセスは除外する
+    if (pathname !== pathsConfig.auth.mustAuthenticate) {
+      return redirectToMustAuthenticatePage(request);
+    }
+    // 既に認証ページにいる場合は何もしないか、別の処理を行う
+    console.log(
+      '[Middleware] Already on must-authenticate page or loop detected. Returning response.'
+    );
+    return response; // or specific handling
   }
 
   // 管理者でない場合
   if (!isAdmin) {
-    console.log(
-      '[ADMIN MIDDLEWARE] User is not admin, redirecting to main site'
-    );
-    return redirectToMainSite(request); // メインサイトへ
+    // 管理者以外のユーザーがアクセスしようとしたパスが、
+    // 管理者専用でない共通パス（例: /dashboard）の場合はリダイレクトしないようにする
+    // 必要に応じて、管理者専用パスのリスト `adminOnlyPaths` を定義
+    const adminOnlyPaths = ['/settings']; // 例: /settings 以下は管理者のみ
+
+    // 現在のパスが管理者専用パスに含まれるかチェック
+    const requiresAdmin = adminOnlyPaths.some((p) => pathname.startsWith(p));
+
+    if (requiresAdmin) {
+      return redirectToMainSite(request); // 管理者専用パスへのアクセスならメインサイトへ
+    }
   }
 
   // --- 認証・権限チェックを通過した場合 ---
@@ -209,14 +255,26 @@ export async function middleware(request: NextRequest) {
     process.env.AUTH_COOKIE_DOMAIN ||
     process.env.COOKIE_DOMAIN;
 
-  // 変更を伴うリクエストにCSRF保護を適用
+  // CSRF保護を適用（変更を伴わないリクエストも含む可能性があるため、ここで適用）
+  // withCsrfMiddleware内でGETなどは除外される
   const csrfResponse = await withCsrfMiddleware(request, response, domain);
+  if (
+    csrfResponse.status !== 200 &&
+    !NextResponse.next().headers.get('x-middleware-next') // Check if it's just passing through
+  ) {
+    console.log(
+      `[Middleware] CSRF middleware returned status ${csrfResponse.status}. Returning CSRF response.`
+    );
+    // CSRFミドルウェアがリダイレクトやエラーレスポンスを返した場合、それを優先する
+    // ただし、NextResponse.next() の場合はヘッダーを設定して続行
+    return csrfResponse;
+  }
 
   // 取得した認証情報をリクエストヘッダーに設定
   const requestHeaders = new Headers(request.headers);
   if (userId) requestHeaders.set('x-user-id', userId);
   if (userEmail) requestHeaders.set('x-user-email', userEmail);
-  requestHeaders.set('x-is-admin', String(isAdmin)); // boolean を文字列に
+  requestHeaders.set('x-is-admin', String(isAdmin));
 
   // サーバーアクションの場合、パスもヘッダーに追加
   if (isServerAction(request)) {
@@ -224,28 +282,19 @@ export async function middleware(request: NextRequest) {
   }
 
   // 設定したヘッダーを持つレスポンスを返す
-  return NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-    headers: csrfResponse.headers, // CSRFミドルウェアが設定したヘッダーも維持
+  // csrfResponseから必要なヘッダー（Set-Cookieなど）をマージする
+  const finalHeaders = new Headers(csrfResponse.headers); // Start with headers from CSRF response
+  requestHeaders.forEach((value, key) => {
+    if (!finalHeaders.has(key)) {
+      // Avoid overwriting CSRF headers like Set-Cookie if already set
+      finalHeaders.set(key, value);
+    }
   });
 
-  // ----- 以下のパターンハンドラーや最後のチェックは不要になるので削除 -----
-  /*
-  // 特定のルートパターンに対するハンドラーを取得
-  const handlePattern = matchUrlPattern(request.url);
-
-  // パターンハンドラーが存在する場合、それを実行
-  if (handlePattern) {
-    const patternHandlerResponse = await handlePattern(request, csrfResponse);
-
-    // パターンハンドラーがレスポンスを返した場合、それを返す
-    if (patternHandlerResponse) {
-      return patternHandlerResponse;
-    }
-  }
-
-  // ... (最後のgetUser, check_is_admin の呼び出しなども削除)
-  */
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders, // ユーザー情報を含むヘッダー (これは内部的なリクエスト用)
+    },
+    headers: finalHeaders, // CSRFトークンなどを含むヘッダー (これがブラウザに返る)
+  });
 }

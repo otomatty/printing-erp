@@ -109,7 +109,7 @@ export default function CompanyInfo() {
                       >
                         <li>各種印刷・製本</li>
                         <li>編集・デザイン</li>
-                        <li>ITデジタル</li>
+                        <li>IT・デジタル</li>
                       </motion.ul>
                     </td>
                   </motion.tr>

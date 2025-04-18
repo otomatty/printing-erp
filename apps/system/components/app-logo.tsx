@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import logo from '~/public/images/logo/logo.webp';
+import logo from '~/public/images/logo/site-logo.webp';
 export function AppLogo({
   href,
   label,
@@ -16,7 +16,7 @@ export function AppLogo({
 
   return (
     <Link aria-label={label ?? 'Home Page'} href={href ?? '/'}>
-      <Image src={logo} alt="Logo" className={className} />
+      <Image src={logo} height={60} alt="Logo" className={className} />
     </Link>
   );
 }

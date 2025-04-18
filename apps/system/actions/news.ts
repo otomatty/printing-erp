@@ -80,19 +80,22 @@ export async function createNews(formData: NewsFormData) {
     const isPublished = validatedData.status === 'published';
     const now = new Date().toISOString();
 
-    // データ作成
-    const newsData = {
+    // データ作成前に空文字列の日付をnullに変換
+    const sanitizedData = {
       ...validatedData,
+      // 空文字列の場合はnullに変換
       published_at:
-        isPublished && !validatedData.published_at
-          ? now
-          : validatedData.published_at,
+        validatedData.published_at === ''
+          ? null
+          : isPublished && !validatedData.published_at
+            ? now
+            : validatedData.published_at,
       author_id: userId,
     };
 
     const { data, error } = await supabase
       .from('news')
-      .insert(newsData)
+      .insert(sanitizedData)
       .select()
       .single();
 
@@ -173,8 +176,10 @@ export async function updateNews(id: string, formData: NewsFormData) {
     const isPublished = validatedData.status === 'published';
     const now = new Date().toISOString();
 
-    // 公開日時の調整
-    let publishedAt = validatedData.published_at;
+    // 公開日時の調整（空文字列をnullに変換）
+    let publishedAt =
+      validatedData.published_at === '' ? null : validatedData.published_at;
+
     if (!wasPublished && isPublished && !publishedAt) {
       publishedAt = now; // 新規公開時、公開日時が未設定なら現在時刻
     }

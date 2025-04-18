@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { isFormValidAtom } from '~/store/contact-form';
+import { isFormValidAtom, digitalServicesFormAtom } from '~/store/contact-form';
 
 // 各フォームコンポーネントをインポート
 import DigitalStandardForm from './standard-form';
@@ -38,6 +38,7 @@ export default function DigitalServiceOptions({
   // 表示モードの状態 - 初期値は選択画面
   const [displayMode, setDisplayMode] = useState<DisplayMode>('selection');
   const setIsFormValid = useAtom(isFormValidAtom)[1];
+  const setDigitalServicesForm = useAtom(digitalServicesFormAtom)[1];
 
   // オプションが選択されたときの処理
   const handleOptionSelect = (mode: 'ai-estimate' | 'standard-form') => {
@@ -46,6 +47,15 @@ export default function DigitalServiceOptions({
     // AI自動見積もりが選択された場合、親コンポーネントに通知
     if (mode === 'ai-estimate' && onAIEstimateSelect) {
       onAIEstimateSelect();
+    }
+
+    // 通常フォーム選択時はdigitalServicesFormAtomをリセット
+    if (mode === 'standard-form') {
+      setDigitalServicesForm({
+        inquiryType: 'digital-services',
+        digitalServiceType: 'standard',
+        projectDescription: '',
+      });
     }
 
     // 選択モードでは常にバリデーションを無効にしておく
@@ -96,7 +106,7 @@ export default function DigitalServiceOptions({
   }
 
   if (displayMode === 'standard-form') {
-    return <DigitalStandardForm onBackToSelection={handleBackToSelection} />;
+    return <DigitalStandardForm />;
   }
 
   // 念のため

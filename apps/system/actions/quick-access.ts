@@ -323,83 +323,168 @@ export async function removeQuickAccessItem(id: string) {
  * （ドラッグアンドドロップUI用）
  */
 export async function getUserAvailableQuickAccessItems() {
-  const supabase = getSupabaseServerClient();
+  console.log('DEBUG: getUserAvailableQuickAccessItems 開始');
+  try {
+    const supabase = getSupabaseServerClient();
+    console.log('DEBUG: Supabaseクライアント取得完了');
 
-  // 現在のユーザーIDを取得
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
+    // 現在のユーザーIDを取得
+    console.log('DEBUG: ユーザー情報取得開始');
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-  if (authError || !user) {
-    return { success: false, error: '認証エラー', items: [] };
-  }
+    if (authError) {
+      console.error('DEBUG: 認証エラー', authError);
+      return {
+        success: false,
+        error: `認証エラー: ${authError.message}`,
+        items: [],
+      };
+    }
 
-  // 管理者ユーザーIDを取得
-  const { data: adminUser, error: adminError } = await supabase
-    .schema('system')
-    .from('admin_users')
-    .select('id')
-    .eq('auth_user_id', user.id)
-    .single();
+    if (!user) {
+      console.error('DEBUG: ユーザーが見つかりません');
+      return { success: false, error: 'ユーザーが見つかりません', items: [] };
+    }
 
-  if (adminError || !adminUser) {
+    console.log(`DEBUG: ユーザー取得成功 ID=${user.id}`);
+
+    // 管理者ユーザーIDを取得
+    console.log('DEBUG: 管理者ユーザー取得開始');
+    const { data: adminUser, error: adminError } = await supabase
+      .schema('system')
+      .from('admin_users')
+      .select('id')
+      .eq('auth_user_id', user.id)
+      .single();
+
+    if (adminError) {
+      console.error('DEBUG: 管理者ユーザー取得エラー', adminError);
+      return {
+        success: false,
+        error: `管理者ユーザーの取得に失敗: ${adminError.message}`,
+        items: [],
+      };
+    }
+
+    if (!adminUser) {
+      console.error('DEBUG: 管理者ユーザーが見つかりません');
+      return {
+        success: false,
+        error: '管理者ユーザーが見つかりません',
+        items: [],
+      };
+    }
+
+    console.log(`DEBUG: 管理者ユーザー取得成功 ID=${adminUser.id}`);
+
+    // ユーザーが既に関連付けているアイテムIDを取得
+    console.log('DEBUG: 関連付け済みアイテム取得開始');
+    const { data: userItems, error: userItemsError } = await supabase
+      .schema('system')
+      .from('admin_quick_access')
+      .select('item_id')
+      .eq('admin_user_id', adminUser.id);
+
+    if (userItemsError) {
+      console.error('DEBUG: ユーザー関連アイテム取得エラー', userItemsError);
+      return {
+        success: false,
+        error: `ユーザー設定の取得に失敗: ${userItemsError.message}`,
+        items: [],
+      };
+    }
+
+    // 関連付け済みのアイテムIDの配列
+    const linkedItemIds = userItems?.map((item) => item.item_id) || [];
+    console.log(`DEBUG: 関連付け済みアイテム数=${linkedItemIds.length}`);
+    if (linkedItemIds.length > 0) {
+      console.log(
+        `DEBUG: 関連付け済みアイテムIDs=${JSON.stringify(linkedItemIds)}`
+      );
+    }
+
+    // すべての有効なアイテムを取得
+    console.log('DEBUG: すべての有効なアイテム取得開始');
+    try {
+      const { data: allItems, error: availableError } = await supabase
+        .schema('system')
+        .from('quick_access_items')
+        .select('*')
+        .eq('is_enabled', true)
+        .order('display_order');
+
+      if (availableError) {
+        console.error('DEBUG: アイテム取得エラー', availableError);
+        return {
+          success: false,
+          error: `利用可能なアイテムの取得に失敗: ${availableError.message}`,
+          items: [],
+        };
+      }
+
+      if (!allItems || allItems.length === 0) {
+        console.log('DEBUG: 有効なアイテムが見つかりません');
+        return {
+          success: false,
+          error: '有効なアイテムが見つかりません',
+          items: [],
+        };
+      }
+
+      console.log(`DEBUG: 全アイテム取得成功 件数=${allItems.length}`);
+
+      // クライアント側でフィルタリング - すでに関連付けされているアイテムを除外
+      console.log('DEBUG: フィルタリング開始');
+      const filteredItems =
+        allItems.filter((item) => !linkedItemIds.includes(item.id)) || [];
+
+      console.log(
+        `DEBUG: フィルタリング後のアイテム数=${filteredItems.length}`
+      );
+
+      // 結果を整形
+      console.log('DEBUG: 結果整形開始');
+      const items = filteredItems.map((item) => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        icon: item.icon,
+        href: item.href,
+        categoryId: item.category_id,
+        isDefault: item.is_default,
+        isEnabled: item.is_enabled,
+        systemDisplayOrder: item.display_order,
+        userSettingId: null,
+        isVisible: null,
+        userDisplayOrder: null,
+      }));
+
+      console.log(
+        `DEBUG: getUserAvailableQuickAccessItems 完了 結果件数=${items.length}`
+      );
+      return { success: true, items };
+    } catch (queryError) {
+      console.error('DEBUG: データベースクエリ実行エラー', queryError);
+      return {
+        success: false,
+        error: `データベースクエリの実行中にエラーが発生: ${queryError instanceof Error ? queryError.message : '不明なエラー'}`,
+        items: [],
+      };
+    }
+  } catch (error) {
+    console.error(
+      'DEBUG: getUserAvailableQuickAccessItems 予期せぬエラー',
+      error
+    );
+    const errorMessage =
+      error instanceof Error ? error.message : '不明なエラー';
     return {
       success: false,
-      error: '管理者ユーザーが見つかりません',
+      error: `クイックアクセスアイテム取得中に予期せぬエラーが発生しました: ${errorMessage}`,
       items: [],
     };
   }
-
-  // ユーザーが既に関連付けているアイテムIDを取得
-  const { data: userItems, error: userItemsError } = await supabase
-    .schema('system')
-    .from('admin_quick_access')
-    .select('item_id')
-    .eq('admin_user_id', adminUser.id);
-
-  if (userItemsError) {
-    return { success: false, error: '設定の取得に失敗しました', items: [] };
-  }
-
-  // 関連付け済みのアイテムIDの配列
-  const linkedItemIds = userItems?.map((item) => item.item_id) || [];
-
-  let query = supabase
-    .schema('system')
-    .from('quick_access_items')
-    .select('*')
-    .eq('is_enabled', true)
-    .order('display_order');
-
-  // 関連付け済みのアイテムがある場合は除外
-  if (linkedItemIds.length > 0) {
-    query = query.not('id', 'in', `(${linkedItemIds.join(',')})`);
-  }
-
-  // 利用可能なアイテムを取得
-  const { data: availableItems, error: availableError } = await query;
-
-  if (availableError) {
-    return { success: false, error: 'アイテムの取得に失敗しました', items: [] };
-  }
-
-  // 結果を整形
-  const items =
-    availableItems?.map((item) => ({
-      id: item.id,
-      title: item.title,
-      description: item.description,
-      icon: item.icon,
-      href: item.href,
-      categoryId: item.category_id,
-      isDefault: item.is_default,
-      isEnabled: item.is_enabled,
-      systemDisplayOrder: item.display_order,
-      userSettingId: null,
-      isVisible: null,
-      userDisplayOrder: null,
-    })) || [];
-
-  return { success: true, items };
 }

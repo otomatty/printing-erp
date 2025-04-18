@@ -31,7 +31,7 @@ export default function SectionTitle({
   );
 
   return (
-    <div className={`mb-16 text-center ${className || ''}`}>
+    <div className={`mb-16 text-left lg:text-center ${className || ''}`}>
       <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
         {titleContent}
       </h2>

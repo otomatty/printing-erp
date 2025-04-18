@@ -23,7 +23,6 @@ import {
   removeQuickAccessItem,
   addQuickAccessItem,
   getUserQuickAccess,
-  getUserAvailableQuickAccessItems,
 } from '~/actions/quick-access';
 import { toast } from 'sonner';
 import {
@@ -81,13 +80,43 @@ export function QuickAccessEdit({ items, onComplete }: QuickAccessEditProps) {
   useEffect(() => {
     const fetchAvailableItems = async () => {
       setIsLoading(true);
-      const response = await getUserAvailableQuickAccessItems();
-      if (response.success) {
-        setAvailableItems(response.items);
-      } else {
-        toast.error(response.error || '利用可能なアイテムの取得に失敗しました');
+      try {
+        console.log('DEBUG UI: 利用可能なアイテムの取得を開始');
+
+        // Server ActionからAPI Endpointへの変更
+        const res = await fetch('/api/quick-access/available');
+        const response = await res.json();
+
+        console.log('DEBUG UI: API応答:', response);
+
+        // レスポンスが存在し、成功の場合のみアイテムを設定
+        if (response?.success) {
+          console.log(
+            `DEBUG UI: 取得成功 - ${response.items.length}件のアイテム`
+          );
+          if (response.items.length === 0) {
+            console.log('DEBUG UI: 有効なアイテムはありません');
+          }
+          setAvailableItems(response.items);
+        } else {
+          // レスポンスがfalsy、または成功でない場合
+          const errorMessage =
+            response?.error || '利用可能なアイテムの取得に失敗しました';
+          console.error('DEBUG UI: API取得エラー', errorMessage);
+          toast.error(errorMessage);
+          setAvailableItems([]); // エラー時は空配列に設定
+        }
+      } catch (error) {
+        console.error('DEBUG UI: 予期せぬエラー', error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        toast.error(
+          `利用可能なアイテムの取得中に予期せぬエラーが発生しました: ${errorMessage}`
+        );
+        setAvailableItems([]); // 予期せぬエラー時も空配列に設定
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchAvailableItems();
@@ -101,61 +130,120 @@ export function QuickAccessEdit({ items, onComplete }: QuickAccessEditProps) {
       try {
         switch (pendingUpdate.type) {
           case 'add': {
-            await addQuickAccessItem(pendingUpdate.data);
-            const addResponse = await getUserQuickAccess();
-            if (addResponse.success) {
-              setUserItems(addResponse.items);
+            console.log('DEBUG UI: アイテム追加処理開始', pendingUpdate.data);
+
+            // APIを使用してアイテムを追加
+            const addResponse = await fetch('/api/quick-access/add', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ itemId: pendingUpdate.data }),
+            });
+
+            const addResult = await addResponse.json();
+
+            if (addResult.success && addResult.items) {
+              console.log('DEBUG UI: アイテム追加成功', addResult.items);
+              setUserItems(addResult.items);
 
               // 追加したアイテムを「追加可能なアイテム」から削除
               setAvailableItems((prev) =>
                 prev.filter((item) => item.id !== pendingUpdate.data)
               );
+            } else {
+              console.error('DEBUG UI: アイテム追加エラー', addResult.error);
+              toast.error(addResult.error || 'アイテムの追加に失敗しました');
             }
             break;
           }
           case 'remove': {
-            const removeResult = await removeQuickAccessItem(
-              pendingUpdate.data
-            );
-            // ユーザーアイテムからIDに一致するものを削除
-            setUserItems((prev) => {
-              const removedItem = prev.find(
-                (item) => item.id === pendingUpdate.data
-              );
-              const newItems = prev.filter(
-                (item) => item.id !== pendingUpdate.data
-              );
+            console.log('DEBUG UI: アイテム削除処理開始', pendingUpdate.data);
 
-              // 削除したアイテムが存在し、削除操作が成功した場合
-              if (removedItem && removeResult.success) {
-                // 削除したアイテムを「追加可能なアイテム」リストに戻す
-                setAvailableItems((prevAvailable) => {
-                  // itemIdを使ってAvailableQuickAccessItemを作成
-                  const itemToAdd = convertToAvailableItem(removedItem);
-
-                  // 既に存在していない場合のみ追加
-                  const exists = prevAvailable.some(
-                    (item) => item.id === itemToAdd.id
-                  );
-                  if (!exists) {
-                    return [...prevAvailable, itemToAdd];
-                  }
-                  return prevAvailable;
-                });
+            // APIを使用してアイテムを削除
+            const removeResponse = await fetch(
+              `/api/quick-access/remove?id=${pendingUpdate.data}`,
+              {
+                method: 'DELETE',
               }
+            );
 
-              return newItems;
-            });
+            const removeResult = await removeResponse.json();
+
+            if (removeResult.success) {
+              console.log('DEBUG UI: アイテム削除成功');
+
+              // ユーザーアイテムからIDに一致するものを削除
+              setUserItems((prev) => {
+                const removedItem = prev.find(
+                  (item) => item.id === pendingUpdate.data
+                );
+                const newItems = prev.filter(
+                  (item) => item.id !== pendingUpdate.data
+                );
+
+                // 削除したアイテムが存在し、削除操作が成功した場合
+                if (removedItem) {
+                  // 削除したアイテムを「追加可能なアイテム」リストに戻す
+                  setAvailableItems((prevAvailable) => {
+                    // itemIdを使ってAvailableQuickAccessItemを作成
+                    const itemToAdd = convertToAvailableItem(removedItem);
+
+                    // 既に存在していない場合のみ追加
+                    const exists = prevAvailable.some(
+                      (item) => item.id === itemToAdd.id
+                    );
+                    if (!exists) {
+                      return [...prevAvailable, itemToAdd];
+                    }
+                    return prevAvailable;
+                  });
+                }
+
+                return newItems;
+              });
+            } else {
+              console.error('DEBUG UI: アイテム削除エラー', removeResult.error);
+              toast.error(removeResult.error || 'アイテムの削除に失敗しました');
+            }
             break;
           }
           case 'reorder': {
-            await updateQuickAccessOrder(pendingUpdate.data);
+            console.log(
+              'DEBUG UI: アイテム順序更新処理開始',
+              pendingUpdate.data
+            );
+
+            // APIを使用してアイテム順序を更新
+            const reorderResponse = await fetch('/api/quick-access/reorder', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ items: pendingUpdate.data }),
+            });
+
+            const reorderResult = await reorderResponse.json();
+
+            if (!reorderResult.success) {
+              console.error(
+                'DEBUG UI: アイテム順序更新エラー',
+                reorderResult.error
+              );
+              toast.error(
+                reorderResult.error || 'アイテム順序の更新に失敗しました'
+              );
+            } else {
+              console.log('DEBUG UI: アイテム順序更新成功');
+            }
             break;
           }
         }
       } catch (error) {
-        console.error('更新処理エラー:', error);
-        toast.error('操作に失敗しました');
+        console.error('DEBUG UI: 更新処理エラー:', error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        toast.error(`操作に失敗しました: ${errorMessage}`);
       } finally {
         setPendingUpdate(null);
       }

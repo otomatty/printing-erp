@@ -57,10 +57,10 @@ export const PresentationSlider: React.FC<PresentationSliderProps> = ({
       style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
     >
       <div
-        className="flex flex-nowrap gap-0 transition-transform duration-500 px-80"
+        className="flex flex-nowrap gap-0 transition-transform duration-500 px-4 md:px-20 lg:px-80"
         style={{ minWidth: '100%' }}
       >
-        {slides.map((slide, idx) => (
+        {slides.map((slide) => (
           <div
             key={slide.id}
             className="px-2 box-border w-full lg:w-lg flex-shrink-0"

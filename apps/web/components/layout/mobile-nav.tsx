@@ -93,17 +93,6 @@ export default function MobileNav({
           </div>
         ))}
 
-        {/* テーマ切り替えセクション */}
-        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-center gap-4 py-2">
-            <ThemeToggle />
-            <ColorThemeToggle />
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              テーマ設定
-            </span>
-          </div>
-        </div>
-
         <div className="mt-2 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
           <a
             href={telLink}

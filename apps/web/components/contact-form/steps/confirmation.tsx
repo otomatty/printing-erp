@@ -83,52 +83,47 @@ export default function StepConfirmation({
 
       case 'digital-services': {
         const data = currentFormData as DigitalServicesFormData;
-        return (
-          <>
-            <ConfirmationItem
-              label="サービスの種類"
-              onClick={() => onChangeStep('details')}
-            >
-              <p className="mt-1">{getServiceTypeLabel(data.serviceType)}</p>
-            </ConfirmationItem>
-
-            <ConfirmationItem
-              label="プロジェクト内容"
-              onClick={() => onChangeStep('details')}
-            >
-              <p className="mt-1 whitespace-pre-line">
-                {data.projectDescription}
-              </p>
-            </ConfirmationItem>
-
-            {data.deadline && (
+        if (data.digitalServiceType === 'standard') {
+          return (
+            <>
               <ConfirmationItem
-                label="希望納期"
+                label="ご要望内容"
                 onClick={() => onChangeStep('details')}
               >
-                <p className="mt-1">{data.deadline}</p>
+                <p className="mt-1 whitespace-pre-line">
+                  {data.projectDescription}
+                </p>
               </ConfirmationItem>
-            )}
-
-            {data.budget && (
+            </>
+          );
+        }
+        if (data.digitalServiceType === 'meeting') {
+          return (
+            <>
               <ConfirmationItem
-                label="予算の目安"
+                label="ミーティング日時"
                 onClick={() => onChangeStep('details')}
               >
-                <p className="mt-1">{data.budget}</p>
+                <p className="mt-1">{data.meetingDatetime}</p>
               </ConfirmationItem>
-            )}
-
-            {data.otherRequests && (
               <ConfirmationItem
-                label="その他のご要望"
+                label="ミーティング方法"
                 onClick={() => onChangeStep('details')}
               >
-                <p className="mt-1 whitespace-pre-line">{data.otherRequests}</p>
+                <p className="mt-1">{data.meetingMethod}</p>
               </ConfirmationItem>
-            )}
-          </>
-        );
+              {data.notes && (
+                <ConfirmationItem
+                  label="備考"
+                  onClick={() => onChangeStep('details')}
+                >
+                  <p className="mt-1 whitespace-pre-line">{data.notes}</p>
+                </ConfirmationItem>
+              )}
+            </>
+          );
+        }
+        return null;
       }
 
       case 'general-inquiry': {
@@ -277,15 +272,3 @@ const printingTypeLabels: Record<string, string> = {
   bookbinding: 'ページ物・製本',
   other: 'その他',
 };
-
-// サービスの種類のラベルを取得
-function getServiceTypeLabel(serviceType: string): string {
-  const types = {
-    web: 'Webサイト制作',
-    app: 'アプリ開発',
-    system: 'システム開発',
-    design: 'デザイン制作',
-    other: 'その他',
-  };
-  return types[serviceType as keyof typeof types] || serviceType || '選択なし';
-}

@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サイトが移転しました</title>
+    <title>サイトが移転しました | ニイヌマ企画印刷</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,7 +15,7 @@
         }
         
         body {
-            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+            font-family: 'M PLUS Rounded 1c', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
@@ -61,7 +64,7 @@
         
         .button {
             display: inline-block;
-            background-color: #3498db;
+            background-color: #2a7eff;
             color: white;
             padding: 12px 30px;
             border-radius: 50px;
@@ -74,7 +77,7 @@
         }
         
         .button:hover {
-            background-color: #2980b9;
+            background-color: #3c85f3;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -122,27 +125,30 @@
         <div class="decoration decoration-2"></div>
         
         <!-- ロゴ画像があれば下記を使用（必要に応じてsrc属性を変更してください） -->
-        <img src="/api/placeholder/200/80" alt="ロゴ" class="logo">
+        <img src="/img/nkikaku-logo.png" alt="ロゴ" class="logo">
         
         <h1>サイトが移転しました</h1>
         
         <p>ご訪問いただきありがとうございます。当サイトは新しいアドレスに移転いたしました。</p>
-        <p>5秒後に自動的に新サイトへ移動します。</p>
+        <p>10秒後に自動的に新サイトへ移動します。</p>
         
-        <div class="countdown" id="timer">5</div>
+        <div class="countdown" id="timer">10</div>
         
-        <a href="https://www.新サイトのURL.com" class="button" id="redirect-link">今すぐ移動する</a>
+        <a href="https://niinuma-kikaku.com" class="button" id="redirect-link">今すぐ移動する</a>
+        <div style="margin-top: 20px;">
+            <a href="/legacy.html" style="color: #2a7eff; text-decoration: underline; font-size: 14px;">以前のページはこちら</a>
+        </div>
     </div>
 
     <script>
         // 新サイトのURLを設定
-        const newSiteUrl = "https://www.新サイトのURL.com";
+        const newSiteUrl = "https://niinuma-kikaku.com";
         
         // リダイレクトリンクのURLを設定
         document.getElementById("redirect-link").href = newSiteUrl;
         
         // カウントダウンタイマーと自動リダイレクト
-        let timeLeft = 5;
+        let timeLeft = 10;
         const timerElement = document.getElementById("timer");
         
         const countdownInterval = setInterval(function() {

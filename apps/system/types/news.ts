@@ -11,12 +11,20 @@ export const newsFormSchema = z.object({
     .string()
     .min(1, 'スラッグは必須です')
     .regex(/^[a-z0-9-]+$/, 'スラッグは小文字英数字とハイフンのみ使用可能です'),
-  published_at: z.string().optional(),
+  published_at: z
+    .string()
+    .transform((val) => (val === '' ? null : val))
+    .nullable()
+    .optional(),
   status: z.enum(['draft', 'published', 'archived']).default('draft'),
   is_featured: z.boolean().default(false),
   category_id: z.string().uuid().nullable(),
   thumbnail_url: z.string().nullable().optional(),
-  publish_end_date: z.string().nullable().optional(),
+  publish_end_date: z
+    .string()
+    .transform((val) => (val === '' ? null : val))
+    .nullable()
+    .optional(),
 });
 
 /**

@@ -84,7 +84,7 @@ const TimelineFlow: React.FC<TimelineFlowProps> = ({
           viewport={{ once: true, amount: 0.1 }}
         >
           {/* 中央線 */}
-          <div className="absolute left-10 md:left-1/2 top-0 bottom-0 w-1 bg-primary/20 md:transform md:-translate-x-1/2" />
+          <div className="absolute left-7.5 md:left-1/2 top-0 bottom-0 w-1 bg-primary/20 md:transform md:-translate-x-1/2" />
 
           {/* ステップアイテム */}
           {stepsData.map((step, index) => (
@@ -94,7 +94,7 @@ const TimelineFlow: React.FC<TimelineFlowProps> = ({
               variants={item}
             >
               {/* ステップ番号 */}
-              <div className="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 flex-shrink-0 w-20 h-20 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold z-10">
+              <div className="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold z-10">
                 {step.step}
               </div>
 
@@ -123,7 +123,7 @@ const TimelineFlow: React.FC<TimelineFlowProps> = ({
               </div>
 
               {/* モバイル: 右側 - カードスタイル */}
-              <div className="ml-28 md:hidden bg-white border border-gray-100 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-300">
+              <div className="ml-20 lg:ml-28 md:hidden bg-white border border-gray-100 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-300">
                 <div className="flex items-center gap-2 flex-wrap mb-2">
                   <h3 className="text-xl font-bold text-gray-800">
                     {step.title}

@@ -40,11 +40,13 @@ const whyChooseUsSlides: PresentationSlide[] = [
 const HomepageWhyChooseUsSection: React.FC = () => {
   return (
     <section className="py-16 lg:py-32 bg-primary/5">
-      <SectionTitle
-        title="ニイヌマ企画印刷が"
-        highlightedText="選ばれる理由"
-        description="私たちはただホームページを作るだけでなく、お客様の事業の成功を一緒に考えるパートナーとして選ばれ続けています"
-      />
+      <Container>
+        <SectionTitle
+          title="ニイヌマ企画印刷が"
+          highlightedText="選ばれる理由"
+          description="私たちはただホームページを作るだけでなく、お客様の事業の成功を一緒に考えるパートナーとして選ばれ続けています"
+        />
+      </Container>
       <div className="mb-16">
         <PresentationSlider slides={whyChooseUsSlides} />
       </div>

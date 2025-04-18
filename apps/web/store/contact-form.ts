@@ -35,22 +35,9 @@ const initialPrintServicesData: PrintServicesFormData = {
 // デジタルサービスフォームの初期値
 const initialDigitalServicesData: DigitalServicesFormData = {
   inquiryType: 'digital-services',
-  serviceType: '',
+  digitalServiceType: 'standard',
   projectDescription: '',
-  deadline: '',
-  budget: '',
-  otherRequests: '',
 };
-
-// デジタルサービス通常フォームのAtom - 個別コンポーネントから移動
-export const digitalStandardFormAtom = atom<DigitalServicesFormData>({
-  inquiryType: 'digital-services',
-  serviceType: '',
-  projectDescription: '',
-  deadline: '',
-  budget: '',
-  otherRequests: '',
-});
 
 // 一般的な問い合わせフォームの初期値
 const initialGeneralInquiryData: GeneralInquiryFormData = {

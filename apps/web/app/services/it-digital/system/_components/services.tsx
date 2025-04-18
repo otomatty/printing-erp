@@ -231,7 +231,7 @@ export function SystemServicesSection() {
           </div>
 
           {/* カスタムシステム構築のボックス */}
-          <div className="mt-12 bg-primary/5 border border-primary/30 p-8 rounded-lg">
+          <div className="mt-12 bg-primary/5 border border-primary/30 p-4 lg:p-8 rounded-lg">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="flex-shrink-0 w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center">
                 <svg

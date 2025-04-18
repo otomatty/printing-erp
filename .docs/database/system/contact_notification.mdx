@@ -1,0 +1,103 @@
+# お問い合わせ通知先設定データベース設計
+
+## 概要
+お問い合わせの種類に応じて、管理者への通知メールの送信先を動的に管理するためのデータベース設計。
+業務システム (apps/system) 側で設定を管理することを想定。
+
+---
+
+## テーブル定義
+
+### テーブル名: `contact_notification_settings`
+
+| カラム名        | 型          | 説明                                                     | 制約                           |
+| --------------- | ----------- | -------------------------------------------------------- | ------------------------------ |
+| id              | uuid        | 設定ID                                                   | PRIMARY KEY, DEFAULT gen_random_uuid() |
+| name            | text        | 設定名（例: 「印刷担当」, 管理画面での表示用）           | NOT NULL                       |
+| email           | text        | 通知先メールアドレス                                     | NOT NULL                       |
+| inquiry_type    | text        | 紐づく問い合わせ種別 (`print-services`, `digital-services`, etc.) | NULL許容 (NULL時は全種別共通) |
+| is_active       | boolean     | 有効フラグ                                               | NOT NULL, DEFAULT true         |
+| created_at      | timestamptz | 作成日時                                                 | NOT NULL, DEFAULT now()        |
+| updated_at      | timestamptz | 更新日時                                                 | NOT NULL, DEFAULT now()        |
+
+**補足:**
+*   `inquiry_type`: 特定の問い合わせ種別、または `NULL` (全種別共通) を指定。
+*   `email`: 必要に応じて `UNIQUE` 制約を追加検討。
+*   `is_active`: チェックを外すことで一時的に通知を無効化できる。
+
+---
+
+## SQL スキーマ定義
+
+```sql
+-- スキーマ: system
+
+-- 通知設定テーブル
+CREATE TABLE IF NOT EXISTS system.contact_notification_settings (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    name text NOT NULL,             -- 管理画面用の設定名
+    email text NOT NULL,            -- 通知を受け取るメールアドレス
+    inquiry_type text,              -- 対象の問い合わせ種別 (NULLの場合は全種別共通)
+    is_active boolean NOT NULL DEFAULT true, -- 有効フラグ
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- email ごとにユニーク制約を設ける場合 (同じアドレスを複数登録させない)
+-- CREATE UNIQUE INDEX IF NOT EXISTS idx_contact_notification_settings_email_unique ON system.contact_notification_settings (email);
+
+-- 検索パフォーマンス向上のためのインデックス
+CREATE INDEX IF NOT EXISTS idx_contact_notification_settings_inquiry_type ON system.contact_notification_settings (inquiry_type);
+CREATE INDEX IF NOT EXISTS idx_contact_notification_settings_is_active ON system.contact_notification_settings (is_active);
+
+-- updated_at を自動更新するトリガー関数 (存在しない場合)
+CREATE OR REPLACE FUNCTION system.trigger_set_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- トリガーの設定 (存在しない場合)
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON system.contact_notification_settings
+FOR EACH ROW
+EXECUTE FUNCTION system.trigger_set_timestamp();
+
+-- RLS (Row Level Security) ポリシーの設定
+-- 重要: 運用に合わせて適切なポリシーを設定してください。
+ALTER TABLE system.contact_notification_settings ENABLE ROW LEVEL SECURITY;
+
+-- 既存のポリシーを削除 (もし存在すれば)
+DROP POLICY IF EXISTS "Allow authenticated users full access to notification_settings" ON system.contact_notification_settings;
+DROP POLICY IF EXISTS "Allow admin users full access to notification_settings" ON system.contact_notification_settings; -- 古いポリシー例も削除
+
+-- 新しいポリシー: system.admin_users テーブルに存在するユーザーのみアクセス可能
+CREATE POLICY "Allow access only to admin users" ON system.contact_notification_settings
+    FOR ALL -- SELECT, INSERT, UPDATE, DELETE すべてを許可
+    USING (
+        -- 現在認証されているユーザーのIDが system.admin_users テーブルに存在するかチェック
+        EXISTS (
+            SELECT 1
+            FROM system.admin_users au
+            WHERE au.auth_user_id = auth.uid() AND au.is_active = true -- アクティブな管理者/スタッフのみ許可
+        )
+    )
+    WITH CHECK (
+        -- データの挿入・更新時にも同様のチェックを行う
+        EXISTS (
+            SELECT 1
+            FROM system.admin_users au
+            WHERE au.auth_user_id = auth.uid() AND au.is_active = true
+        )
+    );
+
+```
+
+---
+
+## 考慮事項
+- サーバーアクション (`apps/web/actions/contact.ts`) でこのテーブルを参照し、動的に送信先を取得するロジックの実装が必要。
+- 業務システム (`apps/system`) でこの設定を管理するための UI 実装が必要。
+- RLS ポリシーは、`system.admin_users` テーブルに登録され、かつ `is_active` が `true` のユーザーのみが `contact_notification_settings` テーブルにアクセスできるように設定済み。

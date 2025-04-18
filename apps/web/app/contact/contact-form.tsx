@@ -21,10 +21,15 @@ import {
   printServicesFormAtom,
   generalInquiryFormAtom,
 } from '~/store/contact-form';
-import type { FormStep, InquiryType } from '~/types/contact-form';
-// 新しいatomをインポート - AI見積もりフォームの表示状態を管理
-import { atom } from 'jotai';
+import type {
+  FormStep,
+  InquiryType,
+  PrintServicesDetails,
+  DigitalServicesDetails,
+  GeneralInquiryDetails,
+} from '~/types/contact-form';
 import { submitContactForm } from '~/actions/contact';
+import { atom } from 'jotai';
 
 // AI見積もりフォームの表示状態を追跡するためのatom
 export const isAIEstimateShownAtom = atom(false);
@@ -42,6 +47,7 @@ export default function ContactForm() {
   // フォーム送信状態管理
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitWarning, setSubmitWarning] = useState<string | null>(null);
 
   // 各フォームの状態を取得
   const [digitalServicesForm] = useAtom(digitalServicesFormAtom);
@@ -97,51 +103,53 @@ export default function ContactForm() {
     else if (currentStep === 'details') setCurrentStep('user-info');
     else if (currentStep === 'user-info') setCurrentStep('confirmation');
     else if (currentStep === 'confirmation') {
-      // フォームを送信する処理
+      // フォームを送信する処理 (Server Actionを使用)
       setIsSubmitting(true);
       setSubmitError(null);
+      setSubmitWarning(null); // 警告もリセット
 
       try {
         // 問い合わせタイプに応じたフォームデータを取得
-        let formDetails: Record<string, unknown>;
+        let formDetails:
+          | DigitalServicesDetails
+          | PrintServicesDetails
+          | GeneralInquiryDetails
+          | Record<string, never>;
         switch (inquiryType) {
           case 'digital-services':
-            formDetails = digitalServicesForm as unknown as Record<
-              string,
-              unknown
-            >;
+            formDetails = digitalServicesForm;
             break;
           case 'print-services':
-            formDetails = printServicesForm as unknown as Record<
-              string,
-              unknown
-            >;
+            formDetails = printServicesForm;
             break;
           case 'general-inquiry':
-            formDetails = generalInquiryForm as unknown as Record<
-              string,
-              unknown
-            >;
+            formDetails = generalInquiryForm;
             break;
           default:
             formDetails = {};
         }
 
-        // サーバーアクションでフォームを送信
-        const result = await submitContactForm({
+        // Server Action に渡すデータを作成 (userInfoとformDetailsをネスト)
+        const requestBody = {
           userInfo,
           inquiryType,
           formDetails,
-        });
+        };
+
+        // Server Action を呼び出し
+        const result = await submitContactForm(requestBody);
 
         if (result.success) {
           // 送信成功
+          if (result.warning) {
+            // 警告がある場合は表示
+            setSubmitWarning(result.warning);
+          }
           setCurrentStep('complete');
         } else {
           // エラーメッセージを設定
-          setSubmitError(
-            result.error || '送信に失敗しました。もう一度お試しください。'
-          );
+          const errorMessage = result.error || '送信に失敗しました。';
+          setSubmitError(errorMessage);
         }
       } catch (error) {
         console.error('送信エラー:', error);
@@ -182,6 +190,13 @@ export default function ContactForm() {
             <p className="text-sm">{submitError}</p>
           </div>
         )}
+        {/* 警告メッセージ表示 */}
+        {submitWarning && (
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-600">
+            <p className="font-medium">お知らせ</p>
+            <p className="text-sm">{submitWarning}</p>
+          </div>
+        )}
 
         {/* STEP 1: お問い合わせ種別選択 */}
         {currentStep === 'inquiry-type' && <StepInquiryType />}
@@ -203,7 +218,21 @@ export default function ContactForm() {
         )}
 
         {/* 完了画面 */}
-        {currentStep === 'complete' && <StepComplete userInfo={userInfo} />}
+        {currentStep === 'complete' && (
+          <StepComplete
+            userInfo={userInfo}
+            inquiryType={inquiryType}
+            formDetails={
+              inquiryType === 'digital-services'
+                ? digitalServicesForm
+                : inquiryType === 'print-services'
+                  ? printServicesForm
+                  : inquiryType === 'general-inquiry'
+                    ? generalInquiryForm
+                    : {}
+            }
+          />
+        )}
 
         {/* ナビゲーションボタン - AI自動見積もりの場合は非表示 */}
         {currentStep !== 'complete' && !shouldHideNavigation && (

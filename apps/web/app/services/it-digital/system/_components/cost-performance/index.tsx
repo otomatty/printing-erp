@@ -3,6 +3,7 @@
 import type React from 'react';
 import { useState, useEffect, useMemo } from 'react';
 import SectionTitle from '../../../_common/section-title';
+import Container from '~/components/custom/container';
 
 import {
   calculateRoiData,
@@ -133,12 +134,14 @@ const SystemCostPerformanceSection: React.FC = () => {
 
   return (
     <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white">
-      <SectionTitle
-        title="コストを"
-        highlightedText="最大60%"
-        afterHighlightedText="低減する次世代のシステム開発"
-        description="従来の業務システム開発と比較して、より短期間で、より低コストで、より高い投資対効果を実現します"
-      />
+      <Container>
+        <SectionTitle
+          title="コストを"
+          highlightedText="最大60%"
+          afterHighlightedText="抑えたシステム開発"
+          description="従来の業務システム開発と比較して、より短期間で、より低コストで、より高い投資対効果を実現します"
+        />
+      </Container>
       <PresentationSlider slides={slides} />
     </section>
   );

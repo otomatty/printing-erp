@@ -1,25 +1,33 @@
-import * as React from 'react';
+import React from 'react';
+import {
+  Body,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Text,
+  Section,
+  Link,
+  Img,
+} from '@react-email/components';
 
-interface EmailProps {
-  contactData: {
-    userInfo: {
-      name: string;
-      companyName?: string;
-      email: string;
-      phone?: string;
-      preferredContact?: string;
-    };
-    inquiryType: string;
-    formDetails: Record<string, unknown>;
-    contactId?: string;
-  };
-}
+// 型定義をインポート (フラットな型に変更)
+import type { ContactFormData, InquiryType } from '../types/contact-form';
+
+// Propsの型定義をフラットな形に変更 (export を追加)
+export type CustomerConfirmationEmailProps = ContactFormData & {
+  contactId: string;
+};
 
 /**
  * お客様宛お問い合わせ確認メールテンプレート
  */
-export default function CustomerConfirmationEmail({ contactData }: EmailProps) {
-  const { userInfo, inquiryType, contactId } = contactData;
+export default function CustomerConfirmationEmail(
+  props: CustomerConfirmationEmailProps
+) {
+  // Propsを直接分割代入 (contactData は不要に)
+  const { name, inquiryType, contactId } = props;
 
   // 問い合わせタイプに応じたラベル
   const inquiryTypeLabel =
@@ -27,9 +35,10 @@ export default function CustomerConfirmationEmail({ contactData }: EmailProps) {
       'print-services': '印刷サービス',
       'digital-services': 'デジタルサービス',
       'general-inquiry': 'その他のお問い合わせ',
+      'meeting-reservation': 'ミーティング予約', // meeting-reservationも対応
     }[inquiryType] || 'お問い合わせ';
 
-  // インラインスタイル
+  // インラインスタイル (変更なし)
   const styles = {
     container: {
       fontFamily:
@@ -38,21 +47,25 @@ export default function CustomerConfirmationEmail({ contactData }: EmailProps) {
       maxWidth: '600px',
       margin: '0 auto',
       color: '#333',
+      backgroundColor: '#ffffff',
     },
     header: {
       borderBottom: '1px solid #eaeaea',
       padding: '10px 0',
       marginBottom: '20px',
+      textAlign: 'center' as const,
     },
     logo: {
       fontSize: '24px',
       fontWeight: 'bold',
       color: '#0070f3',
+      display: 'inline-block',
     },
     title: {
       fontSize: '22px',
       fontWeight: 'bold',
       margin: '20px 0',
+      textAlign: 'center' as const,
     },
     content: {
       lineHeight: '1.6',
@@ -63,77 +76,120 @@ export default function CustomerConfirmationEmail({ contactData }: EmailProps) {
       padding: '15px',
       borderRadius: '5px',
       margin: '15px 0',
+      borderLeft: '4px solid #0070f3',
     },
     footer: {
       marginTop: '30px',
-      fontSize: '14px',
+      fontSize: '12px',
       color: '#666',
       borderTop: '1px solid #eaeaea',
-      padding: '20px 0',
+      paddingTop: '20px',
+      textAlign: 'center' as const,
     },
     contactInfo: {
       margin: '20px 0',
       padding: '15px',
-      borderLeft: '4px solid #0070f3',
-      backgroundColor: '#f5f7fa',
+      borderLeft: '4px solid #cccccc',
+      backgroundColor: '#f9f9f9',
+      fontSize: '14px',
+      lineHeight: '1.5',
+    },
+    contactLink: {
+      color: '#0070f3',
+      textDecoration: 'none',
     },
   };
 
+  // --- React Email コンポーネントを使用するように変更 ---
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.logo}>ニイヌマ企画印刷</div>
-      </div>
+    <Html>
+      <Head />
+      <Preview>【ニイヌマ企画印刷】お問い合わせありがとうございます</Preview>
+      <Body style={styles.container}>
+        <Container>
+          <Section style={styles.header}>
+            <Img
+              src="https://niinuma-kikaku.com/images/logo/site-logo.png"
+              alt="ニイヌマ企画印刷 ロゴ"
+              width="180"
+              style={{ margin: 'auto' }}
+            />
+          </Section>
 
-      <div style={styles.title}>お問い合わせありがとうございます</div>
+          <Heading style={styles.title}>
+            お問い合わせありがとうございます
+          </Heading>
 
-      <div style={styles.content}>
-        <p>{userInfo.name} 様</p>
+          <Section style={styles.content}>
+            <Text>
+              {/* name を直接参照 */}
+              <strong>{name} 様</strong>
+            </Text>
 
-        <p>
-          この度は、ニイヌマ企画印刷に{inquiryTypeLabel}
-          に関するお問い合わせをいただき、 誠にありがとうございます。
-          {contactId && <span>（お問い合わせID: {contactId}）</span>}
-        </p>
+            <Text>
+              この度は、ニイヌマ企画印刷に{inquiryTypeLabel}
+              に関するお問い合わせをいただき、誠にありがとうございます。
+              {contactId && (
+                <Text style={{ fontSize: '12px', color: '#555' }}>
+                  （お問い合わせID: {contactId}）
+                </Text>
+              )}
+            </Text>
 
-        <p>
-          お問い合わせを受け付けました。内容を確認の上、担当者より折り返しご連絡いたします。
-        </p>
+            <Text>
+              お問い合わせを受け付けました。内容を確認の上、担当者より折り返しご連絡いたします。
+              通常1〜2営業日以内にご返信いたしますので、今しばらくお待ちくださいませ。
+            </Text>
 
-        <div style={styles.highlight}>
-          <p>
-            <strong>お問い合わせ種別:</strong> {inquiryTypeLabel}
-          </p>
-        </div>
+            <Section style={styles.highlight}>
+              <Text>
+                <strong>お問い合わせの種類:</strong> {inquiryTypeLabel}
+              </Text>
+              {/* 必要であれば、確認用に最低限の情報を表示する
+              <Text><strong>お名前:</strong> {name}</Text>
+              <Text><strong>メールアドレス:</strong> {props.email}</Text>
+              */}
+            </Section>
 
-        <p>
-          ご入力いただいた内容についてご不明な点がある場合や、
-          追加のご質問がある場合は、このメールにご返信いただくか、
-          下記の連絡先までお問い合わせください。
-        </p>
+            <Text>
+              万が一、数日経っても返信がない場合は、お手数ですが再度ご連絡いただくか、
+              下記の連絡先までお問い合わせいただけますと幸いです。
+            </Text>
 
-        <div style={styles.contactInfo}>
-          <p>
-            <strong>ニイヌマ企画印刷</strong>
-            <br />
-            〒022-0003 岩手県大船渡市盛町字みどり町4-12
-            <br />
-            電話: 0192-26-2160（受付時間: 平日 9:00-18:00）
-            <br />
-            メール: nkikaku@crocus.ocn.ne.jp
-          </p>
-        </div>
+            <Section style={styles.contactInfo}>
+              <Text>
+                <strong>ニイヌマ企画印刷</strong>
+                <br />
+                〒022-0003 岩手県大船渡市盛町字みどり町4-12
+                <br />
+                電話:{' '}
+                <Link href="tel:0192-26-2160" style={styles.contactLink}>
+                  0192-26-2160
+                </Link>
+                （受付時間: 平日 9:00-18:00）
+                <br />
+                メール:{' '}
+                <Link
+                  href="mailto:nkikaku@crocus.ocn.ne.jp"
+                  style={styles.contactLink}
+                >
+                  nkikaku@crocus.ocn.ne.jp
+                </Link>
+              </Text>
+            </Section>
 
-        <p>今後ともニイヌマ企画印刷をよろしくお願いいたします。</p>
-      </div>
+            <Text>今後ともニイヌマ企画印刷をよろしくお願いいたします。</Text>
+          </Section>
 
-      <div style={styles.footer}>
-        <p>
-          このメールは自動送信されています。
-          <br />
-          お問い合わせに関するご質問は、上記の連絡先までお願いいたします。
-        </p>
-      </div>
-    </div>
+          <Section style={styles.footer}>
+            <Text>
+              このメールは自動送信されています。
+              <br />
+              本メールに心当たりのない場合は、お手数ですが破棄していただきますようお願いいたします。
+            </Text>
+          </Section>
+        </Container>
+      </Body>
+    </Html>
   );
 }

@@ -9,6 +9,135 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      contact_inquiries: {
+        Row: {
+          address: string | null
+          company_name: string | null
+          created_at: string
+          email: string
+          id: string
+          inquiry_type: string
+          name: string
+          phone: string | null
+          postal_code: string | null
+          preferred_contact: string | null
+        }
+        Insert: {
+          address?: string | null
+          company_name?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          inquiry_type: string
+          name: string
+          phone?: string | null
+          postal_code?: string | null
+          preferred_contact?: string | null
+        }
+        Update: {
+          address?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          inquiry_type?: string
+          name?: string
+          phone?: string | null
+          postal_code?: string | null
+          preferred_contact?: string | null
+        }
+        Relationships: []
+      }
+      digital_services_inquiries: {
+        Row: {
+          digital_service_type: string
+          estimate_params: Json | null
+          id: string
+          project_description: string | null
+        }
+        Insert: {
+          digital_service_type: string
+          estimate_params?: Json | null
+          id: string
+          project_description?: string | null
+        }
+        Update: {
+          digital_service_type?: string
+          estimate_params?: Json | null
+          id?: string
+          project_description?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_services_inquiries_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "contact_inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      general_inquiries: {
+        Row: {
+          id: string
+          inquiry_content: string
+        }
+        Insert: {
+          id: string
+          inquiry_content: string
+        }
+        Update: {
+          id?: string
+          inquiry_content?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "general_inquiries_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "contact_inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meeting_reservations: {
+        Row: {
+          created_at: string
+          id: string
+          inquiry_id: string
+          meeting_datetime: string | null
+          meeting_method: string | null
+          meeting_url: string | null
+          notes: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          inquiry_id: string
+          meeting_datetime?: string | null
+          meeting_method?: string | null
+          meeting_url?: string | null
+          notes?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          inquiry_id?: string
+          meeting_datetime?: string | null
+          meeting_method?: string | null
+          meeting_url?: string | null
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_reservations_inquiry_id_fkey"
+            columns: ["inquiry_id"]
+            isOneToOne: false
+            referencedRelation: "contact_inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news: {
         Row: {
           author_id: string | null
@@ -142,6 +271,41 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      print_services_inquiries: {
+        Row: {
+          contents: string | null
+          deadline: string | null
+          has_design_data: boolean | null
+          id: string
+          print_inquiry_type: string | null
+          printing_type: string | null
+        }
+        Insert: {
+          contents?: string | null
+          deadline?: string | null
+          has_design_data?: boolean | null
+          id: string
+          print_inquiry_type?: string | null
+          printing_type?: string | null
+        }
+        Update: {
+          contents?: string | null
+          deadline?: string | null
+          has_design_data?: boolean | null
+          id?: string
+          print_inquiry_type?: string | null
+          printing_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "print_services_inquiries_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "contact_inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_accounts: {
         Row: {
@@ -296,6 +460,36 @@ export type Database = {
           is_active?: boolean
           last_name?: string | null
           role?: Database["public"]["Enums"]["admin_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      contact_notification_settings: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          inquiry_type: string | null
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          inquiry_type?: string | null
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          inquiry_type?: string | null
+          is_active?: boolean
+          name?: string
           updated_at?: string
         }
         Relationships: []

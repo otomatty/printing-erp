@@ -14,7 +14,8 @@
       "~/store/*": ["./store/*"],
       "~/data/*": ["./data/*"],
       "~/utils/*": ["./utils/*"],
-      "~/public/*": ["./public/*"]
+      "~/public/*": ["./public/*"],
+      "~/emails/*": ["./emails/*"]
     },
     "plugins": [
       {

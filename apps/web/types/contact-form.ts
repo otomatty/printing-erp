@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import type { Json } from '@kit/supabase/database';
 
 // フォームのステップを表す型
 export type FormStep =
@@ -12,7 +13,8 @@ export type FormStep =
 export type InquiryType =
   | 'print-services'
   | 'digital-services'
-  | 'general-inquiry';
+  | 'general-inquiry'
+  | 'meeting-reservation';
 
 // サーバーアクション用にユーザー情報型を拡張
 export interface UserInfo {
@@ -42,14 +44,23 @@ export interface PrintServicesFormData extends BaseFormData {
   hasDesignData: boolean; // デザインデータの有無
 }
 
-// IT・デジタルサービスに関するお問い合わせフォーム
-export interface DigitalServicesFormData extends BaseFormData {
-  serviceType: string; // Webサイト制作、アプリ開発、システム開発など
-  projectDescription: string;
-  deadline: string;
-  budget: string;
-  otherRequests: string;
-}
+// デジタルサービス問い合わせ種別
+export type DigitalServiceType = 'standard' | 'meeting';
+
+// デジタルサービス問い合わせフォーム（auto-estimateは除外）
+export type DigitalServicesFormData =
+  | {
+      inquiryType: 'digital-services';
+      digitalServiceType: 'standard';
+      projectDescription: string;
+    }
+  | {
+      inquiryType: 'digital-services';
+      digitalServiceType: 'meeting';
+      meetingDatetime: string; // ISO8601
+      meetingMethod: string; // オンライン/対面等
+      notes?: string;
+    };
 
 // その他のお問い合わせ・ご質問フォーム
 export interface GeneralInquiryFormData extends BaseFormData {
@@ -68,3 +79,31 @@ export type InputChangeHandler = (
 ) => void;
 
 export type RadioChangeHandler = (name: string, value: string) => void;
+
+// 詳細データの型定義
+export interface PrintServicesDetails {
+  printingType?: string; // 印刷物の種類
+  printInquiryType?: 'estimate' | 'order' | 'question' | string; // 見積もり/注文/質問など
+  contents?: string; // 詳細・要望
+  deadline?: string; // 希望納期 (YYYY-MM-DD or text)
+  hasDesignData?: boolean; // デザインデータ有無
+}
+
+export interface DigitalServicesDetails {
+  digitalServiceType: 'ai-estimate' | 'standard-form' | 'meeting' | string; // サービス種別
+  estimateParams?: Json | null; // AI見積もり用パラメータ (JSONB) - anyに変更
+  projectDescription?: string; // 通常問い合わせ/ミーティング依頼の内容
+}
+
+export interface GeneralInquiryDetails {
+  inquiryContent: string; // 問い合わせ内容 (NOT NULL想定)
+}
+
+export interface MeetingReservationDetails {
+  // contact_inquiries テーブルへの参照 (inquiry_id) はサーバー側で処理するため、
+  // フロントエンドのフォームデータとしては不要な場合が多い
+  meetingDatetime?: string | Date | null; // ミーティング日時 (ISO string or Date)
+  meetingMethod?: 'online' | 'offline' | string; // ミーティング方法
+  meetingUrl?: string | null; // オンラインミーティングURL
+  notes?: string | null; // 備考
+}
