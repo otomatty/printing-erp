@@ -21,7 +21,7 @@ export function Footer() {
   // その他の主要ページデータ
   const sitePages = [
     { label: 'トップ', href: '/' },
-    { label: '会社概要', href: '/company' },
+    { label: '私たちについて', href: '/about' },
     { label: 'お問い合わせ', href: '/contact' },
     { label: '特集', href: '/topics' },
   ];

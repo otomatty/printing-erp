@@ -45,10 +45,10 @@ export default function RecoverySection() {
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               <Link
-                href="/company"
+                href="/about"
                 className="text-primary hover:text-primary/90 flex items-center transition-colors"
               >
-                会社概要を見る <ChevronRight size={16} className="ml-1" />
+                私たちについてを見る <ChevronRight size={16} className="ml-1" />
               </Link>
             </motion.div>
           </motion.div>

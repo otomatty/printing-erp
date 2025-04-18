@@ -292,11 +292,20 @@ async function sendAdminNotification(contactData: ContactFormData) {
     const fromAddress =
       process.env.RESEND_FROM_EMAIL || 'noreply@niinuma-kikaku.com';
 
+    // inquiryType を日本語に変換
+    const inquiryTypeLabel =
+      {
+        'print-services': '印刷サービス',
+        'digital-services': 'デジタルサービス',
+        'general-inquiry': 'その他のお問い合わせ',
+        'meeting-reservation': 'ミーティング予約', // meeting-reservationも対応
+      }[contactData.inquiryType] || 'お問い合わせ'; // デフォルト値も設定
+
     // メール送信 (Resend)
     const { error: sendError } = await resend.emails.send({
       from: fromAddress,
       to: toEmails,
-      subject: `【お問い合わせ】${contactData.userInfo.name}様 (種別: ${contactData.inquiryType})`,
+      subject: `【お問い合わせ】${contactData.userInfo.name}様 (種類: ${inquiryTypeLabel})`,
       html: emailHtml,
       replyTo: contactData.userInfo.email,
     });
