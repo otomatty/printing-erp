@@ -9,7 +9,7 @@ import NavigationMenu from './navigation-menu';
 import UserMenu from './user-menu';
 import NotificationsMenu from './notifications-menu';
 import { Container } from '~/components/custom/container';
-import logo from '~/public/images/logo/site-logo-white.webp';
+import logo from '~/public/images/logo/erp-logo-white.png';
 
 interface HeaderProps {
   user: User | null;

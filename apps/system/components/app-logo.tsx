@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import logo from '~/public/images/logo/site-logo.webp';
+import logo from '~/public/images/logo/erp-logo.svg';
 export function AppLogo({
   href,
   label,
