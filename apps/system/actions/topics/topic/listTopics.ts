@@ -5,11 +5,14 @@ import {
   topicSearchParamsSchema,
   type TopicSearchParams,
 } from '../../../types/topics';
+import type { Topic } from '../../../types/topics';
 
 /**
  * トピック一覧取得（フィルタ・ページネーション対応）
  */
-export async function listTopics(rawParams: TopicSearchParams) {
+export async function listTopics(
+  rawParams: TopicSearchParams
+): Promise<{ topics: Topic[]; total: number; error: string | null }> {
   // パラメータのバリデーション
   const { page, status, categoryId, query } =
     topicSearchParamsSchema.parse(rawParams);
@@ -45,5 +48,5 @@ export async function listTopics(rawParams: TopicSearchParams) {
     return { topics: [], total: 0, error: error.message };
   }
 
-  return { topics: data ?? [], total: count ?? 0, error: null };
+  return { topics: (data as Topic[]) ?? [], total: count ?? 0, error: null };
 }

@@ -1,7 +1,6 @@
 'use client';
 
-import type React from 'react';
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { cn } from '@kit/ui/utils';
 import { SegmentedControlContext } from './use-segmented-control';
 
@@ -29,9 +28,14 @@ export function SegmentedControl({
   children,
   className,
 }: SegmentedControlProps) {
-  const [uncontrolledValue, setUncontrolledValue] = useState(
-    defaultValue ?? ''
-  );
+  // Extract only SegmentedControlItem children with a value prop
+  const elems = React.Children.toArray(children)
+    .filter(React.isValidElement)
+    .filter((el) => typeof (el.props as { value: string }).value === 'string')
+    .map((el) => el as React.ReactElement<{ value: string }>);
+  const initialValue = defaultValue ?? elems[0]?.props.value ?? '';
+  const [uncontrolledValue, setUncontrolledValue] =
+    useState<string>(initialValue);
   const isControlled = controlledValue !== undefined;
   const currentValue = isControlled ? controlledValue : uncontrolledValue;
 

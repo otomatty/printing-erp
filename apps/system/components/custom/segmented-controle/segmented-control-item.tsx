@@ -32,8 +32,10 @@ export function SegmentedControlItem({
       data-value={value}
       onClick={handleClick}
       className={cn(
-        'relative z-10 px-4 py-2 text-sm font-medium text-center transition-colors',
-        isSelected ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900',
+        'relative z-10 px-4 py-2 text-sm font-medium text-center transition rounded-md',
+        isSelected
+          ? 'bg-white text-gray-900 shadow'
+          : 'text-gray-600 hover:text-gray-900',
         className
       )}
     >
