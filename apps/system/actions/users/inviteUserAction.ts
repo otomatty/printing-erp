@@ -12,10 +12,6 @@ import {
 import type { Database } from '@kit/supabase/database'; // プロジェクト共通の型
 import { sendAdminInvitationEmail } from '../emails/adminInvitation'; // ★ 追加
 
-// Resend クライアントの初期化 (これは別途設定が必要よ！)
-// import { Resend } from 'resend';
-// const resend = new Resend(process.env.RESEND_API_KEY); // APIキーは環境変数から！
-
 /**
  * 新規ユーザーをシステムに招待します。
  * 管理者権限を持つユーザーのみが実行可能です。

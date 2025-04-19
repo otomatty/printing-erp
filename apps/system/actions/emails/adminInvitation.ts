@@ -2,10 +2,6 @@ import { Resend } from 'resend';
 import { getLogger } from '@kit/shared/logger';
 import type { Database } from '@kit/supabase/database'; // Role 型のために必要かも
 
-// 環境変数のチェック (起動時にチェックする方が本当は良いけど)
-if (!process.env.RESEND_API_KEY) {
-  throw new Error('RESEND_API_KEY environment variable is not set.');
-}
 if (!process.env.NEXT_PUBLIC_SYSTEM_URL) {
   throw new Error('NEXT_PUBLIC_SYSTEM_URL environment variable is not set.');
 }
