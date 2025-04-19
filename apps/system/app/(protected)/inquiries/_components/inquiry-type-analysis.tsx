@@ -79,7 +79,7 @@ export function InquiryTypeAnalysis() {
                 >
                   {mockData.map((entry, index) => (
                     <Cell
-                      key={`cell-${index}`}
+                      key={entry.name}
                       fill={COLORS[index % COLORS.length]}
                     />
                   ))}

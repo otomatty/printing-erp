@@ -155,6 +155,57 @@ export type Database = {
           },
         ]
       }
+      inquiries: {
+        Row: {
+          address: string | null
+          company_name: string | null
+          created_at: string
+          email: string
+          id: string
+          inquiry_type: string
+          name: string
+          phone: string | null
+          postal_code: string | null
+          preferred_contact: string | null
+          priority: string
+          source: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          company_name?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          inquiry_type: string
+          name: string
+          phone?: string | null
+          postal_code?: string | null
+          preferred_contact?: string | null
+          priority?: string
+          source: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          inquiry_type?: string
+          name?: string
+          phone?: string | null
+          postal_code?: string | null
+          preferred_contact?: string | null
+          priority?: string
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       meeting_reservations: {
         Row: {
           created_at: string

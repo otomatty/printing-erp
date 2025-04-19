@@ -1,9 +1,13 @@
++'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@kit/ui/card';
-import { fetchInquiryStats } from '../../_data';
+import type { InquiryStats as StatsType } from '../_data';
 
-export async function InquiryStats() {
-  const stats = await fetchInquiryStats();
+interface InquiryStatsProps {
+  stats: StatsType;
+}
 
+export function InquiryStats({ stats }: InquiryStatsProps) {
   const statCards = [
     {
       title: '総問い合わせ数',

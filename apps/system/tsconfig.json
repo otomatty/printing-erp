@@ -33,7 +33,8 @@
     "./config/**/*.ts",
     "components/**/*",
     "lib/**/*.ts",
-    "app"
+    "app",
+    "types/inquiries.ts"
   ],
   "exclude": ["node_modules", ".next"]
 }

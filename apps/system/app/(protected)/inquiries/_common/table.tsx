@@ -17,7 +17,7 @@ import {
   TableRow,
 } from '@kit/ui/table';
 import { Badge } from '@kit/ui/badge';
-import type { Inquiry } from '../_data/types';
+import type { Inquiry } from '../../../../types/inquiries';
 import { getStatusColor, getTypeColor, getPriorityColor } from '../_data/utils';
 import Link from 'next/link';
 

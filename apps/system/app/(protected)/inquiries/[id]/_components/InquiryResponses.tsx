@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@kit/ui/card';
-import type { Inquiry, InquiryResponse } from '../../_data/types';
+import type { Inquiry, InquiryResponse } from '../../../../../types/inquiries';
 import { Avatar, AvatarFallback, AvatarImage } from '@kit/ui/avatar';
 import { Badge } from '@kit/ui/badge';
 import { Paperclip } from 'lucide-react';

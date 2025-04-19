@@ -9,9 +9,6 @@ import type {
   DigitalServicesDetails,
   GeneralInquiryDetails,
   MeetingReservationDetails, // ミーティング予約も考慮する場合
-  PrintServicesFormData, // switch文での型アサーション用に個別のFormData型もインポート
-  DigitalServicesFormData,
-  GeneralInquiryFormData,
   PrintInquiryType, // ★ これを追加！
 } from '../types/contact-form';
 import { Resend } from 'resend';
@@ -66,10 +63,12 @@ async function saveContactToDatabase(
   const serviceClient = getSupabaseServerAdminClient();
 
   try {
-    // 1. 共通テーブル (contact_inquiries) に基本情報を挿入
+    // 1. 共通テーブル (inquiries) に基本情報を挿入
     const { data: inquiryData, error: inquiryError } = await serviceClient
-      .from('contact_inquiries')
+      .from('inquiries')
       .insert({
+        source: 'web', // 受付チャネル(web)
+        inquiry_type: contactData.inquiryType,
         name: contactData.userInfo.name,
         company_name: contactData.userInfo.companyName,
         email: contactData.userInfo.email,
@@ -77,7 +76,6 @@ async function saveContactToDatabase(
         preferred_contact: contactData.userInfo.preferredContact,
         address: contactData.userInfo.address,
         postal_code: contactData.userInfo.postalCode,
-        inquiry_type: contactData.inquiryType,
       })
       .select('id')
       .single();

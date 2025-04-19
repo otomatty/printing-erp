@@ -19,7 +19,7 @@ export default async function ProtectedLayout({
       <Header user={user} />
 
       {/* メインコンテンツ */}
-      <main className="flex-1 py-12">{children}</main>
+      <main className="flex-1 py-8 lg:py-12">{children}</main>
 
       {/* フッター */}
       <footer className="bg-gray-200 dark:bg-gray-800 py-4 text-center text-gray-600 dark:text-gray-400 text-sm">

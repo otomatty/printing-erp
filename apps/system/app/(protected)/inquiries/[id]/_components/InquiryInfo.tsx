@@ -1,7 +1,7 @@
 import { Mail, Phone, Calendar, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@kit/ui/card';
 import { Badge } from '@kit/ui/badge';
-import type { Inquiry } from '../../_data/types';
+import type { Inquiry } from '../../../../../types/inquiries';
 import { getStatusColor, getPriorityColor } from '../../_data/utils';
 
 interface InquiryInfoProps {

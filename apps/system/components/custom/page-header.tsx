@@ -102,10 +102,10 @@ export function PageHeader({
 
   return (
     <Container>
-      <div className={cn('my-8 space-y-4', className)}>
+      <div className={cn('my-4 lg:my-8 space-y-4', className)}>
         {/* 戻るリンク */}
         {showBackLink && (
-          <div className="mb-8">
+          <div className="mb-4 lg:mb-8">
             <BackLink {...backLinkProps} />
           </div>
         )}

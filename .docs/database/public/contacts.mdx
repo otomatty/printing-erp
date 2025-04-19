@@ -9,29 +9,33 @@
 
 ```mermaid
 erDiagram
-    CONTACT_INQUIRIES ||--o| PRINT_SERVICES_INQUIRIES : has
-    CONTACT_INQUIRIES ||--o| DIGITAL_SERVICES_INQUIRIES : has
-    CONTACT_INQUIRIES ||--o| GENERAL_INQUIRIES : has
-    CONTACT_INQUIRIES ||--o| MEETING_RESERVATIONS : has
+    INQUIRIES ||--o| PRINT_SERVICES_INQUIRIES : has
+    INQUIRIES ||--o| DIGITAL_SERVICES_INQUIRIES : has
+    INQUIRIES ||--o| GENERAL_INQUIRIES : has
+    INQUIRIES ||--o| MEETING_RESERVATIONS : has
 ```
 
 ---
 
 ## テーブル定義
 
-### 1. contact_inquiries（共通：全問い合わせの基本情報）
-| カラム名           | 型          | 説明                   | 制約             |
-|--------------------|-------------|------------------------|------------------|
-| id                 | uuid        | 問い合わせID           | PRIMARY KEY      |
-| inquiry_type       | text        | 問い合わせ種別         | NOT NULL         |
-| name               | text        | 氏名                   | NOT NULL         |
-| company_name       | text        | 会社名                 |                  |
-| email              | text        | メールアドレス         | NOT NULL         |
-| phone              | text        | 電話番号               |                  |
-| preferred_contact  | text        | 希望連絡方法           |                  |
-| address            | text        | 住所                   |                  |
-| postal_code        | text        | 郵便番号               |                  |
-| created_at         | timestamptz | 登録日時               | DEFAULT now()    |
+### 1. inquiries（共通：全問い合わせの基本情報）
+| カラム名           | 型            | 説明                                                       | 制約                                                      |
+|--------------------|---------------|------------------------------------------------------------|-----------------------------------------------------------|
+| id                 | uuid          | 問い合わせID                                               | PRIMARY KEY, DEFAULT gen_random_uuid()                    |
+| source             | text          | 受付チャネル (`web`,`phone`,`email`,`other`)               | NOT NULL, CHECK (source IN ('web','phone','email','other')) |
+| inquiry_type       | text          | 問い合わせ種別                                             | NOT NULL                                                 |
+| status             | text          | ステータス (`new`,`in_progress`,`closed`)                  | NOT NULL, DEFAULT 'new', CHECK (status IN ('new','in_progress','closed')) |
+| priority           | text          | 優先度 (`low`,`normal`,`high`)                             | NOT NULL, DEFAULT 'normal', CHECK (priority IN ('low','normal','high')) |
+| name               | text          | 氏名                                                       | NOT NULL                                                 |
+| company_name       | text          | 会社名                                                     |                                                           |
+| email              | text          | メールアドレス                                             | NOT NULL                                                 |
+| phone              | text          | 電話番号                                                   |                                                           |
+| preferred_contact  | text          | 希望連絡方法                                               |                                                           |
+| address            | text          | 住所                                                       |                                                           |
+| postal_code        | text          | 郵便番号                                                   |                                                           |
+| created_at         | timestamptz   | 登録日時                                                   | NOT NULL, DEFAULT now()                                  |
+| updated_at         | timestamptz   | 更新日時                                                   | NOT NULL, DEFAULT now()                                  |
 
 ---
 
@@ -69,7 +73,7 @@ erDiagram
 | カラム名           | 型          | 説明                   | 制約             |
 |--------------------|-------------|------------------------|------------------|
 | id                 | uuid        | ミーティングID         | PRIMARY KEY      |
-| inquiry_id         | uuid        | 問い合わせID（FK）     | FK: contact_inquiries.id |
+| inquiry_id         | uuid        | 問い合わせID（FK）     | FK: inquiries.id |
 | meeting_datetime   | timestamptz | ミーティング日時       |                  |
 | meeting_method     | text        | ミーティング方法       |                  |
 | meeting_url        | text        | URL（オンラインの場合）|                  |
@@ -79,7 +83,7 @@ erDiagram
 ---
 
 ## 設計方針・拡張性のポイント
-- 共通項目はcontact_inquiriesで一元管理し、タイプごとの詳細はサブテーブルで分離。
+- 共通項目はinquiriesで一元管理し、タイプごとの詳細はサブテーブルで分離。
 - デジタルサービスの問い合わせ種別（自動見積もり・通常・ミーティング）はdigital_service_typeで分岐。
 - デジタルサービス詳細は現状フォームに合わせて「project_description」「estimate_params」のみ保持。
 - ミーティング情報はmeeting_reservationsで独立管理。将来的な拡張（複数ミーティング、議事録、担当者紐付け等）も容易。
