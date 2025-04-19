@@ -33,10 +33,7 @@ export default function DashboardStats() {
             </div>
           </div>
           <div className="mt-4">
-            <a
-              href="/system/orders"
-              className="text-sm text-primary hover:underline"
-            >
+            <a href="/orders" className="text-sm text-primary hover:underline">
               すべての注文を見る →
             </a>
           </div>
@@ -56,7 +53,7 @@ export default function DashboardStats() {
           </div>
           <div className="mt-4">
             <a
-              href="/system/customers"
+              href="/customers"
               className="text-sm text-green-600 hover:underline"
             >
               顧客リストを見る →
@@ -78,7 +75,7 @@ export default function DashboardStats() {
           </div>
           <div className="mt-4">
             <a
-              href="/system/inventory"
+              href="/inventory"
               className="text-sm text-yellow-600 hover:underline"
             >
               在庫管理へ →
@@ -100,7 +97,7 @@ export default function DashboardStats() {
           </div>
           <div className="mt-4">
             <a
-              href="/system/production"
+              href="/production"
               className="text-sm text-purple-600 hover:underline"
             >
               生産スケジュールを見る →

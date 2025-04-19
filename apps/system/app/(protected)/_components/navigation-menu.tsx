@@ -190,8 +190,8 @@ export default function NavigationMenu() {
       status: 'available',
     },
     {
-      href: '/website/contents',
-      title: 'コンテンツ',
+      href: '/website/topics',
+      title: '特集記事',
       icon: <FileEdit className="h-6 w-6" />,
       category: 'website',
       status: 'available',

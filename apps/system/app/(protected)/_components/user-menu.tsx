@@ -7,6 +7,7 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { User } from '@supabase/supabase-js';
+import type { Database } from '@kit/supabase/database';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,19 +18,26 @@ import {
   DropdownMenuTrigger,
 } from '@kit/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@kit/ui/avatar';
-import { User as UserIcon, LogOut, Settings, UserCog } from 'lucide-react';
+import { UserCog, LogOut, BookOpen } from 'lucide-react';
 import { Button } from '@kit/ui/button';
 import { signOut } from '~/actions/auth';
+
 interface UserMenuProps {
   user: User | null;
+  /** admin_users テーブルのレコード */
+  adminProfile: Database['system']['Tables']['admin_users']['Row'] | null;
 }
 
-export default function UserMenu({ user }: UserMenuProps) {
+export default function UserMenu({ user, adminProfile }: UserMenuProps) {
   const router = useRouter();
 
-  // 初期のユーザー名/メールを取得
+  // 表示名は adminProfile の first_name, last_name を優先
+  const profileName =
+    adminProfile?.first_name || adminProfile?.last_name
+      ? `${adminProfile.first_name ?? ''} ${adminProfile.last_name ?? ''}`.trim()
+      : null;
   const userDisplayName =
-    user?.user_metadata?.name || user?.email || 'ユーザー';
+    profileName || user?.user_metadata?.name || user?.email || 'ユーザー';
   const userInitials = userDisplayName.charAt(0).toUpperCase();
 
   // ログアウト処理
@@ -57,23 +65,19 @@ export default function UserMenu({ user }: UserMenuProps) {
               {userDisplayName}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user?.email}
+              {adminProfile?.email || user?.email}
             </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <UserIcon className="mr-2 h-4 w-4" />
-            <span>プロフィール</span>
+          <DropdownMenuItem onClick={() => router.push('/docs')}>
+            <BookOpen className="mr-2 h-4 w-4" />
+            <span>ドキュメント</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push('/accounts')}>
             <UserCog className="mr-2 h-4 w-4" />
             <span>アカウント設定</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Settings className="mr-2 h-4 w-4" />
-            <span>環境設定</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

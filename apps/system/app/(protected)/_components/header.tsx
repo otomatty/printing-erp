@@ -3,6 +3,7 @@
  * アプリケーションのトップナビゲーションを提供します
  */
 import type { User } from '@supabase/supabase-js';
+import type { Database } from '@kit/supabase/database';
 import Image from 'next/image';
 import Link from 'next/link';
 import NavigationMenu from './navigation-menu';
@@ -13,9 +14,11 @@ import logo from '~/public/images/logo/erp-logo-white.png';
 
 interface HeaderProps {
   user: User | null;
+  /** admin_usersテーブルのレコード */
+  adminProfile: Database['system']['Tables']['admin_users']['Row'] | null;
 }
 
-export default function Header({ user }: HeaderProps) {
+export default function Header({ user, adminProfile }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full bg-primary text-primary-foreground shadow-md">
       <Container maxWidth="6xl">
@@ -41,7 +44,7 @@ export default function Header({ user }: HeaderProps) {
             </div>
 
             {/* ユーザーメニュー */}
-            <UserMenu user={user} />
+            <UserMenu user={user} adminProfile={adminProfile} />
           </div>
         </div>
       </Container>

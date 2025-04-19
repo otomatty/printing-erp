@@ -142,7 +142,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         }
         backLink={{
           href: '/',
-          label: 'ホーム',
+          label: 'ホームに戻る',
         }}
       />
 
