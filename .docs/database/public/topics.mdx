@@ -1,0 +1,75 @@
+---
+title: Topics Database Schema
+---
+
+# Topics Database Schema
+
+## テーブル一覧
+
+### topics テーブル
+| カラム名        | データ型                                           | 制約                                                          | デフォルト  | 説明                                 |
+| --------------- | -------------------------------------------------- | ------------------------------------------------------------ | ---------- | ------------------------------------ |
+| id              | UUID                                               | PRIMARY KEY                                                  |            | トピックの一意識別子                |
+| title           | TEXT                                               | NOT NULL                                                     |            | タイトル                             |
+| slug            | TEXT                                               | UNIQUE, NOT NULL                                             |            | URL フレンドリースラッグ             |
+| excerpt         | TEXT                                               |                                                              |            | 抜粋                                 |
+| content         | TEXT                                               |                                                              |            | 記事本文 (Markdown/HTML)             |
+| thumbnail_url   | TEXT                                               |                                                              |            | サムネイル画像の URL                 |
+| status          | STATUS_ENUM('draft','published','archived')        | NOT NULL                                                     | 'draft'    | 公開状態                            |
+| published_at    | TIMESTAMP                                          |                                                              | NULL       | 公開日時                            |
+| created_at      | TIMESTAMP                                          | NOT NULL                                                     | now()      | 作成日時                            |
+| updated_at      | TIMESTAMP                                          | NOT NULL                                                     | now()      | 更新日時                            |
+| category_id     | UUID                                               | REFERENCES topics_categories(id) ON DELETE SET NULL          |            | カテゴリ参照 (topics_categories)     |
+
+### topics_categories テーブル
+| カラム名   | データ型  | 制約                | デフォルト | 説明                  |
+| ---------- | --------- | ------------------- | --------- | --------------------- |
+| id         | UUID      | PRIMARY KEY         |           | カテゴリの一意識別子  |
+| name       | TEXT      | NOT NULL            |           | カテゴリ名            |
+| slug       | TEXT      | UNIQUE, NOT NULL    |           | カテゴリスラッグ      |
+| created_at | TIMESTAMP | NOT NULL            | now()     | 作成日時              |
+
+### topics_tags テーブル
+| カラム名   | データ型  | 制約                | デフォルト | 説明                 |
+| ---------- | --------- | ------------------- | --------- | -------------------- |
+| id         | UUID      | PRIMARY KEY         |           | タグの一意識別子     |
+| name       | TEXT      | NOT NULL            |           | タグ名               |
+| slug       | TEXT      | UNIQUE, NOT NULL    |           | タグスラッグ         |
+| created_at | TIMESTAMP | NOT NULL            | now()     | 作成日時             |
+
+### topics_tags_map テーブル
+(多対多リレーション)
+| カラム名   | データ型 | 制約                                                   | 説明           |
+| ---------- | -------- | ----------------------------------------------------- | -------------- |
+| topic_id   | UUID     | PRIMARY KEY, REFERENCES topics(id) ON DELETE CASCADE  | トピック参照   |
+| tag_id     | UUID     | PRIMARY KEY, REFERENCES topics_tags(id) ON DELETE CASCADE | タグ参照       |
+
+## インデックス & 制約
+- topics.slug, topics_categories.slug, topics_tags.slug にユニーク制約
+- topics.status にインデックス
+- topics.created_at にインデックス
+- topics_tags_map.topic_id にインデックス
+- topics_tags_map.tag_id にインデックス
+
+## RLS ポリシー
+以下の Row Level Security ポリシーを設定してください。
+
+### public.topics
+- RLS 有効化: true
+- select_published (public): SELECT when `status = 'published'`
+- select_authenticated (authenticated): SELECT when `true`
+- insert_authenticated (authenticated): INSERT when `true`
+- update_authenticated (authenticated): UPDATE when `true` ※author_id 制御推奨
+- delete_authenticated (authenticated): DELETE when `true`
+
+### public.topics_categories
+- RLS 有効化: true
+- categories_select_public (public): SELECT when `true`
+
+### public.topics_tags
+- RLS 有効化: true
+- tags_select_public (public): SELECT when `true`
+
+## 備考
+- 各テーブルの timestamp はトリガーまたはアプリケーション側で自動更新を行うこと
+- Supabase のポリシー設定や Foreign Key 制約によりデータ整合性を担保すること

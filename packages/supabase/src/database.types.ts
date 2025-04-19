@@ -64,45 +64,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      contact_inquiries: {
-        Row: {
-          address: string | null
-          company_name: string | null
-          created_at: string
-          email: string
-          id: string
-          inquiry_type: string
-          name: string
-          phone: string | null
-          postal_code: string | null
-          preferred_contact: string | null
-        }
-        Insert: {
-          address?: string | null
-          company_name?: string | null
-          created_at?: string
-          email: string
-          id?: string
-          inquiry_type: string
-          name: string
-          phone?: string | null
-          postal_code?: string | null
-          preferred_contact?: string | null
-        }
-        Update: {
-          address?: string | null
-          company_name?: string | null
-          created_at?: string
-          email?: string
-          id?: string
-          inquiry_type?: string
-          name?: string
-          phone?: string | null
-          postal_code?: string | null
-          preferred_contact?: string | null
-        }
-        Relationships: []
-      }
       digital_services_inquiries: {
         Row: {
           digital_service_type: string
@@ -124,10 +85,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "digital_services_inquiries_id_fkey"
+            foreignKeyName: "fk_digital_services_inquiries_inquiries"
             columns: ["id"]
             isOneToOne: true
-            referencedRelation: "contact_inquiries"
+            referencedRelation: "inquiries"
             referencedColumns: ["id"]
           },
         ]
@@ -147,10 +108,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "general_inquiries_id_fkey"
+            foreignKeyName: "fk_general_inquiries_inquiries"
             columns: ["id"]
             isOneToOne: true
-            referencedRelation: "contact_inquiries"
+            referencedRelation: "inquiries"
             referencedColumns: ["id"]
           },
         ]
@@ -236,10 +197,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "meeting_reservations_inquiry_id_fkey"
+            foreignKeyName: "fk_meeting_reservations_inquiries"
             columns: ["inquiry_id"]
             isOneToOne: false
-            referencedRelation: "contact_inquiries"
+            referencedRelation: "inquiries"
             referencedColumns: ["id"]
           },
         ]
@@ -405,10 +366,132 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "print_services_inquiries_id_fkey"
+            foreignKeyName: "fk_print_services_inquiries_inquiries"
             columns: ["id"]
             isOneToOne: true
-            referencedRelation: "contact_inquiries"
+            referencedRelation: "inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topics: {
+        Row: {
+          category_id: string | null
+          content: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          published_at: string | null
+          slug: string
+          status: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published_at?: string | null
+          slug: string
+          status?: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published_at?: string | null
+          slug?: string
+          status?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topics_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "topics_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topics_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      topics_tags: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      topics_tags_map: {
+        Row: {
+          tag_id: string
+          topic_id: string
+        }
+        Insert: {
+          tag_id: string
+          topic_id: string
+        }
+        Update: {
+          tag_id?: string
+          topic_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topics_tags_map_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "topics_tags"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "topics_tags_map_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
             referencedColumns: ["id"]
           },
         ]

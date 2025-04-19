@@ -1,0 +1,148 @@
+# 特集管理機能 実装仕様書
+
+## 1. 機能概要
+特集管理機能は、DX・IT、印刷などの特集記事をWebサイト上で作成・編集・公開・削除するための管理画面です。以下の操作を提供します：
+- 特集記事一覧表示（フィルタ・検索・ソート機能付き）
+- 特集記事の新規作成
+- 特集記事の詳細表示
+- 特集記事の編集・更新
+- 特集記事の公開／非公開切替
+- 特集記事の削除
+- カテゴリ管理（一覧・作成・編集・削除）
+- タグ管理（一覧・作成・編集・削除）
+
+## 2. ディレクトリ構造
+```
+apps/system/app/(protected)/website/topics/
+├── page.tsx              # 特集記事一覧ページ
+├── create/
+│   └── page.tsx          # 新規作成フォーム
+├── [slug]/
+│   ├── page.tsx          # 特集記事詳細ページ
+│   └── edit/
+│       └── page.tsx      # 編集フォーム
+├── categories/
+│   ├── page.tsx          # カテゴリ一覧ページ
+├── tags/
+│   ├── page.tsx          # タグ一覧ページ
+└── _components/
+    ├── topic-form.tsx    # 作成・編集共通フォーム
+    ├── topic-card.tsx    # 一覧カード表示
+    ├── topic-filters.tsx # フィルターUI
+    ├── category-form.tsx # カテゴリフォーム
+    └── tag-form.tsx      # タグフォーム
+```
+
+## 3. コンポーネント構成と役割
+
+### 3.1 ページコンポーネント
+
+#### `page.tsx` (一覧ページ)
+- サーバーコンポーネントとして実装
+- サーバーアクション `listTopics` を呼び出し
+- フィルター（ステータス・カテゴリ・キーワード）
+- ページネーション（10件/ページ）
+- `topic-card.tsx` にマッピングして表示
+
+#### `create/page.tsx` (新規作成ページ)
+- クライアントコンポーネントとして実装
+- `topic-form.tsx` を利用して入力
+- `createTopic` サーバーアクション呼び出し
+- バリデーション（Zod + React Hook Form）
+
+#### `[slug]/page.tsx` (詳細ページ)
+- サーバーコンポーネントとして実装
+- `getTopicById` サーバーアクション呼び出し
+- 詳細情報表示、公開/非公開切替ボタン
+
+#### `[slug]/edit/page.tsx` (編集ページ)
+- クライアントコンポーネントとして実装
+- `getTopicById` で初期値取得
+- `topic-form.tsx` による編集
+- `updateTopic` サーバーアクション呼び出し
+
+#### `categories/*` (カテゴリ管理)
+- `listCategories` で一覧取得
+- `createCategory`, `updateCategory`, `deleteCategory` の呼び出し
+- 表示順更新（`updateCategoryOrder`）をドラッグ＆ドロップまたは数値入力
+
+#### `tags/*` (タグ管理)
+- `listTags` で一覧取得
+- `createTag`, `updateTag`, `deleteTag` の呼び出し
+
+### 3.2 共通コンポーネント
+
+#### `topic-form.tsx`
+- フォーム入力（タイトル、スラッグ、抜粋、本文、サムネイルURL）
+- 公開日時設定（DatePicker）
+- ステータス切替（draft,published,archived）
+- カテゴリ選択（Select）
+- タグ選択（MultiSelect）
+- Zodによるバリデーション結果表示
+
+#### `topic-card.tsx`
+- 特集記事のカード表示（タイトル、抜粋、サムネイル、ステータス）
+- アクションボタン（編集・削除・ステータス変更）
+
+#### `topic-filters.tsx`
+- フィルターUI（ステータス、カテゴリ、キーワード検索）
+
+#### `category-form.tsx` / `tag-form.tsx`
+- カテゴリ/タグの作成・編集フォーム（名前、スラッグ）
+
+## 4. データフロー
+
+### 4.1 一覧取得フロー
+1. `page.tsx` で URLクエリパラメータ取得（useSearchParams）
+2. `listTopics` サーバーアクションにパラメータ渡し
+3. レスポンスを一覧表示・ページネーション
+
+### 4.2 作成フロー
+1. `create/page.tsx` で `topic-form.tsx` 表示
+2. 入力・バリデーション
+3. `createTopic` サーバーアクション呼び出し
+4. 成功後、一覧ページにリダイレクト
+
+### 4.3 編集フロー
+1. `[slug]/edit/page.tsx` で `getTopicById` 呼び出し
+2. 初期値としてフォームに渡す
+3. `updateTopic` サーバーアクション呼び出し
+4. 成功後、詳細ページにリダイレクト
+
+### 4.4 カテゴリ管理フロー
+- `createCategory` / `updateCategory` / `deleteCategory` を呼び出し
+- `updateCategoryOrder` で表示順更新
+
+### 4.5 タグ管理フロー
+- `createTag` / `updateTag` / `deleteTag` を呼び出し
+
+## 5. サーバーアクション
+- createTopic, listTopics, getTopicById, updateTopic, deleteTopic
+- publishTopic, unpublishTopic
+- createCategory, listCategories, updateCategory, deleteCategory, updateCategoryOrder
+- createTag, listTags, updateTag, deleteTag
+
+## 6. セキュリティ対策
+- `(protected)` レイアウト内配置で認証済みのみ閲覧可能
+- `ensureAdmin` による権限チェック
+
+## 7. パフォーマンス最適化
+- React.memo / useMemo / useCallback で不要な再レンダリング防止
+- ページネーション
+- Next.js Imageによる画像最適化
+
+## 8. エラーハンドリング
+- try/catch と `console.error`
+- バリデーションエラーはフィールド単位で表示
+- ネットワークエラー時の再試行UI
+
+## 9. 実装の注意点
+- スラッグは自動生成オプション提供（タイトルから）
+- タグ選択は柔軟なMultiSelectを利用
+- サムネイルURLは検証（URL形式）
+
+## 10. 今後の拡張予定
+- スケジュール公開機能
+- バージョン管理・レビュー承認フロー
+- 多言語対応
+- SEO最適化ツール
