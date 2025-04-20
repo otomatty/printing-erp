@@ -34,6 +34,11 @@
 @source "../../../packages/cms/*/src/**/*.{ts,tsx}";
 @source "../{app,components,config,lib}/**/*.{ts,tsx}";
 
+/* Tiptapのスタイル */
+@import './tiptap/_variables.scss';
+@import './tiptap/_keyframe-animations.scss';
+
+
 /* バリアント - 新しいバリアントを追加した場合は以下を更新してください */
 @variant dark (&:where(.dark, .dark *));
 

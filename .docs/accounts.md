@@ -19,14 +19,14 @@
 
 ### 2.1 Googleアカウント (**共用**)
 - 菅井 瑛正とニイヌマ企画印刷の共用アカウント
-- 各種認証,Gemini APIで使用
+- 各種認証,GA4,GTM,Gemini APIで使用
 | 項目 | 情報 |
 |------|------|
 | アカウント名 | niinuma.kikaku@gmail.com |
 | パスワード | cnDyRv7TrQvL |
 |------|------|
 | Gemini API Key | `AIzaSyCbhgGOIwURC6TJSsscLPot2_ETfLh3b_4` |
-| 利用サービス | Gemini API, Gmail |
+| 利用サービス | Gemini API, Gmail, GA4, GTM |
 
 ### 2.2 Githubアカウント(**共用**)
 - 管理画面：`https://github.com`

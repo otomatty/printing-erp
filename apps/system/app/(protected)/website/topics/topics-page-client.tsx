@@ -14,11 +14,7 @@ import { Plus } from 'lucide-react';
 import CategoryTable from './_components/categories/category-table';
 import TagTable from './_components/tags/tag-table';
 import TopicCard from './_components/topic-card';
-import type {
-  TopicCategoryFormData,
-  TopicTagFormData,
-  Topic,
-} from '~/types/topics';
+import type { Topic } from '~/types/topics';
 
 interface TopicsPageClientProps {
   categories: { id: string; name: string; slug: string }[];
@@ -52,7 +48,13 @@ export default function TopicsPageClient({
   const createAction = (
     <Button asChild>
       <Link
-        href={`/website/topics/${view === 'categories' ? 'category' : view === 'tags' ? 'tag' : 'article'}/create`}
+        href={
+          view === 'categories'
+            ? '/website/topics/category/create'
+            : view === 'tags'
+              ? '/website/topics/tag/create'
+              : '/website/topics/create'
+        }
       >
         <Plus className="h-4 w-4 mr-1" /> 新規
         {view === 'categories' ? 'カテゴリ' : view === 'tags' ? 'タグ' : '記事'}
@@ -72,9 +74,10 @@ export default function TopicsPageClient({
             <div className="flex gap-2">{createAction}</div>
           </div>
         }
+        className="max-w-5xl mx-auto"
       />
       <Container>
-        <div className="space-y-6">
+        <div className="space-y-6 max-w-5xl mx-auto">
           {view === 'articles' ? (
             <div className="space-y-4">
               {topics.map((topic) => (
