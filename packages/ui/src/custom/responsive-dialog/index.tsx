@@ -31,6 +31,8 @@ interface ResponsiveDialogProps {
   className?: string;
   contentClassName?: string;
   onSuccess?: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function ResponsiveDialog({
@@ -41,15 +43,29 @@ export function ResponsiveDialog({
   className,
   contentClassName,
   onSuccess,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: ResponsiveDialogProps) {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = controlledOpen ?? internalOpen;
   const isMobile = useIsMobile();
   const dialogRef = useRef<HTMLDivElement>(null);
 
+  const handleOpenChange = useCallback(
+    (val: boolean) => {
+      if (controlledOnOpenChange) {
+        controlledOnOpenChange(val);
+      } else {
+        setInternalOpen(val);
+      }
+    },
+    [controlledOnOpenChange]
+  );
+
   const closeDialog = useCallback(() => {
-    setOpen(false);
+    handleOpenChange(false);
     onSuccess?.();
-  }, [onSuccess]);
+  }, [onSuccess, handleOpenChange]);
 
   // DialogContentのaria-describedby警告を解消
   const dialogContentProps = {
@@ -67,7 +83,7 @@ export function ResponsiveDialog({
 
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={setOpen}>
+      <Drawer open={isOpen} onOpenChange={handleOpenChange}>
         <DrawerTrigger asChild>{trigger}</DrawerTrigger>
         <DrawerContent
           className={cn('max-w-[100vw] max-h-[95vh]', contentClassName)}
@@ -89,7 +105,7 @@ export function ResponsiveDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent {...dialogContentProps}>
         {(title || description) && (

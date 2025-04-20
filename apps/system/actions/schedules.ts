@@ -3,6 +3,7 @@
 import { cookies } from 'next/headers';
 import { google, type calendar_v3 } from 'googleapis';
 import type { Credentials } from 'google-auth-library';
+import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client';
 
 // Calendar ID from environment variable
 const calendarId = process.env.COMPANY_CALENDAR_ID;
@@ -142,7 +143,7 @@ export async function listUserEvents(): Promise<calendar_v3.Schema$Event[]> {
   );
   oauth2Client.setCredentials(tokens);
 
-  // ユーザーのメールを UserInfo エンドポイントから取得
+  // ユーザー情報取得（メール取得）
   const oauth2Service = google.oauth2({ version: 'v2', auth: oauth2Client });
   const { data: userInfo } = await oauth2Service.userinfo.get();
   const userEmail = userInfo.email;
@@ -150,6 +151,52 @@ export async function listUserEvents(): Promise<calendar_v3.Schema$Event[]> {
     throw new Error('User email is not available');
   }
 
+  // access_token をリフレッシュ（5分前を目安）
+  const now = Date.now();
+  if (!tokens.expiry_date || tokens.expiry_date - now < 5 * 60 * 1000) {
+    if (!tokens.refresh_token) {
+      throw new Error('No refresh token available');
+    }
+    const { credentials } = await oauth2Client.refreshAccessToken();
+    tokens.access_token = credentials.access_token;
+    tokens.expiry_date = credentials.expiry_date;
+    tokens.refresh_token = credentials.refresh_token ?? tokens.refresh_token;
+    // Ensure refreshed tokens are present
+    if (!tokens.access_token || !tokens.expiry_date) {
+      throw new Error('Failed to refresh Google tokens');
+    }
+    // Supabase と Cookie に書き戻し
+    const supabase = getSupabaseServerAdminClient();
+    await supabase
+      .schema('system')
+      .from('user_google_tokens')
+      .upsert<{
+        user_email: string;
+        access_token: string;
+        refresh_token: string;
+        expiry_date: number;
+      }>(
+        [
+          {
+            user_email: userEmail,
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token,
+            expiry_date: tokens.expiry_date,
+          },
+        ],
+        { onConflict: 'user_email' }
+      );
+    // Cookie 更新
+    const maxAge = Math.floor((tokens.expiry_date - now) / 1000);
+    cookieStore.set('google_tokens', JSON.stringify(tokens), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge,
+    });
+  }
+
+  // カレンダーイベント取得
   const client = google.calendar({ version: 'v3', auth: oauth2Client });
   const { data } = await client.events.list({
     calendarId: userEmail,
@@ -179,4 +226,260 @@ export async function fetchInitialCalendarData(): Promise<{
     isLinked = false;
   }
   return { companyEvents, personalEvents, isLinked };
+}
+
+// Add CRUD operations for personal user calendar
+/**
+ * Create a new event in the personal user calendar using OAuth2 tokens.
+ */
+export async function createUserEvent(
+  summary: string,
+  startDateTime: string,
+  endDateTime: string,
+  metadata?: Record<string, string>
+): Promise<calendar_v3.Schema$Event> {
+  const cookieStore = await cookies();
+  const tokenCookie = cookieStore.get('google_tokens');
+  if (!tokenCookie) {
+    throw new Error('User is not authenticated');
+  }
+  let tokens: Credentials;
+  try {
+    tokens = JSON.parse(tokenCookie.value) as Credentials;
+  } catch {
+    throw new Error('Invalid authentication token');
+  }
+
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_SCHEDULE_CLIENT_ID,
+    process.env.GOOGLE_SCHEDULE_CLIENT_SECRET,
+    process.env.GOOGLE_SCHEDULE_REDIRECT_URI
+  );
+  oauth2Client.setCredentials(tokens);
+
+  // Refresh access token if about to expire
+  const now = Date.now();
+  if (!tokens.expiry_date || tokens.expiry_date - now < 5 * 60 * 1000) {
+    if (!tokens.refresh_token) {
+      throw new Error('No refresh token available');
+    }
+    const { credentials } = await oauth2Client.refreshAccessToken();
+    tokens.access_token = credentials.access_token;
+    tokens.expiry_date = credentials.expiry_date;
+    tokens.refresh_token = credentials.refresh_token ?? tokens.refresh_token;
+    if (!tokens.access_token || !tokens.expiry_date) {
+      throw new Error('Failed to refresh Google tokens');
+    }
+    // Persist refreshed tokens
+    const supabase = getSupabaseServerAdminClient();
+    const oauth2Service = google.oauth2({ version: 'v2', auth: oauth2Client });
+    const { data: userInfo } = await oauth2Service.userinfo.get();
+    const userEmail = userInfo.email;
+    if (!userEmail) {
+      throw new Error('User email is not available');
+    }
+    await supabase
+      .schema('system')
+      .from('user_google_tokens')
+      .upsert<{
+        user_email: string;
+        access_token: string;
+        refresh_token: string;
+        expiry_date: number;
+      }>(
+        [
+          {
+            user_email: userEmail,
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token,
+            expiry_date: tokens.expiry_date,
+          },
+        ],
+        { onConflict: 'user_email' }
+      );
+    const maxAge = Math.floor((tokens.expiry_date - now) / 1000);
+    cookieStore.set('google_tokens', JSON.stringify(tokens), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge,
+    });
+  }
+
+  // Fetch user email
+  const oauth2Service = google.oauth2({ version: 'v2', auth: oauth2Client });
+  const { data: userInfo } = await oauth2Service.userinfo.get();
+  const userEmail = userInfo.email;
+  if (!userEmail) {
+    throw new Error('User email is not available');
+  }
+
+  // Insert event
+  const { data } = await google
+    .calendar({ version: 'v3', auth: oauth2Client })
+    .events.insert({
+      calendarId: userEmail,
+      requestBody: {
+        summary,
+        start: { dateTime: startDateTime },
+        end: { dateTime: endDateTime },
+        extendedProperties: metadata ? { private: metadata } : undefined,
+      },
+    });
+  if (!data?.id) {
+    throw new Error('Failed to create calendar event');
+  }
+  return data;
+}
+
+/**
+ * Update an existing event in the personal user calendar using OAuth2 tokens.
+ */
+export async function updateUserEvent(
+  eventId: string,
+  updates: {
+    summary?: string;
+    startDateTime?: string;
+    endDateTime?: string;
+    metadata?: Record<string, string>;
+  }
+): Promise<calendar_v3.Schema$Event> {
+  const cookieStore = await cookies();
+  const tokenCookie = cookieStore.get('google_tokens');
+  if (!tokenCookie) {
+    throw new Error('User is not authenticated');
+  }
+  let tokens: Credentials;
+  try {
+    tokens = JSON.parse(tokenCookie.value) as Credentials;
+  } catch {
+    throw new Error('Invalid authentication token');
+  }
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_SCHEDULE_CLIENT_ID,
+    process.env.GOOGLE_SCHEDULE_CLIENT_SECRET,
+    process.env.GOOGLE_SCHEDULE_REDIRECT_URI
+  );
+  oauth2Client.setCredentials(tokens);
+
+  // (Refresh logic same as createUserEvent)
+  const now = Date.now();
+  if (!tokens.expiry_date || tokens.expiry_date - now < 5 * 60 * 1000) {
+    if (!tokens.refresh_token) {
+      throw new Error('No refresh token available');
+    }
+    const { credentials } = await oauth2Client.refreshAccessToken();
+    tokens.access_token = credentials.access_token;
+    tokens.expiry_date = credentials.expiry_date;
+    tokens.refresh_token = credentials.refresh_token ?? tokens.refresh_token;
+    if (!tokens.access_token || !tokens.expiry_date) {
+      throw new Error('Failed to refresh Google tokens');
+    }
+    const supabase = getSupabaseServerAdminClient();
+    const oauth2Service = google.oauth2({ version: 'v2', auth: oauth2Client });
+    const { data: userInfo } = await oauth2Service.userinfo.get();
+    const userEmail = userInfo.email;
+    if (!userEmail) {
+      throw new Error('User email is not available');
+    }
+    await supabase
+      .schema('system')
+      .from('user_google_tokens')
+      .upsert(
+        [
+          {
+            user_email: userEmail,
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token,
+            expiry_date: tokens.expiry_date,
+          },
+        ],
+        { onConflict: 'user_email' }
+      );
+    const maxAge = Math.floor((tokens.expiry_date - now) / 1000);
+    cookieStore.set('google_tokens', JSON.stringify(tokens), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge,
+    });
+  }
+
+  // Fetch user email
+  const oauth2Service = google.oauth2({ version: 'v2', auth: oauth2Client });
+  const { data: userInfo } = await oauth2Service.userinfo.get();
+  const userEmail = userInfo.email;
+  if (!userEmail) {
+    throw new Error('User email is not available');
+  }
+
+  const requestBody: Partial<calendar_v3.Schema$Event> = {};
+  if (updates.summary) requestBody.summary = updates.summary;
+  if (updates.startDateTime)
+    requestBody.start = { dateTime: updates.startDateTime };
+  if (updates.endDateTime) requestBody.end = { dateTime: updates.endDateTime };
+  if (updates.metadata)
+    requestBody.extendedProperties = { private: updates.metadata };
+
+  const { data } = await google
+    .calendar({ version: 'v3', auth: oauth2Client })
+    .events.update({
+      calendarId: userEmail,
+      eventId,
+      requestBody,
+    });
+  if (!data) {
+    throw new Error('Failed to update calendar event');
+  }
+  return data;
+}
+
+/**
+ * Delete an event from the personal user calendar using OAuth2 tokens.
+ */
+export async function deleteUserEvent(eventId: string): Promise<void> {
+  const cookieStore = await cookies();
+  const tokenCookie = cookieStore.get('google_tokens');
+  if (!tokenCookie) {
+    throw new Error('User is not authenticated');
+  }
+  let tokens: Credentials;
+  try {
+    tokens = JSON.parse(tokenCookie.value) as Credentials;
+  } catch {
+    throw new Error('Invalid authentication token');
+  }
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_SCHEDULE_CLIENT_ID,
+    process.env.GOOGLE_SCHEDULE_CLIENT_SECRET,
+    process.env.GOOGLE_SCHEDULE_REDIRECT_URI
+  );
+  oauth2Client.setCredentials(tokens);
+
+  // Refresh if needed
+  const now = Date.now();
+  if (!tokens.expiry_date || tokens.expiry_date - now < 5 * 60 * 1000) {
+    if (!tokens.refresh_token) {
+      throw new Error('No refresh token available');
+    }
+    const { credentials } = await oauth2Client.refreshAccessToken();
+    tokens.access_token = credentials.access_token;
+    tokens.expiry_date = credentials.expiry_date;
+    tokens.refresh_token = credentials.refresh_token ?? tokens.refresh_token;
+    if (!tokens.access_token || !tokens.expiry_date) {
+      throw new Error('Failed to refresh Google tokens');
+    }
+  }
+
+  const oauth2Service = google.oauth2({ version: 'v2', auth: oauth2Client });
+  const { data: userInfo } = await oauth2Service.userinfo.get();
+  const userEmail = userInfo.email;
+  if (!userEmail) {
+    throw new Error('User email is not available');
+  }
+
+  await google.calendar({ version: 'v3', auth: oauth2Client }).events.delete({
+    calendarId: userEmail,
+    eventId,
+  });
 }

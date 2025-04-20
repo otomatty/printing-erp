@@ -5,6 +5,10 @@
  */
 import React, { useState } from 'react';
 import type { RawEvent, CalendarEvent } from '~/types/calendar';
+import DayCalendar from './day-calendar';
+import WeekCalendar from './week-calendar';
+import MonthCalendar from './month-calendar';
+import EventEditorModal from './event-editor-modal';
 
 // カレンダーのデイセルを一意に識別するID生成のためのヘルパー関数
 const generateDayCellId = (dayIndex: number) => `day-cell-${dayIndex}`;
@@ -25,6 +29,14 @@ export default function DashboardCalendar({
     'week'
   );
   const calendarData = view === 'company' ? companyData : personalData;
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | undefined>(
+    undefined
+  );
+  const [selectedDateKey, setSelectedDateKey] = useState<string | undefined>(
+    undefined
+  );
 
   // Mapでイベントを日付キー(YYYY-MM-DD)ごとにグループ化
   const dayEventsMap = new Map<string, CalendarEvent[]>();
@@ -61,6 +73,22 @@ export default function DashboardCalendar({
       console.error(error);
       alert('Google同期の設定に失敗しました');
     }
+  };
+
+  // イベントクリック時
+  const handleEventClick = (ev: CalendarEvent, dateKey: string) => {
+    setSelectedEvent(ev);
+    setSelectedDateKey(dateKey);
+    setModalMode('edit');
+    setModalOpen(true);
+  };
+
+  // 日セルクリック時（新規作成）
+  const handleCellClick = (dateKey: string) => {
+    setSelectedEvent(undefined);
+    setSelectedDateKey(dateKey);
+    setModalMode('create');
+    setModalOpen(true);
   };
 
   return (
@@ -130,135 +158,35 @@ export default function DashboardCalendar({
 
         {/* カレンダー表示エリア */}
         {calendarMode === 'day' && (
-          <div>
-            {Array.from({ length: 3 }).map((_, i) => {
-              const date = new Date();
-              date.setDate(date.getDate() + i);
-              const key = date.toISOString().split('T')[0];
-              const label = date.toLocaleDateString('ja-JP', {
-                month: 'numeric',
-                day: 'numeric',
-                weekday: 'short',
-              });
-              const items = dayEventsMap.get(key as string) ?? [];
-              return (
-                <div key={key} className="mb-4">
-                  <div className="font-medium mb-2">{label}</div>
-                  {items.length > 0 ? (
-                    items.map((ev: CalendarEvent) => (
-                      <div
-                        key={ev.id}
-                        className={`${ev.colorClass} p-2 rounded mb-2 text-xs border-l-4`}
-                      >
-                        <div className="font-medium">{ev.title}</div>
-                        <div className="text-gray-500">{ev.time}</div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-gray-500 text-xs">イベントなし</div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <DayCalendar
+            dayEventsMap={dayEventsMap}
+            onEventClick={handleEventClick}
+            onCellClick={handleCellClick}
+          />
         )}
         {calendarMode === 'week' && (
-          <div className="flex flex-col space-y-4">
-            {(() => {
-              const today = new Date();
-              const start = new Date(today);
-              start.setDate(today.getDate() - today.getDay());
-              return Array.from({ length: 7 }).map((_, j) => {
-                const date = new Date(start);
-                date.setDate(start.getDate() + j);
-                const key = date.toISOString().split('T')[0];
-                const label = date.toLocaleDateString('ja-JP', {
-                  month: 'numeric',
-                  day: 'numeric',
-                  weekday: 'short',
-                });
-                const items = dayEventsMap.get(key as string) ?? [];
-                return (
-                  <div key={key}>
-                    <div className="font-medium mb-1">{label}</div>
-                    {items.length > 0 ? (
-                      items.map((ev: CalendarEvent) => (
-                        <div
-                          key={ev.id}
-                          className={`${ev.colorClass} p-2 rounded mb-2 text-xs border-l-4`}
-                        >
-                          <div className="font-medium">{ev.title}</div>
-                          <div className="text-gray-500">{ev.time}</div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-gray-500 text-xs">イベントなし</div>
-                    )}
-                  </div>
-                );
-              });
-            })()}
-          </div>
+          <WeekCalendar
+            dayEventsMap={dayEventsMap}
+            onEventClick={handleEventClick}
+            onCellClick={handleCellClick}
+          />
         )}
         {calendarMode === 'month' && (
-          <div className="w-full overflow-x-auto">
-            <div className="grid grid-cols-7 gap-1 mb-2">
-              {['日', '月', '火', '水', '木', '金', '土'].map((d) => (
-                <div key={d} className="text-center p-2 font-medium">
-                  {d}
-                </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-7 gap-1 text-sm">
-              {(() => {
-                const now = new Date();
-                const y = now.getFullYear();
-                const m = now.getMonth();
-                const first = new Date(y, m, 1);
-                const last = new Date(y, m + 1, 0);
-                const days = last.getDate();
-                const offset = first.getDay();
-                const total = Math.ceil((offset + days) / 7) * 7;
-                return Array.from({ length: total }).map((_, k) => {
-                  const dayNo = k - offset + 1;
-                  if (k < offset || dayNo > days) {
-                    const blankDate = new Date(y, m, k - offset + 1);
-                    const blankKey: string = blankDate
-                      .toISOString()
-                      .substring(0, 10);
-                    return (
-                      <div key={blankKey} className="h-24 border bg-gray-50" />
-                    );
-                  }
-                  const date = new Date(y, m, dayNo);
-                  const key = date.toISOString().split('T')[0];
-                  const items = dayEventsMap.get(key as string) ?? [];
-                  return (
-                    <div
-                      key={key}
-                      className="h-24 border p-1 overflow-y-auto bg-gray-50"
-                    >
-                      <div className="text-xs font-medium mb-1">{dayNo}</div>
-                      {items.slice(0, 3).map((ev: CalendarEvent) => (
-                        <div
-                          key={ev.id}
-                          className={`${ev.colorClass} p-1 rounded mb-1 text-xs border-l-4`}
-                        >
-                          <div className="font-medium">{ev.title}</div>
-                        </div>
-                      ))}
-                      {items.length > 3 && (
-                        <div className="text-gray-500 text-xs">
-                          ...他{items.length - 3}件
-                        </div>
-                      )}
-                    </div>
-                  );
-                });
-              })()}
-            </div>
-          </div>
+          <MonthCalendar
+            dayEventsMap={dayEventsMap}
+            onEventClick={handleEventClick}
+            onCellClick={handleCellClick}
+          />
         )}
+
+        <EventEditorModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          event={selectedEvent}
+          dateKey={selectedDateKey}
+          calendarType={view}
+          mode={modalMode}
+        />
 
         <div className="flex justify-end mt-4">
           <a href="/schedules" className="text-sm text-primary hover:underline">

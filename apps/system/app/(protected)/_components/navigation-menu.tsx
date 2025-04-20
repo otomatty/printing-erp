@@ -153,14 +153,14 @@ export default function NavigationMenu() {
       title: '印刷作業',
       icon: <Printer className="h-6 w-6" />,
       category: 'production',
-      status: 'unavailable',
+      status: 'available',
     },
     {
       href: '/inventory',
       title: '在庫',
       icon: <Package className="h-6 w-6" />,
       category: 'production',
-      status: 'unavailable',
+      status: 'available',
     },
     {
       href: '/quality',
@@ -183,7 +183,7 @@ export default function NavigationMenu() {
       title: '請求',
       icon: <CreditCard className="h-6 w-6" />,
       category: 'shipping',
-      status: 'unavailable',
+      status: 'available',
     },
     {
       href: '/payments',
