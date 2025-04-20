@@ -26,17 +26,11 @@
 | パスワード | cnDyRv7TrQvL |
 |------|------|
 | Gemini API Key | `AIzaSyCbhgGOIwURC6TJSsscLPot2_ETfLh3b_4` |
-| 利用サービス | Gemini API, Gmail, GA4, GTM |
-| バックアップコード |  0756 2861
-7800 1562
-1592 8153
-4104 8182
-4270 4451
-7476 2085
-9474 9219
-3072 6785
-1884 1299
-1365 2307 |
+| 利用サービス | Gemini API, Gmail, GA4, GTM, Search Console, Google Ads |
+| バックアップコード |  0756 2861 7800 1562 1592 8153 4104 8182 4270 4451 7476 2085 9474 9219 3072 6785 1884 1299 1365 2307 |
+| Search Console |`https://search.google.com/u/3/search-console?resource_id=https%3A%2F%2Fniinuma-kikaku.com%2F` |
+
+
 
 ### 2.2 Githubアカウント(**共用**)
 - 管理画面：`https://github.com`

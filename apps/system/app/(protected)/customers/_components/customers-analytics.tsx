@@ -1,63 +1,33 @@
-import { ArrowLeft, BarChart, LineChart, PieChart, Users } from 'lucide-react';
-import Link from 'next/link';
+'use client';
 
-export default function CustomerAnalyticsPage() {
-  // モックデータは実際の実装ではデータベースから取得する
-  const topCustomers = [
-    {
-      id: 'cus-001',
-      name: '株式会社サンプル',
-      sales: 3250000,
-      orders: 15,
-      growth: 12.5,
-    },
-    {
-      id: 'cus-002',
-      name: '○○商事',
-      sales: 2100000,
-      orders: 8,
-      growth: 5.2,
-    },
-    {
-      id: 'cus-003',
-      name: '△△印刷',
-      sales: 1850000,
-      orders: 12,
-      growth: -3.8,
-    },
-    {
-      id: 'cus-004',
-      name: '××デザイン事務所',
-      sales: 1420000,
-      orders: 6,
-      growth: 22.4,
-    },
-    {
-      id: 'cus-005',
-      name: '□□出版',
-      sales: 980000,
-      orders: 5,
-      growth: 8.1,
-    },
-  ];
+import { BarChart, LineChart, PieChart } from 'lucide-react';
 
+// 顧客分析データのモック
+const topCustomers = [
+  {
+    id: 'cus-001',
+    name: '株式会社サンプル',
+    sales: 3250000,
+    orders: 15,
+    growth: 12.5,
+  },
+  { id: 'cus-002', name: '○○商事', sales: 2100000, orders: 8, growth: 5.2 },
+  { id: 'cus-003', name: '△△印刷', sales: 1850000, orders: 12, growth: -3.8 },
+  {
+    id: 'cus-004',
+    name: '××デザイン事務所',
+    sales: 1420000,
+    orders: 6,
+    growth: 22.4,
+  },
+  { id: 'cus-005', name: '□□出版', sales: 980000, orders: 5, growth: 8.1 },
+];
+
+export function CustomersAnalytics() {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center">
-        <Link
-          href="/system/customers"
-          className="text-gray-500 hover:text-gray-700 mr-4"
-        >
-          <ArrowLeft size={20} />
-        </Link>
-        <h1 className="text-2xl font-bold flex items-center">
-          <Users className="mr-2" />
-          顧客分析ダッシュボード
-        </h1>
-      </div>
-
+    <>
       {/* サマリーカード */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="text-sm text-gray-500 mb-1">登録顧客数</h3>
           <p className="text-2xl font-bold">128</p>
@@ -81,8 +51,7 @@ export default function CustomerAnalyticsPage() {
       </div>
 
       {/* グラフエリア */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* 売上推移グラフ - 実際のプロジェクトではグラフライブラリを使用 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="bg-white p-4 rounded-lg shadow">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-medium flex items-center">
@@ -99,8 +68,6 @@ export default function CustomerAnalyticsPage() {
             <p className="text-gray-400">売上推移グラフ（実装予定）</p>
           </div>
         </div>
-
-        {/* 顧客セグメントグラフ */}
         <div className="bg-white p-4 rounded-lg shadow">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-medium flex items-center">
@@ -119,8 +86,8 @@ export default function CustomerAnalyticsPage() {
         </div>
       </div>
 
-      {/* 上位顧客リスト */}
-      <div className="bg-white p-4 rounded-lg shadow">
+      {/* 売上上位顧客リスト */}
+      <div className="bg-white p-4 rounded-lg shadow mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-medium flex items-center">
             <BarChart className="mr-2" size={20} />
@@ -132,9 +99,8 @@ export default function CustomerAnalyticsPage() {
             <option value="growth">成長率順</option>
           </select>
         </div>
-
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full whitespace-nowrap">
             <thead className="bg-gray-50 text-left">
               <tr>
                 <th className="px-4 py-2 text-sm font-medium text-gray-500">
@@ -149,9 +115,6 @@ export default function CustomerAnalyticsPage() {
                 <th className="px-4 py-2 text-sm font-medium text-gray-500">
                   前年比成長率
                 </th>
-                <th className="px-4 py-2 text-sm font-medium text-gray-500">
-                  詳細
-                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -162,23 +125,11 @@ export default function CustomerAnalyticsPage() {
                     ¥{customer.sales.toLocaleString()}
                   </td>
                   <td className="px-4 py-3">{customer.orders}件</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`${
-                        customer.growth >= 0 ? 'text-green-600' : 'text-red-600'
-                      }`}
-                    >
-                      {customer.growth >= 0 ? '+' : ''}
-                      {customer.growth}%
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/system/customers/${customer.id}`}
-                      className="text-primary hover:text-blue-800"
-                    >
-                      詳細
-                    </Link>
+                  <td
+                    className={`px-4 py-3 ${customer.growth >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                  >
+                    {customer.growth >= 0 ? '+' : ''}
+                    {customer.growth}%
                   </td>
                 </tr>
               ))}
@@ -189,9 +140,8 @@ export default function CustomerAnalyticsPage() {
 
       {/* 注目顧客セクション */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* 要フォロー顧客 */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-medium mb-3">フォローが必要な顧客</h2>
+          <h2 className="text-lg font-medium mb-2">フォローが必要な顧客</h2>
           <ul className="divide-y divide-gray-200">
             <li className="py-2">
               <p className="font-medium">××デザイン事務所</p>
@@ -213,10 +163,8 @@ export default function CustomerAnalyticsPage() {
             </li>
           </ul>
         </div>
-
-        {/* 新規顧客機会 */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-medium mb-3">新規・追加販売機会</h2>
+          <h2 className="text-lg font-medium mb-2">新規・追加販売機会</h2>
           <ul className="divide-y divide-gray-200">
             <li className="py-2">
               <p className="font-medium">株式会社サンプル</p>
@@ -239,6 +187,6 @@ export default function CustomerAnalyticsPage() {
           </ul>
         </div>
       </div>
-    </div>
+    </>
   );
 }

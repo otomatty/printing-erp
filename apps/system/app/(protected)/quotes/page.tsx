@@ -123,7 +123,7 @@ export default function QuotesPage() {
             <Calculator className="mr-2" />
             見積り管理
           </h1>
-          <Link href="/system/quotes/new">
+          <Link href="/quotes/new">
             <button
               type="button"
               className="bg-primary text-white px-4 py-2 rounded-md flex items-center"

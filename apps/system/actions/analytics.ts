@@ -25,8 +25,22 @@ export async function getAnalyticsData() {
   const reportRequest = {
     property: `properties/${propertyId}`,
     dateRanges: [{ startDate: '7daysAgo', endDate: 'today' }],
-    metrics: [{ name: 'activeUsers' }], // テスト用に最小構成
-    dimensions: [{ name: 'date' }], // テスト用に最小構成
+    metrics: [
+      { name: 'activeUsers' },
+      { name: 'newUsers' },
+      { name: 'sessions' },
+      { name: 'screenPageViews' },
+      { name: 'averageSessionDuration' },
+      { name: 'bounceRate' },
+    ], // バウンス率も含める
+    dimensions: [
+      { name: 'date' },
+      { name: 'country' },
+      { name: 'deviceCategory' },
+      { name: 'pagePath' },
+      { name: 'userGender' },
+      { name: 'userAgeBracket' },
+    ], // ユーザー属性も集計
   };
   console.debug(
     '[getAnalyticsData] Debug - runReport request:',
@@ -127,5 +141,62 @@ export async function getRealtimeAnalyticsData() {
       throw new Error(`Realtime analytics fetch failed: ${error.message}`);
     }
     throw new Error('Realtime analytics fetch failed with unknown error');
+  }
+}
+
+// 新たに流入元別レポート取得用サーバーアクションを追加
+export async function getAnalyticsBySourceMedium() {
+  const keyFilename = process.env.GA4_SERVICE_KEY;
+  if (!keyFilename) {
+    throw new Error('GA4_SERVICE_KEY is not defined');
+  }
+  const propertyId = process.env.GA4_PROPERTY_ID;
+  if (!propertyId) {
+    throw new Error('GA4_PROPERTY_ID is not defined');
+  }
+  const client = new BetaAnalyticsDataClient({ keyFilename });
+
+  console.debug(
+    '[getAnalyticsBySourceMedium] Debug - GA4_SERVICE_KEY:',
+    keyFilename
+  );
+  console.debug(
+    '[getAnalyticsBySourceMedium] Debug - GA4_PROPERTY_ID:',
+    propertyId
+  );
+
+  const reportRequest = {
+    property: `properties/${propertyId}`,
+    dateRanges: [{ startDate: '7daysAgo', endDate: 'today' }],
+    metrics: [{ name: 'sessions' }], // セッション数を集計
+    dimensions: [{ name: 'sessionSourceMedium' }], // 流入元を集計
+  };
+  console.debug(
+    '[getAnalyticsBySourceMedium] Debug - runReport request:',
+    JSON.stringify(reportRequest)
+  );
+
+  try {
+    const [response] = await client.runReport(reportRequest);
+    const dimensionHeaders =
+      response.dimensionHeaders?.map((h) => ({ name: h.name })) ?? [];
+    const metricHeaders =
+      response.metricHeaders?.map((m) => ({ name: m.name })) ?? [];
+    const rows = (response.rows ?? []).map((r) => ({
+      dimensionValues:
+        r.dimensionValues?.map((dv) => ({ value: dv.value })) ?? [],
+      metricValues: r.metricValues?.map((mv) => ({ value: mv.value })) ?? [],
+    }));
+    return { dimensionHeaders, metricHeaders, rows };
+  } catch (error) {
+    console.error('[getAnalyticsBySourceMedium] Analytics fetch error:', error);
+    if (error instanceof Error) {
+      throw new Error(
+        `Analytics by SourceMedium fetch failed: ${error.message}`
+      );
+    }
+    throw new Error(
+      'Analytics by SourceMedium fetch failed with unknown error'
+    );
   }
 }

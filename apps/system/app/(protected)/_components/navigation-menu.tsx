@@ -43,7 +43,7 @@ import { cn } from '@kit/ui/utils';
 /**
  * メニュー項目のステータス定義
  */
-type MenuItemStatus = 'available' | 'unavailable' | 'comingSoon';
+type MenuItemStatus = 'available' | 'unavailable' | 'coming-soon';
 
 /**
  * メディアクエリフック
@@ -81,6 +81,18 @@ export default function NavigationMenu() {
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 767px)');
 
+  // Add global keyboard shortcut listener for Ctrl/Cmd + M to toggle menu
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'm' || e.key === 'M')) {
+        e.preventDefault();
+        setOpen((prev) => !prev);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const menuItems: MenuItem[] = [
     // 営業受注カテゴリ
     {
@@ -102,14 +114,14 @@ export default function NavigationMenu() {
       title: '受注',
       icon: <FileText className="h-6 w-6" />,
       category: 'sales',
-      status: 'comingSoon',
+      status: 'available',
     },
     {
       href: '/customers',
       title: '顧客',
       icon: <Users className="h-6 w-6" />,
       category: 'sales',
-      status: 'unavailable',
+      status: 'available',
     },
 
     // 制作デザインカテゴリ
@@ -355,7 +367,7 @@ function MenuLink({
 
   // ステータスに応じたバッジ表示
   const StatusBadge =
-    status === 'comingSoon' ? (
+    status === 'coming-soon' ? (
       <div className="absolute -top-1 -right-1 bg-amber-500 text-white text-[9px] px-1 py-0.5 rounded-full font-medium">
         {isMobile ? '準備中' : 'Coming Soon'}
       </div>

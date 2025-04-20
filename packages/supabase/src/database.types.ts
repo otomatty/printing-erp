@@ -689,6 +689,39 @@ export type Database = {
         }
         Relationships: []
       }
+      customers: {
+        Row: {
+          contact: string
+          created_at: string
+          email: string
+          id: string
+          last_order: string | null
+          name: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          contact: string
+          created_at?: string
+          email: string
+          id?: string
+          last_order?: string | null
+          name: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contact?: string
+          created_at?: string
+          email?: string
+          id?: string
+          last_order?: string | null
+          name?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       quick_access_items: {
         Row: {
           category_id: string
