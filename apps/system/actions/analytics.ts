@@ -106,6 +106,11 @@ export async function getRealtimeAnalyticsData() {
 
   try {
     const [response] = await client.runRealtimeReport(realtimeRequest);
+    // Debug the realtime response payload
+    console.debug(
+      '[getRealtimeAnalyticsData] Debug - response:',
+      JSON.stringify(response)
+    );
     return response;
   } catch (error) {
     console.error(
