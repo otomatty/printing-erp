@@ -764,6 +764,33 @@ export type Database = {
         }
         Relationships: []
       }
+      user_google_tokens: {
+        Row: {
+          access_token: string
+          created_at: string
+          expiry_date: number
+          refresh_token: string
+          updated_at: string
+          user_email: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          expiry_date: number
+          refresh_token: string
+          updated_at?: string
+          user_email: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          expiry_date?: number
+          refresh_token?: string
+          updated_at?: string
+          user_email?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

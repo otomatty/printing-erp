@@ -7,10 +7,17 @@ import DashboardSalesChart from './_components/dashboard/sales-chart';
 import DashboardCalendar from './_components/dashboard/calendar';
 import { Container } from '~/components/custom/container';
 import { getUserQuickAccess } from '~/actions/quick-access';
+import { fetchInitialCalendarData } from '~/actions/schedules';
 
 export default async function SystemDashboard() {
   // クイックアクセスデータを取得
   const { success, items, error } = await getUserQuickAccess();
+  // 初期表示用のカレンダー情報を取得
+  const {
+    companyEvents: companyData,
+    personalEvents: personalData,
+    isLinked,
+  } = await fetchInitialCalendarData();
 
   return (
     <Container>
@@ -31,7 +38,11 @@ export default async function SystemDashboard() {
         <DashboardSalesChart />
 
         {/* スケジュールカレンダー */}
-        <DashboardCalendar />
+        <DashboardCalendar
+          companyData={companyData}
+          personalData={personalData}
+          isLinked={isLinked}
+        />
       </div>
     </Container>
   );
