@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { Analytics } from '@vercel/analytics/react';
 
 import { Toaster } from '@kit/ui/sonner';
 import { cn } from '@kit/ui/utils';
@@ -89,6 +90,7 @@ export default async function RootLayout({
         </RootProviders>
 
         <Toaster richColors={true} theme={theme} position="top-center" />
+        <Analytics />
       </body>
     </html>
   );

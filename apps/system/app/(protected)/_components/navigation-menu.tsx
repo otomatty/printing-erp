@@ -102,7 +102,7 @@ export default function NavigationMenu() {
       title: '受注',
       icon: <FileText className="h-6 w-6" />,
       category: 'sales',
-      status: 'unavailable',
+      status: 'comingSoon',
     },
     {
       href: '/customers',
@@ -201,7 +201,7 @@ export default function NavigationMenu() {
       title: 'アクセス解析',
       icon: <BarChart className="h-6 w-6" />,
       category: 'website',
-      status: 'comingSoon',
+      status: 'available',
     },
     {
       href: '/website/settings',
