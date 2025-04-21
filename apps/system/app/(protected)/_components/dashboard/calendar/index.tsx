@@ -5,6 +5,13 @@
  */
 import React, { useState } from 'react';
 import type { RawEvent, CalendarEvent } from '~/types/calendar';
+import {
+  Select,
+  SelectItem,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from '@kit/ui/select';
 import DayCalendar from './day-calendar';
 import WeekCalendar from './week-calendar';
 import MonthCalendar from './month-calendar';
@@ -98,62 +105,58 @@ export default function DashboardCalendar({
         {/* カレンダー切り替えと同期 */}
         <div className="flex mb-4 items-center justify-between">
           <div className="flex space-x-2">
-            <button
-              type="button"
-              onClick={() => setView('company')}
-              className={`px-4 py-2 rounded-md text-sm ${view === 'company' ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100'}`}
+            <Select
+              value={view}
+              onValueChange={(value) =>
+                setView(value as 'company' | 'personal')
+              }
             >
-              会社カレンダー
-            </button>
-            <button
-              type="button"
-              onClick={() => setView('personal')}
-              className={`px-4 py-2 rounded-md text-sm ${view === 'personal' ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100'}`}
-            >
-              自分のカレンダー
-            </button>
+              <SelectTrigger>
+                <SelectValue placeholder="カレンダー" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="company">会社カレンダー</SelectItem>
+                <SelectItem value="personal">自分のカレンダー</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          {isLinked ? (
-            <button
-              type="button"
-              disabled
-              className="px-4 py-2 rounded-md text-sm text-gray-500 bg-gray-100 cursor-not-allowed"
-            >
-              同期済み
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleGoogleAuth}
-              className="px-4 py-2 rounded-md text-sm text-gray-500 hover:bg-gray-100"
-            >
-              Google同期
-            </button>
-          )}
-        </div>
-        {/* カレンダーモード切替 */}
-        <div className="flex mb-4 space-x-2">
-          <button
-            type="button"
-            onClick={() => setCalendarMode('day')}
-            className={`px-4 py-2 rounded-md text-sm ${calendarMode === 'day' ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100'}`}
-          >
-            日
-          </button>
-          <button
-            type="button"
-            onClick={() => setCalendarMode('week')}
-            className={`px-4 py-2 rounded-md text-sm ${calendarMode === 'week' ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100'}`}
-          >
-            週
-          </button>
-          <button
-            type="button"
-            onClick={() => setCalendarMode('month')}
-            className={`px-4 py-2 rounded-md text-sm ${calendarMode === 'month' ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100'}`}
-          >
-            月
-          </button>
+          <div className="flex space-x-2">
+            <div>
+              {/* カレンダーモード切替 */}
+              <Select
+                value={calendarMode}
+                onValueChange={(value) =>
+                  setCalendarMode(value as 'day' | 'week' | 'month')
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="カレンダーモード" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="day">日</SelectItem>
+                  <SelectItem value="week">週</SelectItem>
+                  <SelectItem value="month">月</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {isLinked ? (
+              <button
+                type="button"
+                disabled
+                className="px-4 py-2 rounded-md text-sm bg-green-500 text-white cursor-not-allowed flex items-center"
+              >
+                <span className="mr-1">✔️</span>同期済み
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleGoogleAuth}
+                className="px-4 py-2 rounded-md text-sm text-gray-500 hover:bg-gray-100"
+              >
+                Google同期
+              </button>
+            )}
+          </div>
         </div>
 
         {/* カレンダー表示エリア */}

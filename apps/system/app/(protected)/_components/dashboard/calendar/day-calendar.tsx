@@ -58,14 +58,23 @@ export default function DayCalendar({
               className="relative flex-1"
               style={{ height: `${24 * HOUR_HEIGHT}px` }}
             >
-              {/* Timeline grid */}
-              {Array.from({ length: 24 }, (_, h) => h).map((hour) => (
-                <div
-                  key={`grid-${hour}`}
-                  className="absolute left-0 w-full border-t border-gray-200"
-                  style={{ top: `${hour * HOUR_HEIGHT}px` }}
-                />
-              ))}
+              {/* Timeline grid with business/outside hour background */}
+              {Array.from({ length: 24 }, (_, h) => h).map((hour) => {
+                const isBusinessDay = weekday !== 0; // Sun=0
+                const isBusinessHour = isBusinessDay && hour >= 9 && hour < 18;
+                return (
+                  <div
+                    key={`grid-${hour}`}
+                    className={`absolute left-0 w-full border-t border-gray-200 ${
+                      isBusinessHour ? 'bg-white' : 'bg-gray-50'
+                    }`}
+                    style={{
+                      top: `${HOUR_HEIGHT * hour}px`,
+                      height: `${HOUR_HEIGHT}px`,
+                    }}
+                  />
+                );
+              })}
               {/* Events */}
               {items.map((ev) => {
                 const [rawStart = '00:00', rawEnd = '00:00'] =

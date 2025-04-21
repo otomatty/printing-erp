@@ -68,14 +68,24 @@ export default function WeekCalendar({
                 className="relative flex-1"
                 style={{ height: `${24 * HOUR_HEIGHT}px` }}
               >
-                {/* Timeline grid */}
-                {Array.from({ length: 24 }, (_, hour) => hour).map((hour) => (
-                  <div
-                    key={`grid-${hour}`}
-                    className="absolute left-0 w-full border-t border-gray-200"
-                    style={{ top: `${hour * HOUR_HEIGHT}px` }}
-                  />
-                ))}
+                {/* Timeline grid with business/outside hour background */}
+                {Array.from({ length: 24 }, (_, hour) => {
+                  const isBusinessDay = weekday >= 1 && weekday <= 6; // Mon=1, Sat=6
+                  const isBusinessHour =
+                    isBusinessDay && hour >= 9 && hour < 18;
+                  return (
+                    <div
+                      key={`grid-${hour}`}
+                      className={`absolute left-0 w-full border-t border-gray-200 ${
+                        isBusinessHour ? 'bg-white' : 'bg-gray-50'
+                      }`}
+                      style={{
+                        top: `${hour * HOUR_HEIGHT}px`,
+                        height: `${HOUR_HEIGHT}px`,
+                      }}
+                    />
+                  );
+                })}
                 {/* Events */}
                 {items.map((ev) => {
                   const [startTime = '00:00', endTime = '00:00'] =
