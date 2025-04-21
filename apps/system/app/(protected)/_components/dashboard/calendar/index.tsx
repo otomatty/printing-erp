@@ -16,6 +16,7 @@ import DayCalendar from './day-calendar';
 import WeekCalendar from './week-calendar';
 import MonthCalendar from './month-calendar';
 import EventEditorModal from './event-editor-modal';
+import { CheckIcon } from 'lucide-react';
 
 // カレンダーのデイセルを一意に識別するID生成のためのヘルパー関数
 const generateDayCellId = (dayIndex: number) => `day-cell-${dayIndex}`;
@@ -143,9 +144,10 @@ export default function DashboardCalendar({
               <button
                 type="button"
                 disabled
-                className="px-4 py-2 rounded-md text-sm bg-green-500 text-white cursor-not-allowed flex items-center"
+                className="px-4 py-1 rounded-md text-sm bg-green-500 text-white cursor-not-allowed flex items-center"
               >
-                <span className="mr-1">✔️</span>同期済み
+                <CheckIcon className="mr-1" />
+                同期済み
               </button>
             ) : (
               <button
