@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { google, type calendar_v3 } from 'googleapis';
-import type { Credentials } from 'google-auth-library';
+import type { JWTInput, Credentials } from 'google-auth-library';
 import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client';
 
 // Calendar ID from environment variable
@@ -13,10 +13,26 @@ const calendarId = process.env.COMPANY_CALENDAR_ID;
  * @returns Google Calendar v3 client
  */
 async function getCalendarClient(): Promise<calendar_v3.Calendar> {
+  // Load service account credentials from environment variable
+  const credentialsEnv = process.env.GOOGLE_CREDENTIALS_JSON;
+  if (!credentialsEnv) {
+    throw new Error('Environment variable GOOGLE_CREDENTIALS_JSON is not set');
+  }
+  // Decode Base64 encoded JSON credentials
+  let saCredentials: JWTInput & { project_id: string };
+  try {
+    const decoded = Buffer.from(credentialsEnv, 'base64').toString('utf-8');
+    saCredentials = JSON.parse(decoded) as JWTInput & { project_id: string };
+  } catch {
+    throw new Error(
+      'Decoded GOOGLE_CREDENTIALS_JSON is not valid Base64-encoded JSON'
+    );
+  }
   const auth = new google.auth.GoogleAuth({
+    credentials: saCredentials,
+    projectId: saCredentials.project_id,
     scopes: ['https://www.googleapis.com/auth/calendar'],
   });
-  // Pass the GoogleAuth instance directly to match overload
   return google.calendar({ version: 'v3', auth });
 }
 

@@ -32,19 +32,19 @@ export default function StepInquiryType() {
   const inquiryTypes = [
     {
       id: 'print-services',
-      title: '印刷サービスに関するお問い合わせ',
+      title: '印刷サービス',
       description: '印刷物のお見積り、ご注文、制作依頼など',
       icon: '🖨️',
     },
     {
       id: 'digital-services',
-      title: 'IT・デジタルサービスに関するお問い合わせ',
+      title: 'IT・デジタルサービス',
       description: 'ホームページ制作、デジタルコンテンツ、システム開発など',
       icon: '💻',
     },
     {
       id: 'general-inquiry',
-      title: 'その他のお問い合わせ・ご質問',
+      title: 'その他',
       description: '会社情報、採用情報、サービス全般に関するご質問など',
       icon: '❓',
     },

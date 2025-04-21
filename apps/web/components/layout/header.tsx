@@ -140,7 +140,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm dark:bg-background">
-      <div className="container max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div className="container max-w-5xl mx-auto p-4 flex justify-between items-center">
         <Link href="/" className="flex items-center">
           {/* TODO: 会社ロゴを追加 */}
           <Image src={logo} alt="ニイヌマ企画印刷" className="h-12 w-auto" />

@@ -27,7 +27,7 @@ export default function ContactFormProgressIndicator({
           >
             1
           </div>
-          <div className="text-xs mt-1">お問い合わせの種類</div>
+          <div className="text-xs mt-1 hidden sm:block">お問い合わせの種類</div>
         </div>
         <div className="text-center w-1/4">
           <div
@@ -41,7 +41,7 @@ export default function ContactFormProgressIndicator({
           >
             2
           </div>
-          <div className="text-xs mt-1">お問い合わせの内容</div>
+          <div className="text-xs mt-1 hidden sm:block">お問い合わせの内容</div>
         </div>
         <div className="text-center w-1/4">
           <div
@@ -53,7 +53,7 @@ export default function ContactFormProgressIndicator({
           >
             3
           </div>
-          <div className="text-xs mt-1">お客様の情報</div>
+          <div className="text-xs mt-1 hidden sm:block">お客様の情報</div>
         </div>
         <div className="text-center w-1/4">
           <div
@@ -65,7 +65,7 @@ export default function ContactFormProgressIndicator({
           >
             4
           </div>
-          <div className="text-xs mt-1">内容の確認</div>
+          <div className="text-xs mt-1 hidden sm:block">内容の確認</div>
         </div>
       </div>
       <div className="relative mt-2">
