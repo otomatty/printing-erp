@@ -15,7 +15,8 @@
     "CAPTCHA_SECRET_TOKEN",
     "RESEND_API_KEY",
     "NEXT_PUBLIC_SYSTEM_URL",
-    "RESEND_FROM_EMAIL"
+    "RESEND_FROM_EMAIL",
+    "COMPANY_CALENDAR_ID"
   ],
   "tasks": {
     "topo": {

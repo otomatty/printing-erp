@@ -8,10 +8,6 @@ import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client'
 // Calendar ID from environment variable
 const calendarId = process.env.COMPANY_CALENDAR_ID;
 
-if (!calendarId) {
-  throw new Error('COMPANY_CALENDAR_ID is not set');
-}
-
 /**
  * Initialize Google Calendar client using service account credentials.
  * @returns Google Calendar v3 client
