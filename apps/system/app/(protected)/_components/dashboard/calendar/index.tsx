@@ -102,7 +102,7 @@ export default function DashboardCalendar({
   return (
     <div className="mt-8">
       <h2 className="text-xl font-bold mb-4">スケジュールカレンダー</h2>
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-white p-6 rounded-lg shadow h-[calc(100vh-10rem)] flex flex-col">
         {/* カレンダー切り替えと同期 */}
         <div className="flex mb-4 items-center justify-between">
           <div className="flex space-x-2">
@@ -162,27 +162,29 @@ export default function DashboardCalendar({
         </div>
 
         {/* カレンダー表示エリア */}
-        {calendarMode === 'day' && (
-          <DayCalendar
-            dayEventsMap={dayEventsMap}
-            onEventClick={handleEventClick}
-            onCellClick={handleCellClick}
-          />
-        )}
-        {calendarMode === 'week' && (
-          <WeekCalendar
-            dayEventsMap={dayEventsMap}
-            onEventClick={handleEventClick}
-            onCellClick={handleCellClick}
-          />
-        )}
-        {calendarMode === 'month' && (
-          <MonthCalendar
-            dayEventsMap={dayEventsMap}
-            onEventClick={handleEventClick}
-            onCellClick={handleCellClick}
-          />
-        )}
+        <div className="flex-1 overflow-y-auto">
+          {calendarMode === 'day' && (
+            <DayCalendar
+              dayEventsMap={dayEventsMap}
+              onEventClick={handleEventClick}
+              onCellClick={handleCellClick}
+            />
+          )}
+          {calendarMode === 'week' && (
+            <WeekCalendar
+              dayEventsMap={dayEventsMap}
+              onEventClick={handleEventClick}
+              onCellClick={handleCellClick}
+            />
+          )}
+          {calendarMode === 'month' && (
+            <MonthCalendar
+              dayEventsMap={dayEventsMap}
+              onEventClick={handleEventClick}
+              onCellClick={handleCellClick}
+            />
+          )}
+        </div>
 
         <EventEditorModal
           isOpen={modalOpen}

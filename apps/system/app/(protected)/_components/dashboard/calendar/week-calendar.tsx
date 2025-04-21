@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { CalendarEvent } from '~/types/calendar';
 
 interface WeekCalendarProps {
@@ -14,20 +14,30 @@ export default function WeekCalendar({
   onCellClick,
 }: WeekCalendarProps) {
   const HOUR_HEIGHT = 60; // px per hour
+  const [currentTime, setCurrentTime] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+  const currentDateKey = currentTime.toISOString().split('T')[0];
+  const currentPosition =
+    (currentTime.getHours() + currentTime.getMinutes() / 60) * HOUR_HEIGHT;
   return (
-    <div className="grid grid-cols-[4rem_repeat(7,1fr)] divide-x border overflow-x-auto">
+    <div className="grid grid-cols-[4rem_repeat(7,1fr)] divide-x h-full">
       {/* time column */}
-      <div className="flex flex-col">
-        <div className="font-medium m-2 text-center">時間</div>
-        {Array.from({ length: 24 }, (_, hour) => hour).map((hour) => (
-          <div
-            key={`time-${hour}`}
-            className="border-gray-200 text-xs text-right text-gray-500 pr-2"
-            style={{ height: `${HOUR_HEIGHT}px` }}
-          >
-            {`${String(hour).padStart(2, '0')}:00`}
-          </div>
-        ))}
+      <div className="flex flex-col h-full">
+        {Array.from({ length: 24 }, (_, hour) => {
+          const timeLabel = `${String(hour).padStart(2, '0')}:00`;
+          return (
+            <div
+              key={timeLabel}
+              className="first:mt-8 text-xs text-right text-gray-500 pr-2"
+              style={{ height: `${HOUR_HEIGHT}px` }}
+            >
+              {timeLabel}
+            </div>
+          );
+        })}
       </div>
       {(() => {
         const today = new Date();
@@ -53,7 +63,7 @@ export default function WeekCalendar({
           return (
             <div
               key={key}
-              className="flex flex-col cursor-pointer"
+              className="flex flex-col cursor-pointer h-full"
               onClick={() => onCellClick?.(key)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -61,7 +71,9 @@ export default function WeekCalendar({
                 }
               }}
             >
-              <div className={`font-medium m-2 text-center ${labelColor}`}>
+              <div
+                className={`sticky top-0 bg-white z-20 p-2 text-center font-medium ${labelColor}`}
+              >
                 {label}
               </div>
               <div
@@ -110,6 +122,13 @@ export default function WeekCalendar({
                     </button>
                   );
                 })}
+                {/* 現在時刻を示す赤線 */}
+                {key === currentDateKey && (
+                  <div
+                    className="absolute left-0 w-full h-[2px] bg-red-500 z-10"
+                    style={{ top: `${currentPosition}px` }}
+                  />
+                )}
               </div>
             </div>
           );

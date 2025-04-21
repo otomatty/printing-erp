@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { CalendarEvent } from '~/types/calendar';
 
 interface DayCalendarProps {
@@ -14,15 +14,25 @@ export default function DayCalendar({
   onCellClick,
 }: DayCalendarProps) {
   const HOUR_HEIGHT = 60; // px per hour
+  const [currentTime, setCurrentTime] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+  const currentDateKey = currentTime.toISOString().split('T')[0];
+  const currentPosition =
+    (currentTime.getHours() + currentTime.getMinutes() / 60) * HOUR_HEIGHT;
   return (
-    <div className="grid grid-cols-4 divide-x border">
+    <div className="grid grid-cols-4 divide-x h-full">
       {/* time column */}
-      <div className="flex flex-col">
-        <div className="font-medium mb-2 text-center">時間</div>
-        {Array.from({ length: 24 }, (_, h) => h).map((hour) => (
+      <div className="flex flex-col h-full">
+        <div className="sticky top-0 bg-white z-20 p-2 text-center font-medium">
+          時間
+        </div>
+        {Array.from({ length: 24 }, (_, hour) => (
           <div
-            key={`${hour}:00`}
-            className="border-t border-gray-200 text-xs text-gray-500 pl-1"
+            key={`${String(hour).padStart(2, '0')}:00`}
+            className="first:mt-8 text-xs text-gray-500 pl-1"
             style={{ height: `${HOUR_HEIGHT}px` }}
           >
             {`${String(hour).padStart(2, '0')}:00`}
@@ -45,7 +55,7 @@ export default function DayCalendar({
         return (
           <div
             key={key}
-            className="flex flex-col cursor-pointer"
+            className="flex flex-col cursor-pointer h-full"
             onClick={() => onCellClick?.(key)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
@@ -53,7 +63,11 @@ export default function DayCalendar({
               }
             }}
           >
-            <div className={`font-medium mb-2 ${labelColor}`}>{label}</div>
+            <div
+              className={`sticky top-0 bg-white z-20 p-2 text-center font-medium ${labelColor}`}
+            >
+              {label}
+            </div>
             <div
               className="relative flex-1"
               style={{ height: `${24 * HOUR_HEIGHT}px` }}
@@ -102,6 +116,13 @@ export default function DayCalendar({
                   </button>
                 );
               })}
+              {/* 現在時刻を示す赤いライン */}
+              {key === currentDateKey && (
+                <div
+                  className="absolute left-0 w-full h-[2px] bg-red-500 z-10"
+                  style={{ top: `${currentPosition}px` }}
+                />
+              )}
             </div>
           </div>
         );

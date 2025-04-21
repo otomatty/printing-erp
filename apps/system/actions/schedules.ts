@@ -66,13 +66,15 @@ export async function createCompanyEvent(
   metadata?: Record<string, string>
 ): Promise<calendar_v3.Schema$Event> {
   const client = await getCalendarClient();
+  // イベント作成時にタイムゾーンを指定
+  const timeZone = process.env.COMPANY_TIMEZONE || 'Asia/Tokyo';
   const data = await client.events
     .insert({
       calendarId,
       requestBody: {
         summary,
-        start: { dateTime: startDateTime },
-        end: { dateTime: endDateTime },
+        start: { dateTime: startDateTime, timeZone },
+        end: { dateTime: endDateTime, timeZone },
         extendedProperties: metadata ? { private: metadata } : undefined,
       },
     })

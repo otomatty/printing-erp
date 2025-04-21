@@ -13,6 +13,8 @@ export default function MonthCalendar({
   onEventClick,
   onCellClick,
 }: MonthCalendarProps) {
+  // 今日の日付キーを取得
+  const todayKey = new Date().toISOString().slice(0, 10);
   return (
     <div className="w-full overflow-x-auto">
       <div className="grid grid-cols-7 gap-1 mb-2">
@@ -45,7 +47,8 @@ export default function MonthCalendar({
             return (
               <div
                 key={key}
-                className="h-24 border p-1 overflow-y-auto bg-gray-50 cursor-pointer"
+                className={`h-24 border p-1 overflow-y-auto cursor-pointer bg-gray-50
+                  ${key === todayKey ? 'border-blue-500 bg-blue-50' : ''}`}
                 onClick={() => onCellClick?.(key)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
