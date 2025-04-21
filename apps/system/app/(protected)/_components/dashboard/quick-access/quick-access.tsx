@@ -5,12 +5,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Settings, type LucideIcon } from 'lucide-react';
+import { Plus, Settings, type LucideIcon, PackagePlus } from 'lucide-react';
 import Link from 'next/link';
 import * as LucideIcons from 'lucide-react';
 import { Button } from '@kit/ui/button';
 import { QuickAccessEdit } from './quick-access-edit';
 import type { QuickAccessItem } from './sortable-quick-access-item';
+import { useRouter } from 'next/navigation';
 
 interface DashboardQuickAccessProps {
   quickAccessItems: QuickAccessItem[];
@@ -22,6 +23,7 @@ type IconType = keyof typeof LucideIcons;
 export default function DashboardQuickAccess({
   quickAccessItems,
 }: DashboardQuickAccessProps) {
+  const router = useRouter();
   const [isEditMode, setIsEditMode] = useState(false);
   const [items, setItems] = useState(quickAccessItems);
 
@@ -48,24 +50,13 @@ export default function DashboardQuickAccess({
   const handleEditComplete = (updatedItems: QuickAccessItem[]) => {
     setItems(updatedItems);
     setIsEditMode(false);
+    router.refresh();
   };
-
-  // データがない場合のフォールバック
-  if (!items || items.length === 0) {
-    return (
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">クイックアクセス</h2>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          クイックアクセスアイテムが設定されていません
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">よくやる仕事</h2>
+        <h2 className="text-xl font-semibold">よく使う機能</h2>
         <Button
           variant="outline"
           size="sm"
@@ -79,6 +70,17 @@ export default function DashboardQuickAccess({
       {isEditMode ? (
         <div className="bg-gray-50 p-4 rounded-lg border">
           <QuickAccessEdit items={items} onComplete={handleEditComplete} />
+        </div>
+      ) : items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow text-center">
+          <PackagePlus size={48} className="mb-4 text-gray-400" />
+          <h3 className="text-lg font-semibold mb-2">
+            よく使う機能を追加しよう
+          </h3>
+          <p className="text-sm text-gray-500 mb-4">
+            よく使う機能を登録すると、この場所からすぐにアクセスできます。
+          </p>
+          <Button onClick={() => setIsEditMode(true)}>追加する</Button>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">

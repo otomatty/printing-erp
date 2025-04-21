@@ -13,37 +13,19 @@ import {
   DropdownMenuTrigger,
 } from '@kit/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@kit/ui/sheet';
-import {
-  Printer,
-  Users,
-  FileText,
-  Package,
-  Settings,
-  Calculator,
-  MessageSquare,
-  CreditCard,
-  Bell,
-  FileEdit,
-  Grip,
-  PenTool,
-  ClipboardCheck,
-  Truck,
-  DollarSign,
-  BarChart,
-  Sliders,
-  Newspaper,
-} from 'lucide-react';
+import { Grip } from 'lucide-react';
 import {
   categories,
   categoryOrder,
   type CategoryId,
 } from '~/config/category.config';
+import { menuItems, type MenuItem } from './menuData';
 import { cn } from '@kit/ui/utils';
 
 /**
  * メニュー項目のステータス定義
  */
-type MenuItemStatus = 'available' | 'unavailable' | 'coming-soon';
+type MenuItemStatus = 'available' | 'unavailable' | 'coming-soon' | 'demo';
 
 /**
  * メディアクエリフック
@@ -66,17 +48,6 @@ function useMediaQuery(query: string) {
   return matches;
 }
 
-/**
- * メニュー項目の型定義
- */
-interface MenuItem {
-  href: string;
-  title: string;
-  icon: React.ReactNode;
-  category: CategoryId;
-  status?: MenuItemStatus;
-}
-
 export default function NavigationMenu() {
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 767px)');
@@ -92,160 +63,6 @@ export default function NavigationMenu() {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
-
-  const menuItems: MenuItem[] = [
-    // 営業受注カテゴリ
-    {
-      href: '/inquiries',
-      title: 'お問い合わせ',
-      icon: <MessageSquare className="h-6 w-6" />,
-      category: 'sales',
-      status: 'available',
-    },
-    {
-      href: '/quotes',
-      title: '見積',
-      icon: <Calculator className="h-6 w-6" />,
-      category: 'sales',
-      status: 'available',
-    },
-    {
-      href: '/orders',
-      title: '受注',
-      icon: <FileText className="h-6 w-6" />,
-      category: 'sales',
-      status: 'available',
-    },
-    {
-      href: '/customers',
-      title: '顧客',
-      icon: <Users className="h-6 w-6" />,
-      category: 'sales',
-      status: 'available',
-    },
-
-    // 制作デザインカテゴリ
-    {
-      href: '/design',
-      title: 'デザイン',
-      icon: <PenTool className="h-6 w-6" />,
-      category: 'design',
-      status: 'unavailable',
-    },
-    {
-      href: '/proofing',
-      title: '校正',
-      icon: <ClipboardCheck className="h-6 w-6" />,
-      category: 'design',
-      status: 'unavailable',
-    },
-    {
-      href: '/contents',
-      title: 'データ管理',
-      icon: <FileEdit className="h-6 w-6" />,
-      category: 'design',
-      status: 'unavailable',
-    },
-
-    // 製造印刷カテゴリ
-    {
-      href: '/production',
-      title: '印刷作業',
-      icon: <Printer className="h-6 w-6" />,
-      category: 'production',
-      status: 'available',
-    },
-    {
-      href: '/inventory',
-      title: '在庫',
-      icon: <Package className="h-6 w-6" />,
-      category: 'production',
-      status: 'available',
-    },
-    {
-      href: '/quality',
-      title: '品質検査',
-      icon: <ClipboardCheck className="h-6 w-6" />,
-      category: 'production',
-      status: 'unavailable',
-    },
-
-    // 出荷請求カテゴリ
-    {
-      href: '/shipping',
-      title: '出荷',
-      icon: <Truck className="h-6 w-6" />,
-      category: 'shipping',
-      status: 'unavailable',
-    },
-    {
-      href: '/billing',
-      title: '請求',
-      icon: <CreditCard className="h-6 w-6" />,
-      category: 'shipping',
-      status: 'available',
-    },
-    {
-      href: '/payments',
-      title: '入金',
-      icon: <DollarSign className="h-6 w-6" />,
-      category: 'shipping',
-      status: 'available',
-    },
-
-    // ホームページ管理カテゴリ
-    {
-      href: '/website/news',
-      title: 'お知らせ',
-      icon: <Newspaper className="h-6 w-6" />,
-      category: 'website',
-      status: 'available',
-    },
-    {
-      href: '/website/topics',
-      title: '特集記事',
-      icon: <FileEdit className="h-6 w-6" />,
-      category: 'website',
-      status: 'available',
-    },
-    {
-      href: '/website/analytics',
-      title: 'アクセス解析',
-      icon: <BarChart className="h-6 w-6" />,
-      category: 'website',
-      status: 'available',
-    },
-    {
-      href: '/website/settings',
-      title: 'サイト設定',
-      icon: <Sliders className="h-6 w-6" />,
-      category: 'website',
-      status: 'unavailable',
-    },
-
-    // システム管理カテゴリ
-    {
-      href: '/notifications',
-      title: '通知',
-      icon: <Bell className="h-6 w-6" />,
-      category: 'admin',
-      status: 'available',
-    },
-    {
-      href: '/settings',
-      title: '設定',
-      icon: <Settings className="h-6 w-6" />,
-      category: 'admin',
-      status: 'available',
-    },
-    {
-      href: '/users',
-      title: 'ユーザー管理',
-      icon: <Users className="h-6 w-6" />,
-      category: 'admin',
-      status: 'available',
-    },
-  ];
 
   // カテゴリーごとにアイテムをグループ化
   const groupedMenuItems = menuItems.reduce(
@@ -272,8 +89,10 @@ export default function NavigationMenu() {
               <MenuLink
                 key={item.href}
                 href={item.href}
+                external={item.external}
                 title={item.title}
                 icon={item.icon}
+                iconSrc={item.iconSrc}
                 onClick={() => setOpen(false)}
                 bgColor={categories[categoryId].bg}
                 iconColor={categories[categoryId].icon}
@@ -338,8 +157,10 @@ export default function NavigationMenu() {
  */
 interface MenuLinkProps {
   href: string;
+  external?: boolean;
   title: string;
-  icon?: React.ReactNode;
+  icon: React.ReactNode;
+  iconSrc?: string;
   onClick?: () => void;
   bgColor: string;
   iconColor: string;
@@ -350,8 +171,10 @@ interface MenuLinkProps {
 
 function MenuLink({
   href,
+  external,
   title,
   icon,
+  iconSrc,
   onClick,
   bgColor,
   iconColor,
@@ -360,7 +183,7 @@ function MenuLink({
   status,
 }: MenuLinkProps) {
   // ステータスに基づいたスタイル適用
-  const isClickable = status === 'available';
+  const isClickable = status === 'available' || status === 'demo';
   const disabledStyle = !isClickable
     ? 'opacity-50 cursor-not-allowed pointer-events-none'
     : '';
@@ -370,6 +193,10 @@ function MenuLink({
     status === 'coming-soon' ? (
       <div className="absolute -top-1 -right-1 bg-amber-500 text-white text-[9px] px-1 py-0.5 rounded-full font-medium">
         {isMobile ? '準備中' : 'Coming Soon'}
+      </div>
+    ) : status === 'demo' ? (
+      <div className="absolute -top-1 -right-1 bg-amber-500 text-white text-[9px] px-1 py-0.5 rounded-full font-medium">
+        {isMobile ? 'デモ' : 'Demo'}
       </div>
     ) : null;
 
@@ -386,25 +213,57 @@ function MenuLink({
   if (isMobile) {
     return (
       <div className="relative">
-        <Link
-          href={isClickable ? href : '#'}
-          className={cn(
-            `flex flex-row items-center p-3 rounded-lg transition-colors ${hoverColor}`,
-            disabledStyle
-          )}
-          onClick={handleClick}
-          aria-disabled={!isClickable}
-        >
-          <div
+        {external ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
             className={cn(
-              `${bgColor} ${iconColor} rounded-full p-2 mr-3 flex items-center justify-center shrink-0`,
-              !isClickable ? 'opacity-40' : ''
+              `flex flex-row items-center p-3 rounded-lg transition-colors ${hoverColor}`,
+              disabledStyle
             )}
+            onClick={handleClick}
+            aria-disabled={!isClickable}
           >
-            {icon}
-          </div>
-          <div className="font-medium">{title}</div>
-        </Link>
+            {iconSrc ? (
+              <img src={iconSrc} alt={title} className="h-8 w-8 mr-2" />
+            ) : (
+              <div
+                className={cn(
+                  `${bgColor} ${iconColor} rounded-full p-2 mr-3 flex items-center justify-center shrink-0`,
+                  !isClickable ? 'opacity-40' : ''
+                )}
+              >
+                {icon}
+              </div>
+            )}
+            <div className="font-medium">{title}</div>
+          </a>
+        ) : (
+          <Link
+            href={isClickable ? href : '#'}
+            className={cn(
+              `flex flex-row items-center p-3 rounded-lg transition-colors ${hoverColor}`,
+              disabledStyle
+            )}
+            onClick={handleClick}
+            aria-disabled={!isClickable}
+          >
+            {iconSrc ? (
+              <img src={iconSrc} alt={title} className="h-8 w-8 mr-2" />
+            ) : (
+              <div
+                className={cn(
+                  `${bgColor} ${iconColor} rounded-full p-2 mr-3 flex items-center justify-center shrink-0`,
+                  !isClickable ? 'opacity-40' : ''
+                )}
+              >
+                {icon}
+              </div>
+            )}
+            <div className="font-medium">{title}</div>
+          </Link>
+        )}
         {StatusBadge}
       </div>
     );
@@ -413,25 +272,57 @@ function MenuLink({
   // デスクトップ表示は従来通り縦並び
   return (
     <div className="relative">
-      <Link
-        href={isClickable ? href : '#'}
-        className={cn(
-          `flex flex-col items-center text-center p-3 rounded-lg transition-colors ${hoverColor}`,
-          disabledStyle
-        )}
-        onClick={handleClick}
-        aria-disabled={!isClickable}
-      >
-        <div
+      {external ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
           className={cn(
-            `${bgColor} ${iconColor} rounded-full p-4 mb-2 flex items-center justify-center`,
-            !isClickable ? 'opacity-40' : ''
+            `flex flex-col items-center text-center p-3 rounded-lg transition-colors ${hoverColor}`,
+            disabledStyle
           )}
+          onClick={handleClick}
+          aria-disabled={!isClickable}
         >
-          {icon}
-        </div>
-        <div className="font-medium text-sm">{title}</div>
-      </Link>
+          {iconSrc ? (
+            <img src={iconSrc} alt={title} className="h-8 w-8 mb-2" />
+          ) : (
+            <div
+              className={cn(
+                `${bgColor} ${iconColor} rounded-full p-4 mb-2 flex items-center justify-center`,
+                !isClickable ? 'opacity-40' : ''
+              )}
+            >
+              {icon}
+            </div>
+          )}
+          <div className="font-medium text-sm">{title}</div>
+        </a>
+      ) : (
+        <Link
+          href={isClickable ? href : '#'}
+          className={cn(
+            `flex flex-col items-center text-center p-3 rounded-lg transition-colors ${hoverColor}`,
+            disabledStyle
+          )}
+          onClick={handleClick}
+          aria-disabled={!isClickable}
+        >
+          {iconSrc ? (
+            <img src={iconSrc} alt={title} className="h-8 w-8 mb-2" />
+          ) : (
+            <div
+              className={cn(
+                `${bgColor} ${iconColor} rounded-full p-4 mb-2 flex items-center justify-center`,
+                !isClickable ? 'opacity-40' : ''
+              )}
+            >
+              {icon}
+            </div>
+          )}
+          <div className="font-medium text-sm">{title}</div>
+        </Link>
+      )}
       {StatusBadge}
     </div>
   );

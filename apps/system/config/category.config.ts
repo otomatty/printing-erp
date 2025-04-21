@@ -14,7 +14,9 @@ export type CategoryId =
   | 'production'
   | 'shipping'
   | 'website'
-  | 'admin';
+  | 'admin'
+  | 'google'
+  | 'tools';
 
 /**
  * カテゴリ情報の型定義
@@ -74,6 +76,20 @@ export const categories: Record<CategoryId, CategoryInfo> = {
     icon: 'text-gray-700',
     hover: 'hover:bg-gray-300',
   },
+  google: {
+    id: 'google',
+    name: 'Google',
+    bg: 'bg-white',
+    icon: 'text-gray-700',
+    hover: 'hover:bg-gray-100',
+  },
+  tools: {
+    id: 'tools',
+    name: 'ツール',
+    bg: 'bg-orange-100',
+    icon: 'text-orange-600',
+    hover: 'hover:bg-orange-200',
+  },
 };
 
 /**
@@ -86,6 +102,8 @@ export const categoryOrder: CategoryId[] = [
   'production',
   'shipping',
   'website',
+  'google',
+  'tools',
   'admin',
 ];
 
