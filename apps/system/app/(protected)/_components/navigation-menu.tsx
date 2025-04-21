@@ -190,7 +190,7 @@ export default function NavigationMenu() {
       title: '入金',
       icon: <DollarSign className="h-6 w-6" />,
       category: 'shipping',
-      status: 'unavailable',
+      status: 'available',
     },
 
     // ホームページ管理カテゴリ
