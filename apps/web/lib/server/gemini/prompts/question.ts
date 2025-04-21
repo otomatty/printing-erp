@@ -5,7 +5,7 @@ export function generateQuestionPrompt(formData: EstimateFormData) {
 あなたはWeb開発の専門家です。以下のプロジェクトについて、見積もりの精度を高めるために必要な質問を生成してください。
 ただし、質問は技術的な専門用語を避け、非エンジニアのクライアントにも理解しやすい平易な言葉で表現してください。
 
-プロジェクトの種類: ${formData.projectType === 'website' ? 'Webサイト' : formData.projectType === 'application' ? 'Webアプリケーション' : 'その他'}
+プロジェクトの種類: ${formData.projectType === 'website' ? 'ホームページ' : formData.projectType === 'application' ? 'Webアプリケーション' : 'その他'}
 プロジェクトの概要: ${formData.description}
 希望納期: ${
     formData.deadline === 'asap'

@@ -21,7 +21,7 @@ export async function generateQuestions(
 
     // 時間単価設定（本来は設定ファイルから取得するなど、もっと柔軟な方法が良い）
     const hourlyRates = {
-      website: 10000, // Webサイト時間単価
+      website: 10000, // ホームページ時間単価
       business_system: 12000, // 業務システム時間単価
       application: 11000, // アプリケーション時間単価
       other: 10000, // その他時間単価

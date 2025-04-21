@@ -1,6 +1,6 @@
-import * as react from 'react';
-import { Provider } from '@supabase/supabase-js';
-import { z } from 'zod';
+import type * as react from 'react';
+import type { Provider } from '@supabase/supabase-js';
+import type { z } from 'zod';
 
 /**
  * @name SignInMethodsContainer
@@ -50,27 +50,33 @@ import { z } from 'zod';
  * ```
  */
 declare function SignInMethodsContainer(props: {
-    paths: {
-        callback: string;
-        home: string;
-    };
-    providers: {
-        password: boolean;
-        magicLink: boolean;
-        oAuth: Provider[];
-    };
-    onSignInSuccess?: () => void;
+  paths: {
+    callback: string;
+    home: string;
+  };
+  providers: {
+    password: boolean;
+    magicLink: boolean;
+    oAuth: Provider[];
+  };
+  onSignInSuccess?: () => void;
 }): react.JSX.Element;
 
-declare const PasswordSignInSchema: z.ZodObject<{
+declare const PasswordSignInSchema: z.ZodObject<
+  {
     email: z.ZodString;
     password: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  'strip',
+  z.ZodTypeAny,
+  {
     email: string;
     password: string;
-}, {
+  },
+  {
     email: string;
     password: string;
-}>;
+  }
+>;
 
 export { PasswordSignInSchema, SignInMethodsContainer };

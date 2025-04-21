@@ -17,9 +17,9 @@ const projectTypes: {
 }[] = [
   {
     value: 'website',
-    label: 'Webサイト',
+    label: 'ホームページ',
     description:
-      'コーポレートサイト、ランディングページ、ブログなど、情報発信を目的としたWebサイト',
+      'コーポレートサイト、ランディングページ、ブログなど、情報発信を目的としたホームページ',
   },
   {
     value: 'business_system',

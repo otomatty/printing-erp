@@ -156,7 +156,7 @@ export function CompanyInfo() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company-website">Webサイト</Label>
+                  <Label htmlFor="company-website">ホームページ</Label>
                   <Input
                     id="company-website"
                     value={companyData.website}

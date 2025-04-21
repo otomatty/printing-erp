@@ -54,7 +54,7 @@ const SystemWhyChooseUsSection: React.FC = () => {
         <PartnershipSection
           accentColor="blue"
           serviceType="システム"
-          titlePrefix="システム会社"
+          titlePrefix="システム開発会社"
           metrics={relationshipMetrics}
           hasPadding={true}
         />

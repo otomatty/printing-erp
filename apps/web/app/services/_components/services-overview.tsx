@@ -24,7 +24,7 @@ const services = [
     id: 'it-digital',
     title: 'IT・デジタル',
     shortDescription:
-      'Webサイト制作、システム開発、IT活用コンサルティングを提供します。',
+      'ホームページ制作、システム開発、IT活用コンサルティングを提供します。',
     image: '/images/it-digital.webp',
   },
 ];

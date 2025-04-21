@@ -52,10 +52,10 @@ export function HomepageServicesSection() {
             <h3 className="text-2xl lg:text-3xl font-bold mb-6">
               <span className="text-primary">デザインと機能性を両立した</span>
               <br />
-              Webサイト制作
+              ホームページ制作
             </h3>
             <p className="text-lg text-gray-700 mb-6">
-              「見た目が良いだけ」「機能だけが充実」ではなく、両方のバランスが取れたWebサイトをご提供します。
+              「見た目が良いだけ」「機能だけが充実」ではなく、両方のバランスが取れたホームページをご提供します。
               訪問者の行動を促す設計で、成果につながるサイトを実現します。
             </p>
 
@@ -150,7 +150,7 @@ export function HomepageServicesSection() {
         <div className="mt-20">
           <SectionTitle
             title="こんな"
-            highlightedText="お役立ちサイト"
+            highlightedText="ホームページ"
             afterHighlightedText="を作れます"
             className="mb-8"
           />
@@ -253,10 +253,10 @@ export function HomepageServicesSection() {
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-2xl font-bold mb-2">
                   <span className="text-primary">「これが欲しかった！」</span>
-                  と言われるサイトを
+                  と言われるホームページを
                 </h3>
                 <p className="text-lg text-gray-700">
-                  上に挙げたのはほんの一例です。企業サイト、採用サイト、ECサイトなど、どんな業種でも、あなたの会社の「困った」を解決するWebサイトをお作りします。
+                  上に挙げたのはほんの一例です。企業サイト、採用サイト、ECサイトなど、どんな業種でも、あなたの会社の「困った」を解決するホームページをお作りします。
                   いまあるサイトの改良から、まったく新しいサイトまで、集客や売上アップを実現する仕組みをご提案します。
                 </p>
               </div>

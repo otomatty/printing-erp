@@ -53,7 +53,7 @@ export const achievementsData: AchievementCardProps[] = [
   },
   {
     percentage: '67%',
-    description: 'Webサイト経由の問い合わせ平均増加率',
+    description: 'ホームページ経由の問い合わせ平均増加率',
   },
   {
     percentage: '58%',

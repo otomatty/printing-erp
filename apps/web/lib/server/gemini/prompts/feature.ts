@@ -6,7 +6,7 @@ export function generateFeaturePrompt(formData: EstimateFormData) {
 あなたはWeb開発の専門家です。以下のプロジェクトに必要な機能を可能な限り多く提案してください。
 基本機能から発展的な機能まで、プロジェクトの価値を高める可能性のある機能を幅広く検討してください。
 
-プロジェクトの種類: ${formData.projectType === 'website' ? 'Webサイト' : formData.projectType === 'application' ? 'Webアプリケーション' : 'その他'}
+プロジェクトの種類: ${formData.projectType === 'website' ? 'ホームページ' : formData.projectType === 'application' ? 'Webアプリケーション' : 'その他'}
 プロジェクトの概要: ${formData.description}
 希望納期: ${
     formData.deadline === 'asap'

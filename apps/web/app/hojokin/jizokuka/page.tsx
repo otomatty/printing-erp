@@ -16,7 +16,7 @@ const subsidyData = {
   officialName: '小規模事業者持続化補助金',
   officialUrl: 'https://s23.jizokukahojokin.info/', // 仮のURL (商工会議所地区の例)
   summary:
-    '小規模事業者が持続的な経営に向けて、商工会・商工会議所の支援を受けながら販路開拓や業務効率化に取り組む費用の一部を支援する補助金です。Webサイト関連費や、小規模なシステム開発費も対象となる場合があります。',
+    '小規模事業者が持続的な経営に向けて、商工会・商工会議所の支援を受けながら販路開拓や業務効率化に取り組む費用の一部を支援する補助金です。ホームページ関連費や、小規模なシステム開発費も対象となる場合があります。',
   targetAudience: [
     '常時使用する従業員数が少ない小規模事業者（商業・サービス業（宿泊・娯楽除く）: 5人以下、宿泊・娯楽業: 20人以下、製造業その他: 20人以下）',
     '特定の要件を満たす特定非営利活動法人',
@@ -24,7 +24,7 @@ const subsidyData = {
   targetExpenses: [
     '機械装置等費',
     '広報費（チラシ作成、広告掲載など）',
-    'Webサイト関連費（Webサイト制作、改修、Web広告、SEO対策など。補助対象経費総額の1/4上限）',
+    'ホームページ関連費（ホームページ制作、改修、Web広告、SEO対策など。補助対象経費総額の1/4上限）',
     '展示会等出展費',
     '旅費',
     '開発費（新商品の試作開発費など）',
@@ -78,7 +78,7 @@ const subsidyData = {
     '地域の商工会・商工会議所との連携が必須です。早めに相談しましょう。',
     '経営計画書と補助事業計画書の具体性が重要です。',
     '販路開拓や業務効率化への具体的な取り組みと効果を示す必要があります。',
-    'Webサイト関連費は補助対象経費総額の1/4が上限です。',
+    'ホームページ関連費は補助対象経費総額の1/4が上限です。',
     '申請する枠（通常枠、特別枠）の要件を確認しましょう。',
   ],
 };
@@ -111,7 +111,7 @@ export default function JizokukaSubsidyPage() {
               {subsidyData.officialName} 公式サイト
               <ExternalLink className="inline-block w-4 h-4 ml-1" />
             </Link>
-            や、管轄の商工会・商工会議所のWebサイトで最新の公募要領をご確認ください。本ページの情報は参考情報です。（本情報は
+            や、管轄の商工会・商工会議所のホームページで最新の公募要領をご確認ください。本ページの情報は参考情報です。（本情報は
             {new Date().getFullYear()}年{new Date().getMonth() + 1}
             月時点のものです）
           </AlertDescription>
@@ -140,7 +140,7 @@ export default function JizokukaSubsidyPage() {
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4">対象となる開発・経費</h2>
           <p className="mb-4">
-            販路開拓や業務効率化に関する幅広い経費が対象です。Webサイト制作や小規模なシステム開発の外注費も含まれる可能性があります。
+            販路開拓や業務効率化に関する幅広い経費が対象です。ホームページ制作や小規模なシステム開発の外注費も含まれる可能性があります。
           </p>
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 list-disc list-inside">
             {subsidyData.targetExpenses.map((item) => (
@@ -148,7 +148,7 @@ export default function JizokukaSubsidyPage() {
             ))}
           </ul>
           <p className="mt-4 text-sm text-gray-600">
-            ※「Webサイト関連費」は補助対象経費総額の1/4が上限です。対象外経費もありますので、詳細は公募要領をご確認ください。
+            ※「ホームページ関連費」は補助対象経費総額の1/4が上限です。対象外経費もありますので、詳細は公募要領をご確認ください。
           </p>
         </section>
 
@@ -242,10 +242,10 @@ export default function JizokukaSubsidyPage() {
           {/* TODO: 実際のCtaSectionコンポーネントに置き換える */}
           <div className="mt-12 bg-gray-100 p-8 rounded-lg">
             <h3 className="text-2xl font-semibold mb-4">
-              補助金活用・Webサイト制作のご相談
+              補助金活用・ホームページ制作のご相談
             </h3>
             <p className="mb-6 text-lg">
-              持続化補助金を活用したWebサイト制作や業務効率化について、ニイヌマ企画印刷がお手伝いします。
+              持続化補助金を活用したホームページ制作や業務効率化について、ニイヌマ企画印刷がお手伝いします。
             </p>
             <Link
               href="/contact" // TODO: 正しい問い合わせページパスに修正

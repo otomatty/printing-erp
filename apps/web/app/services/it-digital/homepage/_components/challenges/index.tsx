@@ -9,7 +9,7 @@ import { challengesData } from './data';
 
 /**
  * ホームページ課題セクションコンポーネント
- * Webサイトに関する課題をカードで表示し、解決策を提案する
+ * ホームページに関する課題をカードで表示し、解決策を提案する
  */
 const HomepageChallengesSection: React.FC = () => {
   return (
@@ -19,7 +19,7 @@ const HomepageChallengesSection: React.FC = () => {
         <SectionHeader
           title="こんな"
           highlightedText="困りごと"
-          description="多くの中小企業様が抱えている、Webサイトやホームページに関する「あるある」な悩みをご紹介します。"
+          description="多くの中小企業様が抱えている、ホームページやホームページに関する「あるある」な悩みをご紹介します。"
         />
 
         {/* 課題カードのグリッド */}

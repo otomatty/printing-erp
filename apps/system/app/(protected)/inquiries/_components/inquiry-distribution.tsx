@@ -50,7 +50,7 @@ const priorityDistribution = [
 ];
 
 const sourceDistribution = [
-  { name: 'Webサイト', value: 55, color: '#3b82f6' },
+  { name: 'ホームページ', value: 55, color: '#3b82f6' },
   { name: '電話', value: 25, color: '#22c55e' },
   { name: 'メール', value: 15, color: '#eab308' },
   { name: '来店', value: 5, color: '#a855f7' },

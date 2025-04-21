@@ -4,7 +4,7 @@ import { BasicHero } from './basic-hero';
 import { Button } from '../core/button';
 
 /**
- * `BasicHero`コンポーネントは、Webサイトのヒーローセクションを表示するためのコンポーネントです。
+ * `BasicHero`コンポーネントは、ホームページのヒーローセクションを表示するためのコンポーネントです。
  *
  * ## 特徴
  * - タイトルと説明文をサポート
@@ -39,7 +39,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'BasicHeroコンポーネントは、Webサイトのヒーローセクションを表示するためのコンポーネントです。',
+          'BasicHeroコンポーネントは、ホームページのヒーローセクションを表示するためのコンポーネントです。',
       },
     },
   },
@@ -119,9 +119,9 @@ export const Default: Story = {
     },
   },
   args: {
-    title: 'モダンなWebサイトを構築',
+    title: 'モダンなホームページを構築',
     description:
-      '最新のテクノロジーを使用して、美しく機能的なWebサイトを構築します。',
+      '最新のテクノロジーを使用して、美しく機能的なホームページを構築します。',
   },
 };
 

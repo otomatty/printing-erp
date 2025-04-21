@@ -19,7 +19,7 @@ const HomepageHeroSection = () => {
             </h1>
             <p className="text-lg text-gray-700 mb-8">
               お客様のビジネスを成功に導くホームページを制作します。
-              デザイン性と機能性を兼ね備え、見込み客の集客から売上アップまで実現するWebサイトをご提供します。
+              デザイン性と機能性を兼ね備え、見込み客の集客から売上アップまで実現するホームページをご提供します。
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button asChild size="lg">

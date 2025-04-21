@@ -210,7 +210,7 @@ export const UseCases: Story = {
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableCell>Webサイト制作</TableCell>
+              <TableCell>ホームページ制作</TableCell>
               <TableCell>¥100,000</TableCell>
               <TableCell>1</TableCell>
               <TableCell>¥100,000</TableCell>

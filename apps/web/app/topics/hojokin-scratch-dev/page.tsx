@@ -17,7 +17,7 @@ import RelatedTopicLink from '~/components/custom/related-topic-link';
 export const metadata = {
   title: '補助金活用で実現！オーダーメイドDX | ニイヌマ企画印刷 特集',
   description:
-    'スクラッチ開発のWebサイト・業務システム導入に活用できる補助金と、ニイヌマ企画印刷の低コスト開発について解説します。',
+    'スクラッチ開発のホームページ・業務システム導入に活用できる補助金と、ニイヌマ企画印刷の低コスト開発について解説します。',
 };
 
 export default function HojokinScratchDevPage() {
@@ -25,7 +25,7 @@ export default function HojokinScratchDevPage() {
     <div>
       <PageHero
         title="補助金活用で実現する、貴社だけのDX"
-        subtitle="オーダーメイドのWebサイト・業務システム開発を低コストで"
+        subtitle="オーダーメイドのホームページ・業務システム開発を低コストで"
       />
       <Container className="py-12">
         {/* Render section components */}
@@ -33,7 +33,7 @@ export default function HojokinScratchDevPage() {
         <BenefitsSection />
         <RelatedTopicLink
           title="スクラッチ開発とは？基本からメリット・デメリットまで解説"
-          excerpt="「スクラッチ開発」という言葉を聞いたことはありますか？オーダーメイドでシステムやWebサイトを構築するメリットや、どんな場合に適しているのかを詳しく解説します。"
+          excerpt="「スクラッチ開発」という言葉を聞いたことはありますか？オーダーメイドでシステムやホームページを構築するメリットや、どんな場合に適しているのかを詳しく解説します。"
           imageUrl="/images/topics/what-is-scratch-dev.webp"
           linkUrl="/topics/what-is-scratch-dev"
         />

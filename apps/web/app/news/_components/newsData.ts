@@ -1,21 +1,21 @@
 export type NewsItem = {
-	id: string;
-	title: string;
-	date: string;
-	category: string;
-	excerpt: string;
-	content: string;
+  id: string;
+  title: string;
+  date: string;
+  category: string;
+  excerpt: string;
+  content: string;
 };
 
 export const newsItems: NewsItem[] = [
-	{
-		id: "2024-12-15-year-end",
-		title: "年末年始休業のお知らせ",
-		date: "2024-12-15",
-		category: "お知らせ",
-		excerpt:
-			"2024年12月29日から2025年1月4日まで年末年始休業とさせていただきます。",
-		content: `平素は格別のご高配を賜り、厚く御礼申し上げます。
+  {
+    id: '2024-12-15-year-end',
+    title: '年末年始休業のお知らせ',
+    date: '2024-12-15',
+    category: 'お知らせ',
+    excerpt:
+      '2024年12月29日から2025年1月4日まで年末年始休業とさせていただきます。',
+    content: `平素は格別のご高配を賜り、厚く御礼申し上げます。
     
 誠に勝手ながら、弊社では下記期間を年末年始休業とさせていただきます。
 
@@ -26,15 +26,15 @@ export const newsItems: NewsItem[] = [
 ご不便をおかけいたしますが、何卒ご了承くださいますようお願い申し上げます。
     
 ニイヌマ企画印刷 スタッフ一同`,
-	},
-	{
-		id: "2024-11-20-new-service",
-		title: "新サービス「環境配慮型印刷」の開始について",
-		date: "2024-11-20",
-		category: "サービス",
-		excerpt:
-			"環境に配慮したFSC認証紙と植物油インキを使用する「環境配慮型印刷」サービスを開始しました。",
-		content: `ニイヌマ企画印刷では、環境保全への取り組みの一環として、新サービス「環境配慮型印刷」の提供を開始いたしました。
+  },
+  {
+    id: '2024-11-20-new-service',
+    title: '新サービス「環境配慮型印刷」の開始について',
+    date: '2024-11-20',
+    category: 'サービス',
+    excerpt:
+      '環境に配慮したFSC認証紙と植物油インキを使用する「環境配慮型印刷」サービスを開始しました。',
+    content: `ニイヌマ企画印刷では、環境保全への取り組みの一環として、新サービス「環境配慮型印刷」の提供を開始いたしました。
 
 **環境配慮型印刷の特徴**
 
@@ -43,15 +43,15 @@ export const newsItems: NewsItem[] = [
 3. **省エネルギー印刷工程**：最新の省エネ設備による印刷工程
 
 企業の環境への取り組みをアピールする印刷物製作に最適です。詳細は[サービスページ](/services#printing)をご覧いただくか、お気軽にお問い合わせください。`,
-	},
-	{
-		id: "2024-09-05-web-renewal",
-		title: "ホームページリニューアルのお知らせ",
-		date: "2024-09-05",
-		category: "お知らせ",
-		excerpt:
-			"この度、ニイヌマ企画印刷のホームページを全面リニューアルいたしました。",
-		content: `この度、ニイヌマ企画印刷のホームページを全面リニューアルいたしました。
+  },
+  {
+    id: '2024-09-05-web-renewal',
+    title: 'ホームページリニューアルのお知らせ',
+    date: '2024-09-05',
+    category: 'お知らせ',
+    excerpt:
+      'この度、ニイヌマ企画印刷のホームページを全面リニューアルいたしました。',
+    content: `この度、ニイヌマ企画印刷のホームページを全面リニューアルいたしました。
 
 **リニューアルのポイント**
 
@@ -61,14 +61,14 @@ export const newsItems: NewsItem[] = [
 4. **レスポンシブ対応**：スマートフォンやタブレットからも快適にご覧いただけるように対応
 
 今後もお客様にとって有益な情報を随時更新してまいります。新しいホームページをぜひご活用ください。`,
-	},
-	{
-		id: "2024-07-18-summer-holiday",
-		title: "夏季休業のお知らせ",
-		date: "2024-07-18",
-		category: "お知らせ",
-		excerpt: "2024年8月11日から8月16日まで夏季休業とさせていただきます。",
-		content: `平素は格別のご高配を賜り、厚く御礼申し上げます。
+  },
+  {
+    id: '2024-07-18-summer-holiday',
+    title: '夏季休業のお知らせ',
+    date: '2024-07-18',
+    category: 'お知らせ',
+    excerpt: '2024年8月11日から8月16日まで夏季休業とさせていただきます。',
+    content: `平素は格別のご高配を賜り、厚く御礼申し上げます。
     
 誠に勝手ながら、弊社では下記期間を夏季休業とさせていただきます。
 
@@ -79,14 +79,14 @@ export const newsItems: NewsItem[] = [
 ご不便をおかけいたしますが、何卒ご了承くださいますようお願い申し上げます。
     
 ニイヌマ企画印刷 スタッフ一同`,
-	},
-	{
-		id: "2024-06-01-new-equipment",
-		title: "最新印刷機器導入のお知らせ",
-		date: "2024-06-01",
-		category: "設備",
-		excerpt: "高品質・短納期に対応する最新のデジタル印刷機を導入しました。",
-		content: `この度、ニイヌマ企画印刷では、より高品質かつ短納期での印刷サービスをご提供するため、最新のデジタル印刷機「ProPress X5000」を導入いたしました。
+  },
+  {
+    id: '2024-06-01-new-equipment',
+    title: '最新印刷機器導入のお知らせ',
+    date: '2024-06-01',
+    category: '設備',
+    excerpt: '高品質・短納期に対応する最新のデジタル印刷機を導入しました。',
+    content: `この度、ニイヌマ企画印刷では、より高品質かつ短納期での印刷サービスをご提供するため、最新のデジタル印刷機「ProPress X5000」を導入いたしました。
 
 **新機器の特徴**
 
@@ -96,14 +96,14 @@ export const newsItems: NewsItem[] = [
 4. **環境配慮**：省電力設計と低温定着トナーによる環境負荷の低減
 
 新しい印刷機の導入により、お客様のニーズにより柔軟かつスピーディーに対応してまいります。小ロットから大ロットまで、高品質の印刷物をご希望の方は、ぜひお気軽にお問い合わせください。`,
-	},
+  },
 ];
 
 // カテゴリー一覧を取得
 export const getCategories = (): string[] => {
-	const categoriesSet = new Set<string>();
-	for (const item of newsItems) {
-		categoriesSet.add(item.category);
-	}
-	return Array.from(categoriesSet);
+  const categoriesSet = new Set<string>();
+  for (const item of newsItems) {
+    categoriesSet.add(item.category);
+  }
+  return Array.from(categoriesSet);
 };

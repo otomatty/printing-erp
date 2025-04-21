@@ -11,7 +11,7 @@ export function generateDescriptionPrompt(
 プロジェクトタイプ: ${(() => {
     switch (projectType) {
       case 'website':
-        return 'Webサイト（情報発信、コーポレートサイト、ポートフォリオなど）';
+        return 'ホームページ（情報発信、コーポレートサイト、ポートフォリオなど）';
       case 'business_system':
         return '業務システム（社内ツール、顧客管理、在庫管理など）';
       case 'application':

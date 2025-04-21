@@ -27,7 +27,7 @@ export function EstimateSummary({
           </div>
           <div className="font-medium">
             {projectType === 'website'
-              ? 'Webサイト'
+              ? 'ホームページ'
               : projectType === 'business_system'
                 ? '業務システム'
                 : projectType === 'application'

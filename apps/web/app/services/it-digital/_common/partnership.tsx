@@ -25,7 +25,7 @@ const PartnershipSection: React.FC<PartnershipSectionProps> = ({
           <h3 className="text-2xl font-bold mb-4">
             <span className="text-primary">{titlePrefix}ではなく</span>
             <br />
-            気軽に相談できるパートナー
+            気軽に相談できるパートナーとして
           </h3>
           <p className="text-gray-700 mb-6">
             「{serviceType}

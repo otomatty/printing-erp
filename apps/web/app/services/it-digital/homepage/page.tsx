@@ -18,7 +18,7 @@ import CtaSection from '~/components/custom/cta-section';
 export const metadata: Metadata = {
   title: 'ホームページ制作 | ニイヌマ企画印刷',
   description:
-    'お客様のビジネスを成功に導くホームページ制作をご提供します。デザイン性と機能性を兼ね備えた、集客・売上アップにつながるWebサイトを制作いたします。',
+    'お客様のビジネスを成功に導くホームページ制作をご提供します。デザイン性と機能性を兼ね備えた、集客・売上アップにつながるホームページを制作いたします。',
 };
 
 export default function HomepagePage() {

@@ -117,7 +117,7 @@ export const servicesData: ServiceCategory[] = [
     fullDescription:
       'ホームページ制作から業務システムの開発、IT戦略のコンサルティングまで、お客様のビジネスをデジタル面からサポートします。最新技術と豊富な経験に基づき、最適なソリューションを提供します。',
     features: [
-      { id: 'it-feat-1', text: '戦略的なWebサイト構築' },
+      { id: 'it-feat-1', text: '戦略的なホームページ構築' },
       { id: 'it-feat-2', text: 'オーダーメイドのシステム開発' },
       { id: 'it-feat-3', text: 'ビジネス課題解決のITコンサルティング' },
       { id: 'it-feat-4', text: '最新技術の活用提案 (AI/DX)' }, // 具体例を追加
@@ -134,7 +134,7 @@ export const servicesData: ServiceCategory[] = [
           'SEO対策・公開後の運用保守も対応', // "公開後" を明記
         ],
         shortDescription:
-          '集客やブランディングに繋がる、戦略的で使いやすいWebサイトを制作・運用します。', // 運用も含むように修正
+          '集客やブランディングに繋がる、戦略的で使いやすいホームページを制作・運用します。', // 運用も含むように修正
         href: '/services/it-digital/homepage',
         icon: Laptop,
       },

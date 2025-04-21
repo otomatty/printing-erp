@@ -82,7 +82,7 @@ export const IMPLEMENTATION_DURATION_FACTORS = {
 export function getDesignBaseCost(projectType: ProjectType): number {
   switch (projectType) {
     case 'website':
-      return 200000; // Webサイトのデザイン基本料金
+      return 200000; // ホームページのデザイン基本料金
     case 'business_system':
       return 300000; // 業務システムのデザイン基本料金
     case 'application':
@@ -98,7 +98,7 @@ export function getDesignBaseCost(projectType: ProjectType): number {
 export function getBrandGuidelinesCost(projectType: ProjectType): number {
   switch (projectType) {
     case 'website':
-      return 200000; // Webサイトのブランドガイドライン作成費
+      return 200000; // ホームページのブランドガイドライン作成費
     case 'business_system':
       return 150000; // 業務システムのブランドガイドライン作成費
     case 'application':
@@ -114,7 +114,7 @@ export function getBrandGuidelinesCost(projectType: ProjectType): number {
 export function getLogoCost(projectType: ProjectType): number {
   switch (projectType) {
     case 'website':
-      return 150000; // Webサイトのロゴデザイン費
+      return 150000; // ホームページのロゴデザイン費
     case 'business_system':
       return 100000; // 業務システムのロゴデザイン費
     case 'application':
@@ -130,7 +130,7 @@ export function getLogoCost(projectType: ProjectType): number {
 export function getImagesCost(projectType: ProjectType): number {
   switch (projectType) {
     case 'website':
-      return 200000; // Webサイトの画像素材費
+      return 200000; // ホームページの画像素材費
     case 'business_system':
       return 100000; // 業務システムの画像素材費
     case 'application':
@@ -146,7 +146,7 @@ export function getImagesCost(projectType: ProjectType): number {
 export function getIconsCost(projectType: ProjectType): number {
   switch (projectType) {
     case 'website':
-      return 60000; // Webサイトのアイコン素材費
+      return 60000; // ホームページのアイコン素材費
     case 'business_system':
       return 100000; // 業務システムのアイコン素材費
     case 'application':
@@ -162,7 +162,7 @@ export function getIconsCost(projectType: ProjectType): number {
 export function getContentBaseCost(projectType: ProjectType): number {
   switch (projectType) {
     case 'website':
-      return 250000; // Webサイトのコンテンツ作成費
+      return 250000; // ホームページのコンテンツ作成費
     case 'business_system':
       return 200000; // 業務システムのコンテンツ作成費
     case 'application':

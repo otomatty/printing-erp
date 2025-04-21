@@ -246,7 +246,7 @@ export function ImplementationRequirementsStep() {
     <div className="space-y-6">
       <div className="mb-6">
         <p className="text-sm text-muted-foreground">
-          Webサイト/アプリケーション開発に必要な素材やデータについてお聞かせください。
+          ホームページ/アプリケーション開発に必要な素材やデータについてお聞かせください。
           提供できないものについては制作費用が追加で発生します。
         </p>
       </div>
@@ -373,7 +373,7 @@ export function ImplementationRequirementsStep() {
             ロゴデータはありますか？
           </Label>
           <p className="text-sm text-muted-foreground mb-4">
-            Webサイトやアプリで使用するロゴのデータ（SVG,
+            ホームページやアプリで使用するロゴのデータ（SVG,
             PNGなど）を提供いただけますか？
           </p>
           <RadioGroup
@@ -446,7 +446,7 @@ export function ImplementationRequirementsStep() {
             画像素材はありますか？
           </Label>
           <p className="text-sm text-muted-foreground mb-4">
-            Webサイトやアプリ内で使用する写真やイラストなどの画像素材を提供いただけますか？
+            ホームページやアプリ内で使用する写真やイラストなどの画像素材を提供いただけますか？
           </p>
           <RadioGroup
             value={getRadioValue(requirements.hasImages)}
@@ -521,7 +521,7 @@ export function ImplementationRequirementsStep() {
             掲載するコンテンツ（文章など）は用意されていますか？
           </Label>
           <p className="text-sm text-muted-foreground mb-4">
-            Webサイトやアプリに掲載するテキスト、説明文などのコンテンツは作成済みですか？
+            ホームページやアプリに掲載するテキスト、説明文などのコンテンツは作成済みですか？
           </p>
           <RadioGroup
             value={getRadioValue(requirements.hasContent)}

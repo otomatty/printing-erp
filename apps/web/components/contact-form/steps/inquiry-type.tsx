@@ -39,7 +39,7 @@ export default function StepInquiryType() {
     {
       id: 'digital-services',
       title: 'IT・デジタルサービスに関するお問い合わせ',
-      description: 'Webサイト制作、デジタルコンテンツ、システム開発など',
+      description: 'ホームページ制作、デジタルコンテンツ、システム開発など',
       icon: '💻',
     },
     {

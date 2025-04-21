@@ -9,7 +9,7 @@ export const metadata = {
   title:
     'スクラッチ開発とは？基本からメリット・デメリットまで解説 | ニイヌマ企画印刷',
   description:
-    'オーダーメイドでシステムやWebサイトをゼロから構築する「スクラッチ開発」。その定義、メリット・デメリット、パッケージ開発との違いなどを分かりやすく解説します。',
+    'オーダーメイドでシステムやホームページをゼロから構築する「スクラッチ開発」。その定義、メリット・デメリット、パッケージ開発との違いなどを分かりやすく解説します。',
 };
 
 const WhatIsScratchDevPage: React.FC = () => {
@@ -24,9 +24,9 @@ const WhatIsScratchDevPage: React.FC = () => {
         <article className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary hover:prose-a:text-blue-800 prose-strong:text-gray-800">
           {/* Introduction */}
           <p>
-            Webサイト制作やシステム開発の文脈で「スクラッチ開発」という言葉を耳にすることがあります。これは、既存のテンプレートやパッケージソフトウェアを利用せず、
+            ホームページ制作やシステム開発の文脈で「スクラッチ開発」という言葉を耳にすることがあります。これは、既存のテンプレートやパッケージソフトウェアを利用せず、
             <strong>
-              ゼロから完全にオリジナルのシステムやWebサイトを設計・開発
+              ゼロから完全にオリジナルのシステムやホームページを設計・開発
             </strong>
             する手法を指します。まるで料理で、出来合いのソースを使わずにスパイスから調合するようなイメージです。
           </p>
