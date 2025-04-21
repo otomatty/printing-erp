@@ -1,5 +1,5 @@
 'use client';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
@@ -20,6 +20,7 @@ import {
   digitalServicesFormAtom,
   printServicesFormAtom,
   generalInquiryFormAtom,
+  resetFormAtom,
 } from '~/store/contact-form';
 import type {
   FormStep,
@@ -43,6 +44,8 @@ export default function ContactForm() {
   const [isAIEstimateShown, setIsAIEstimateShown] = useAtom(
     isAIEstimateShownAtom
   );
+  // フォームリセット用の setter
+  const resetForm = useSetAtom(resetFormAtom);
 
   // フォーム送信状態管理
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -93,6 +96,15 @@ export default function ContactForm() {
   useEffect(() => {
     window.scrollTo({ top: 400, behavior: 'smooth' });
   }, [currentStep]);
+
+  // コンポーネントアンマウント時に、完了ステップだったらフォームをリセット
+  useEffect(() => {
+    return () => {
+      if (currentStep === 'complete') {
+        resetForm();
+      }
+    };
+  }, [currentStep, resetForm]);
 
   const handleChangeStep = (step: FormStep) => {
     setCurrentStep(step);

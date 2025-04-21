@@ -249,7 +249,7 @@ export default function QuotesPage() {
                       <td className="px-4 py-3 text-sm">{quote.validUntil}</td>
                       <td className="px-4 py-3 text-sm">
                         <div className="flex gap-2">
-                          <Link href={`/system/quotes/${quote.id}`}>
+                          <Link href={`/quotes/${quote.id}`}>
                             <button
                               type="button"
                               className="text-primary hover:text-blue-800 flex items-center"

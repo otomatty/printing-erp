@@ -208,19 +208,19 @@ export default function InventoryPageClient() {
         <ArrowDownToLine className="mr-2 h-4 w-4" />
         データ出力
       </Button>
-      <Link href="/system/inventory/orders">
+      <Link href="/inventory/orders">
         <Button variant="outline" size="sm">
           <ShoppingCart className="mr-2 h-4 w-4" />
           発注管理
         </Button>
       </Link>
-      <Link href="/system/inventory/receive">
+      <Link href="/inventory/receive">
         <Button variant="outline" size="sm">
           <Truck className="mr-2 h-4 w-4" />
           入荷登録
         </Button>
       </Link>
-      <Link href="/system/inventory/new">
+      <Link href="/inventory/new">
         <Button variant="default" size="sm">
           <Plus className="mr-2 h-4 w-4" />
           新規資材登録
@@ -236,7 +236,7 @@ export default function InventoryPageClient() {
       <PageHeader
         title="在庫管理"
         description="資材の在庫状況を管理できます。"
-        backLink={{ href: '/system', label: 'ダッシュボードに戻る' }}
+        backLink={{ href: '', label: 'ダッシュボードに戻る' }}
         actions={
           <div className="flex flex-col gap-2 items-end">
             {headerControls}
@@ -375,7 +375,7 @@ export default function InventoryPageClient() {
                             {item.id}
                           </TableCell>
                           <TableCell>
-                            <Link href={`/system/inventory/${item.id}`}>
+                            <Link href={`/inventory/${item.id}`}>
                               <span className="text-primary hover:underline">
                                 {item.name}
                               </span>
@@ -407,7 +407,7 @@ export default function InventoryPageClient() {
                           <TableCell>{item.lastUpdated}</TableCell>
                           <TableCell>
                             <div className="flex space-x-1">
-                              <Link href={`/system/inventory/${item.id}`}>
+                              <Link href={`/inventory/${item.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Settings className="mr-2 h-4 w-4" />
                                   詳細
@@ -554,7 +554,7 @@ export default function InventoryPageClient() {
                             {item.id}
                           </TableCell>
                           <TableCell>
-                            <Link href={`/system/inventory/${item.id}`}>
+                            <Link href={`/inventory/${item.id}`}>
                               <span className="text-primary hover:underline">
                                 {item.name}
                               </span>
@@ -586,7 +586,7 @@ export default function InventoryPageClient() {
                           <TableCell>{item.lastUpdated}</TableCell>
                           <TableCell>
                             <div className="flex space-x-1">
-                              <Link href={`/system/inventory/${item.id}`}>
+                              <Link href={`/inventory/${item.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Settings className="mr-2 h-4 w-4" />
                                   詳細

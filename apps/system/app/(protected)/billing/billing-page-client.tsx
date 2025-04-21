@@ -162,7 +162,7 @@ export default function BillingPageClient() {
 
   const listActions = (
     <>
-      <Link href="/system/billing/new">
+      <Link href="/billing/new">
         <Button variant="default" size="sm">
           <PlusCircle className="mr-2 h-4 w-4" />
           新規請求書作成
@@ -193,7 +193,7 @@ export default function BillingPageClient() {
       <PageHeader
         title="請求・入金管理"
         description="請求書と入金状況を管理できます。"
-        backLink={{ href: '/system', label: 'ダッシュボードに戻る' }}
+        backLink={{ href: '/', label: 'ダッシュボードに戻る' }}
         actions={
           <div className="flex flex-col gap-2 items-end">
             {headerControls}
@@ -318,7 +318,7 @@ export default function BillingPageClient() {
                       </TableCell>
                       <TableCell>
                         <div className="flex space-x-1">
-                          <Link href={`/system/billing/${invoice.id}`}>
+                          <Link href={`/billing/${invoice.id}`}>
                             <Button variant="outline" size="sm">
                               <Eye className="mr-2 h-4 w-4" />
                               詳細

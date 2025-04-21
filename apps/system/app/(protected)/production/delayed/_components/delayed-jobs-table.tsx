@@ -73,7 +73,7 @@ export function DelayedJobsTable({
               <TableCell>{job.id}</TableCell>
               <TableCell>
                 <Link
-                  href={`/system/production/${job.id}`}
+                  href={`/production/${job.id}`}
                   className="text-blue-500 hover:underline font-medium"
                 >
                   {job.title}
@@ -103,7 +103,7 @@ export function DelayedJobsTable({
               <TableCell>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" asChild>
-                    <Link href={`/system/production/${job.id}`}>詳細</Link>
+                    <Link href={`/production/${job.id}`}>詳細</Link>
                   </Button>
                   <Button
                     size="sm"

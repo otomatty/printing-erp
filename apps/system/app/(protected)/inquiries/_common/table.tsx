@@ -148,14 +148,10 @@ export function InquiryTable({
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>アクション</DropdownMenuLabel>
                     <DropdownMenuItem asChild>
-                      <Link href={`/system/inquiries/${inquiry.id}`}>
-                        詳細を表示
-                      </Link>
+                      <Link href={`/inquiries/${inquiry.id}`}>詳細を表示</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href={`/system/inquiries/${inquiry.id}/edit`}>
-                        編集
-                      </Link>
+                      <Link href={`/inquiries/${inquiry.id}/edit`}>編集</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-red-600">

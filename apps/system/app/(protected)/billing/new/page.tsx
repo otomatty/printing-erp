@@ -111,7 +111,7 @@ export default function NewInvoicePage() {
       {/* ヘッダー */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <Link href="/system/billing">
+          <Link href="/billing">
             <Button variant="outline" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>

@@ -131,14 +131,14 @@ export function JobsTab({ productionJobs }: JobsTabProps) {
             return (
               <TableRow key={job.id}>
                 <TableCell className="font-medium">
-                  <Link href={`/system/production/${job.id}`}>
+                  <Link href={`/production/${job.id}`}>
                     <span className="text-primary hover:underline">
                       {job.id}
                     </span>
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <Link href={`/system/orders/${job.orderId}`}>
+                  <Link href={`/orders/${job.orderId}`}>
                     <span className="text-primary hover:underline">
                       {job.orderId}
                     </span>

@@ -21,7 +21,7 @@ export default async function InquiryDetailPage({
         <h1 className="text-xl font-bold mb-4">エラー</h1>
         <p>お問い合わせが見つかりませんでした。</p>
         <Link
-          href="/system/inquiries"
+          href="/inquiries"
           className="text-blue-500 hover:underline mt-4 inline-block"
         >
           お問い合わせ一覧へ戻る
@@ -35,7 +35,7 @@ export default async function InquiryDetailPage({
       {/* ヘッダー */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <Link href="/system/inquiries">
+          <Link href="/inquiries">
             <Button variant="outline" size="icon" className="h-8 w-8">
               <ArrowLeft className="h-4 w-4" />
             </Button>

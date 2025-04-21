@@ -113,7 +113,7 @@ export function CustomersInteractions() {
               <tr key={interaction.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3 text-sm">{interaction.date}</td>
                 <td className="px-4 py-3 font-medium text-primary">
-                  <Link href={`/system/customers/${interaction.customerId}`}>
+                  <Link href={`/customers/${interaction.customerId}`}>
                     {interaction.customerName}
                   </Link>
                 </td>
@@ -135,7 +135,7 @@ export function CustomersInteractions() {
                 <td className="px-4 py-3 text-sm">{interaction.staff}</td>
                 <td className="px-4 py-3 text-sm">
                   <Link
-                    href={`/system/customers/interactions/${interaction.id}`}
+                    href={`/customers/interactions/${interaction.id}`}
                     className="text-primary hover:text-blue-800"
                   >
                     詳細

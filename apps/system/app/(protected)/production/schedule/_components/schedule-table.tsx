@@ -107,7 +107,7 @@ export function ScheduleTable({
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <Link
-                                    href={`/system/production/${job.id}`}
+                                    href={`/production/${job.id}`}
                                     className={`
                                       block p-1 rounded text-xs
                                       ${

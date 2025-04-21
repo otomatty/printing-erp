@@ -79,7 +79,7 @@ export default async function EditQuotePage({
       {/* ヘッダー */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <Link href={`/system/quotes/${quote.id}`}>
+          <Link href={`/quotes/${quote.id}`}>
             <Button variant="outline" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -398,7 +398,7 @@ export default async function EditQuotePage({
           <Card className="p-4">
             <h2 className="font-medium mb-4">プレビューとアクション</h2>
             <div className="space-y-4">
-              <Link href={`/system/quotes/${quote.id}`}>
+              <Link href={`/quotes/${quote.id}`}>
                 <Button variant="outline" className="w-full">
                   変更をキャンセル
                 </Button>

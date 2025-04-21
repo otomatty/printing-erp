@@ -77,7 +77,7 @@ export default function NewOrderPage() {
       {/* ヘッダー */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <Link href="/system/orders">
+          <Link href="/orders">
             <Button variant="outline" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -283,7 +283,7 @@ export default function NewOrderPage() {
               />
             </div>
             <div className="flex justify-end mt-2">
-              <Link href="/system/customers/new">
+              <Link href="/customers/new">
                 <Button variant="outline" size="sm">
                   <PlusCircle className="mr-2 h-4 w-4" />
                   新規顧客登録

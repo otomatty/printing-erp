@@ -79,7 +79,7 @@ export function InquiriesTable({
                 <tr key={inquiry.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm font-medium w-20">
                     <Link
-                      href={`/system/inquiries/${inquiry.id}`}
+                      href={`/inquiries/${inquiry.id}`}
                       className="text-gray-900 hover:text-primary"
                       title={inquiry.id}
                     >
@@ -142,7 +142,7 @@ export function InquiriesTable({
                       <DropdownMenuContent align="end" className="w-40">
                         <DropdownMenuItem asChild>
                           <Link
-                            href={`/system/inquiries/${inquiry.id}`}
+                            href={`/inquiries/${inquiry.id}`}
                             className="flex items-center w-full"
                           >
                             <Eye size={16} className="mr-2" />

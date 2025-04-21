@@ -199,7 +199,7 @@ export default async function OrderDetailPage({
       {/* ヘッダー */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <Link href="/system/orders">
+          <Link href="/orders">
             <Button variant="outline" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -209,13 +209,13 @@ export default async function OrderDetailPage({
           <div className="text-sm text-gray-500">#{order.number}</div>
         </div>
         <div className="flex gap-2">
-          <Link href={`/system/orders/${order.id}/process`}>
+          <Link href={`/orders/${order.id}/process`}>
             <Button variant="outline" size="sm">
               <Package className="mr-2 h-4 w-4" />
               工程管理
             </Button>
           </Link>
-          <Link href={`/system/orders/${order.id}/edit`}>
+          <Link href={`/orders/${order.id}/edit`}>
             <Button variant="outline" size="sm">
               <Edit className="mr-2 h-4 w-4" />
               編集
@@ -296,7 +296,7 @@ export default async function OrderDetailPage({
               </h3>
               <div className="mb-4">
                 <div className="flex items-center mb-2">
-                  <Link href={`/system/customers/${order.customer.id}`}>
+                  <Link href={`/customers/${order.customer.id}`}>
                     <span className="font-medium text-primary hover:underline">
                       {order.customer.name}
                     </span>
@@ -336,7 +336,7 @@ export default async function OrderDetailPage({
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-medium">明細情報</h3>
                 <div className="flex items-center gap-2">
-                  <Link href={`/system/quotes/${order.quoteId}`}>
+                  <Link href={`/quotes/${order.quoteId}`}>
                     <Button variant="outline" size="sm">
                       <FileText className="mr-2 h-4 w-4" />
                       見積書表示

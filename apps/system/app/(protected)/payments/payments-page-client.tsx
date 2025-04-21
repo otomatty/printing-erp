@@ -123,7 +123,7 @@ export default function PaymentsPageClient() {
       <PageHeader
         title="入金管理"
         description="入金状況を確認・管理できます。"
-        backLink={{ href: '/system/billing', label: '請求管理に戻る' }}
+        backLink={{ href: '/billing', label: '請求管理に戻る' }}
         actions={actions}
       />
 
@@ -255,7 +255,7 @@ export default function PaymentsPageClient() {
                     <TableCell className="font-medium">{payment.id}</TableCell>
                     <TableCell>
                       <Link
-                        href={`/system/billing/${payment.invoiceId}`}
+                        href={`/billing/${payment.invoiceId}`}
                         className="text-primary hover:underline"
                       >
                         {payment.invoiceId}
@@ -300,7 +300,7 @@ export default function PaymentsPageClient() {
                     <TableCell>{payment.paidAt || '-'}</TableCell>
                     <TableCell>
                       <div className="flex space-x-1">
-                        <Link href={`/system/billing/${payment.invoiceId}`}>
+                        <Link href={`/billing/${payment.invoiceId}`}>
                           <Eye
                             className="text-primary hover:text-primary"
                             size={18}

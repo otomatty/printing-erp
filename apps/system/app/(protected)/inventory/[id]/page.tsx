@@ -198,7 +198,7 @@ export default async function InventoryDetailPage({
       {/* ヘッダー */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex items-center">
-          <Link href="/system/inventory">
+          <Link href="/inventory">
             <Button variant="outline" size="icon" className="mr-4">
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -207,19 +207,19 @@ export default async function InventoryDetailPage({
           <Badge className={`ml-4 ${color}`}>{label}</Badge>
         </div>
         <div className="flex gap-2">
-          <Link href={`/system/inventory/orders/new?item=${item.id}`}>
+          <Link href={`/inventory/orders/new?item=${item.id}`}>
             <Button variant="outline" size="sm">
               <ShoppingCart className="mr-2 h-4 w-4" />
               発注する
             </Button>
           </Link>
-          <Link href={`/system/inventory/${item.id}/edit`}>
+          <Link href={`/inventory/${item.id}/edit`}>
             <Button variant="outline" size="sm">
               <Edit className="mr-2 h-4 w-4" />
               編集
             </Button>
           </Link>
-          <Link href={`/system/inventory/${item.id}/stock`}>
+          <Link href={`/inventory/${item.id}/stock`}>
             <Button variant="default" size="sm">
               <Package className="mr-2 h-4 w-4" />
               在庫操作
@@ -240,7 +240,7 @@ export default async function InventoryDetailPage({
               を下回っています。 早めの発注をお勧めします。
             </p>
             <div className="flex gap-2 mt-2">
-              <Link href={`/system/inventory/orders/new?item=${item.id}`}>
+              <Link href={`/inventory/orders/new?item=${item.id}`}>
                 <Button variant="outline" size="sm" className="h-7 bg-white">
                   <ShoppingCart className="mr-1 h-3 w-3" />
                   発注する

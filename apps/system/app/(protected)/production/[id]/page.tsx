@@ -25,7 +25,7 @@ export default async function ProductionDetailPage({
         <h1 className="text-xl font-bold mb-4">エラー</h1>
         <p>製造案件が見つかりませんでした。</p>
         <Link
-          href="/system/production"
+          href="/production"
           className="text-blue-500 hover:underline mt-4 inline-block"
         >
           製造管理へ戻る
@@ -39,7 +39,7 @@ export default async function ProductionDetailPage({
       {/* ヘッダー */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <Link href="/system/production">
+          <Link href="/production">
             <Button variant="outline" size="icon" className="h-8 w-8">
               <ArrowLeft className="h-4 w-4" />
             </Button>

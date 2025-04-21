@@ -30,7 +30,7 @@ export function ProductionDetailsHeader({ job }: ProductionDetailsHeaderProps) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-4">
-        <Link href="/system/production">
+        <Link href="/production">
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -57,7 +57,7 @@ export function ProductionDetailsHeader({ job }: ProductionDetailsHeaderProps) {
             <p className="text-sm text-muted-foreground mb-1">
               <span className="font-medium">関連注文：</span>
               <Link
-                href={`/system/orders/${job.orderId}`}
+                href={`/orders/${job.orderId}`}
                 className="text-primary hover:underline"
               >
                 {job.orderId}
@@ -66,7 +66,7 @@ export function ProductionDetailsHeader({ job }: ProductionDetailsHeaderProps) {
             <p className="text-sm text-muted-foreground mb-1">
               <span className="font-medium">顧客：</span>
               <Link
-                href={`/system/customers/${job.customerName}`}
+                href={`/customers/${job.customerName}`}
                 className="text-primary hover:underline"
               >
                 {job.customerName}

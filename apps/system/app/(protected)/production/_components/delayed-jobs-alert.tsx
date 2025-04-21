@@ -21,7 +21,7 @@ export function DelayedJobsAlert({ delayedJobs }: DelayedJobsAlertProps) {
           納期が過ぎている、または進捗が予定より遅れています。早急に対応が必要です。
         </p>
         <div className="flex gap-2 mt-2">
-          <Link href="/system/production/delayed">
+          <Link href="/production/delayed">
             <Button
               variant="outline"
               size="sm"

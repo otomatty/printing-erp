@@ -192,7 +192,7 @@ export default async function OrderProcessPage({
       {/* ヘッダー */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <Link href={`/system/orders/${order.id}`}>
+          <Link href={`/orders/${order.id}`}>
             <Button variant="outline" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -202,7 +202,7 @@ export default async function OrderProcessPage({
           <div className="text-sm text-gray-500">#{order.number}</div>
         </div>
         <div className="flex gap-2">
-          <Link href={`/system/orders/${order.id}`}>
+          <Link href={`/orders/${order.id}`}>
             <Button variant="outline" size="sm">
               <ShoppingCart className="mr-2 h-4 w-4" />
               受注詳細

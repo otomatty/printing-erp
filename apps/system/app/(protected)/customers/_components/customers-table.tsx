@@ -60,7 +60,7 @@ export function CustomersTable({ customers }: CustomersTableProps) {
                 <td className="px-4 py-3 text-sm">{customer.lastOrder}</td>
                 <td className="px-4 py-3 text-sm">
                   <Link
-                    href={`/system/customers/${customer.id}`}
+                    href={`/customers/${customer.id}`}
                     className="text-primary hover:text-blue-800 flex items-center"
                   >
                     <Eye size={16} className="mr-1" />

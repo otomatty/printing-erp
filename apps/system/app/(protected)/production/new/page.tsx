@@ -25,7 +25,7 @@ export default function NewProductionPage() {
       // 一時的に製造管理ページへリダイレクト
       // 実際の実装では、APIレスポンスを待ってからリダイレクト
       setTimeout(() => {
-        router.push('/system/production');
+        router.push('/production');
       }, 1000);
     } catch (error) {
       console.error('エラー:', error);

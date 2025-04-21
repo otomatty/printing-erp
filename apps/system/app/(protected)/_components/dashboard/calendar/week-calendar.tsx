@@ -75,6 +75,7 @@ export default function WeekCalendar({
                     isBusinessDay && hour >= 9 && hour < 18;
                   return (
                     <div
+                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                       key={`grid-${hour}`}
                       className={`absolute left-0 w-full border-t border-gray-200 ${
                         isBusinessHour ? 'bg-white' : 'bg-gray-50'

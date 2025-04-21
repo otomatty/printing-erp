@@ -97,7 +97,7 @@ export function EquipmentTab({
                 </TableCell>
                 <TableCell>
                   {equipment.currentJob ? (
-                    <Link href={`/system/production/${equipment.currentJob}`}>
+                    <Link href={`/production/${equipment.currentJob}`}>
                       <span className="text-primary hover:underline">
                         {equipment.currentJob}
                       </span>
@@ -110,7 +110,7 @@ export function EquipmentTab({
                 <TableCell>{equipment.operator || '-'}</TableCell>
                 <TableCell>
                   <div className="flex space-x-1">
-                    <Link href={`/system/production/equipment/${equipment.id}`}>
+                    <Link href={`/production/equipment/${equipment.id}`}>
                       <Button variant="outline" size="icon" className="h-8 w-8">
                         <Settings className="h-4 w-4" />
                       </Button>

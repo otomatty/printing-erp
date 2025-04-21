@@ -167,7 +167,7 @@ export default function InventoryOrdersPage() {
       {/* ヘッダー */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex items-center">
-          <Link href="/system/inventory">
+          <Link href="/inventory">
             <Button variant="outline" size="icon" className="mr-4">
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -175,7 +175,7 @@ export default function InventoryOrdersPage() {
           <h1 className="text-xl font-bold">発注管理</h1>
         </div>
         <div className="flex gap-2">
-          <Link href="/system/inventory/orders/new">
+          <Link href="/inventory/orders/new">
             <Button variant="default" size="sm">
               <Plus className="mr-2 h-4 w-4" />
               新規発注
@@ -300,7 +300,7 @@ export default function InventoryOrdersPage() {
                 return (
                   <TableRow key={order.id}>
                     <TableCell className="font-medium">
-                      <Link href={`/system/inventory/orders/${order.id}`}>
+                      <Link href={`/inventory/orders/${order.id}`}>
                         <span className="text-primary hover:underline">
                           {order.id}
                         </span>
@@ -341,7 +341,7 @@ export default function InventoryOrdersPage() {
                     <TableCell>{order.createdBy}</TableCell>
                     <TableCell>
                       <div className="flex space-x-1">
-                        <Link href={`/system/inventory/orders/${order.id}`}>
+                        <Link href={`/inventory/orders/${order.id}`}>
                           <Button
                             variant="outline"
                             size="icon"

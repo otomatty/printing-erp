@@ -34,7 +34,7 @@ export function ScheduleHeader({
   return (
     <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
       <div className="flex items-center gap-2">
-        <Link href="/system/production">
+        <Link href="/production">
           <Button variant="outline" size="icon" className="h-8 w-8">
             <ArrowLeft className="h-4 w-4" />
           </Button>

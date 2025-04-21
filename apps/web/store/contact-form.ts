@@ -110,6 +110,10 @@ export const isFormValidAtom = atom<boolean>(false);
 
 // リセットアトム（コンポーネント内でuseSetAtomを使ってリセットするために使用）
 export const resetFormAtom = atom(null, (_, set) => {
+  // フォーム全体の状態を初期化
+  set(currentStepAtom, 'inquiry-type');
+  set(userInfoAtom, initialUserInfo);
+  set(inquiryTypeAtom, 'print-services');
   set(printServicesFormAtom, initialPrintServicesData);
   set(digitalServicesFormAtom, initialDigitalServicesData);
   set(generalInquiryFormAtom, initialGeneralInquiryData);

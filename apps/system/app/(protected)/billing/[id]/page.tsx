@@ -160,7 +160,7 @@ export default async function InvoiceDetailPage({
       {/* ヘッダー */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <Link href="/system/billing">
+          <Link href="/billing">
             <Button variant="outline" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -187,7 +187,7 @@ export default async function InvoiceDetailPage({
             PDFダウンロード
           </Button>
           {invoice.status === 'draft' && (
-            <Link href={`/system/billing/${invoice.id}/edit`}>
+            <Link href={`/billing/${invoice.id}/edit`}>
               <Button variant="outline" size="sm">
                 <Edit className="mr-2 h-4 w-4" />
                 編集
@@ -256,7 +256,7 @@ export default async function InvoiceDetailPage({
                   <p className="text-sm text-gray-500">受注番号</p>
                   <p>
                     <Link
-                      href={`/system/orders/${invoice.order.id}`}
+                      href={`/orders/${invoice.order.id}`}
                       className="text-primary hover:underline"
                     >
                       {invoice.order.id}
@@ -327,7 +327,7 @@ export default async function InvoiceDetailPage({
               </h3>
               <div className="mb-4">
                 <div className="flex items-center mb-2">
-                  <Link href={`/system/customers/${invoice.customer.id}`}>
+                  <Link href={`/customers/${invoice.customer.id}`}>
                     <span className="font-medium text-primary hover:underline">
                       {invoice.customer.name}
                     </span>
