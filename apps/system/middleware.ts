@@ -40,7 +40,8 @@ const intlMiddleware = createNextIntlMiddleware({
 export const config = {
   matcher: [
     // 静的ファイル、画像、APIルート、manifest.jsonなどを除外
-    '/((?!_next/static|_next/image|favicon.ico|manifest.json|sw.js|workbox-.*.js).*)',
+    // public/images 以下の静的アセットも除外する
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|sw.js|workbox-.*.js|images).*)',
   ],
 };
 
