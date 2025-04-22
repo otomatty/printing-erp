@@ -24,6 +24,15 @@ import { CSS } from '@dnd-kit/utilities';
 import { useSetAtom } from 'jotai';
 import { updateInquiryStatusAtom } from '~/store/inquiries';
 import type { Inquiry, InquiryStatus } from '~/types/inquiries';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '@kit/ui/card';
+import { Badge } from '@kit/ui/badge';
+import { getTypeDetails, getStatusDetails, getPriorityDetails } from '../_data';
 
 interface KanbanColumn {
   id: string;
@@ -161,9 +170,15 @@ function ColumnDroppable({
   inquiries: Inquiry[];
 }) {
   const { setNodeRef } = useDroppable({ id });
+  const status = getStatusDetails(id);
   return (
-    <div ref={setNodeRef} className="w-64 bg-gray-100 p-2 rounded">
-      <h2 className="text-sm font-bold mb-2">{title}</h2>
+    <div
+      ref={setNodeRef}
+      className={`w-64 ${status.color.split(' ')[0]} p-2 rounded`}
+    >
+      <h2 className={`text-sm font-bold mb-2 ${status.color.split(' ')[1]}`}>
+        {title}
+      </h2>
       <SortableContext
         items={inquiries.map((inq) => inq.id)}
         strategy={verticalListSortingStrategy}
@@ -186,27 +201,52 @@ function SortableItem({ inquiry }: { inquiry: Inquiry }) {
     transition,
     isDragging,
   } = useSortable({ id: inquiry.id });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const style = { transform: CSS.Transform.toString(transform), transition };
+  const typeInfo = getTypeDetails(inquiry.type);
+  const priorityInfo = getPriorityDetails(inquiry.priority);
+  // 作成日からの経過日数を計算
+  const createdDate = new Date(inquiry.created_at);
+  const now = new Date();
+  const diffDays = Math.floor(
+    (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  const displayDate = diffDays === 0 ? '本日' : `${diffDays}日前`;
   return (
     <div
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
-      className={`bg-white p-2 mb-2 rounded shadow ${
-        isDragging ? 'opacity-50' : ''
-      }`}
+      className={`cursor-grab ${isDragging ? 'opacity-50' : ''}`}
     >
-      <p className="text-sm font-medium">{inquiry.id.slice(0, 8)}</p>
-      {inquiry.customer_name && (
-        <p className="text-xs text-gray-700">{inquiry.customer_name}</p>
-      )}
-      <p className="text-xs text-gray-500">
-        {new Date(inquiry.created_at).toLocaleDateString('ja-JP')}
-      </p>
+      <Card className="mb-4 relative hover:cursor-grab">
+        <CardHeader>
+          <CardTitle className="text-sm font-semibold">
+            {inquiry.company_name || inquiry.customer_name}
+          </CardTitle>
+          <p className="text-xs text-gray-500">{typeInfo.label}</p>
+        </CardHeader>
+        <CardContent>
+          <p className="text-xs text-gray-700">
+            {inquiry.content
+              ? inquiry.content.length > 40
+                ? `${inquiry.content.slice(0, 40)}…`
+                : inquiry.content
+              : '内容なし'}
+          </p>
+        </CardContent>
+        <CardFooter className="flex items-center justify-between">
+          <span className="text-xs text-gray-700">
+            担当: {inquiry.assigned_to_name ?? '未担当'}
+          </span>
+          <div className="flex items-center space-x-1">
+            <Badge variant="outline" className={priorityInfo.color}>
+              {priorityInfo.label}
+            </Badge>
+            <span className="text-xs text-gray-400">{displayDate}</span>
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
