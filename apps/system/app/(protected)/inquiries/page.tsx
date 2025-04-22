@@ -1,5 +1,6 @@
 import InquiriesPageClient from './inquiries-page-client';
 import { fetchInquiries, fetchInquiryStats } from '../../../actions/inquiries';
+import { fetchAdminUsers } from '../../../actions/users/fetchAdminUsers';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,5 +11,19 @@ export default async function InquiriesPage() {
     fetchInquiryStats(),
   ]);
 
-  return <InquiriesPageClient inquiries={inquiries} stats={stats} />;
+  // サーバー側で管理者ユーザーを取得
+  const { data: adminUsers, error: adminUsersError } = await fetchAdminUsers();
+  if (adminUsersError) {
+    console.error('[Debug] fetchAdminUsers error on server:', adminUsersError);
+    throw adminUsersError;
+  }
+  const users = adminUsers ?? [];
+
+  return (
+    <InquiriesPageClient
+      inquiries={inquiries}
+      stats={stats}
+      adminUsers={users}
+    />
+  );
 }

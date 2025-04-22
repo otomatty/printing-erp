@@ -8,13 +8,19 @@ import type { Database } from '@kit/supabase/database';
 // TODO: AdminUser の型定義をどこかに作るのよ！ apps/system/types/adminUser.ts とかね！
 // type AdminUser = Database['system']['Tables']['admin_users']['Row']; // こんな感じで Database 型から派生させると楽よ
 
+// AdminUser 型定義
+type AdminUser = Database['system']['Tables']['admin_users']['Row'];
+
 /**
  * システム管理者ユーザーの一覧を取得します。
  * 管理者権限を持つユーザーのみが実行可能です。
  *
- * @returns {Promise<{ data: any[] | null; error: Error | null }>} 取得結果 (本当は any じゃなくて AdminUser[] にするのよ！)
+ * @returns {Promise<{ data: AdminUser[] | null; error: Error | null }>} 取得結果
  */
-export async function fetchAdminUsers() {
+export async function fetchAdminUsers(): Promise<{
+  data: AdminUser[] | null;
+  error: Error | null;
+}> {
   try {
     const supabase = getSupabaseServerClient<Database>();
 

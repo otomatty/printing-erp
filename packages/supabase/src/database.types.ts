@@ -167,6 +167,39 @@ export type Database = {
         }
         Relationships: []
       }
+      inquiry_assignees: {
+        Row: {
+          admin_user_id: string
+          assigned_at: string
+          inquiry_id: string
+        }
+        Insert: {
+          admin_user_id: string
+          assigned_at?: string
+          inquiry_id: string
+        }
+        Update: {
+          admin_user_id?: string
+          assigned_at?: string
+          inquiry_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_inquiry_assignees_inquiry"
+            columns: ["inquiry_id"]
+            isOneToOne: false
+            referencedRelation: "inquiries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inquiry_assignees_inquiry_id_fkey"
+            columns: ["inquiry_id"]
+            isOneToOne: false
+            referencedRelation: "inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meeting_reservations: {
         Row: {
           created_at: string

@@ -1,14 +1,37 @@
+'use client';
+
+import * as React from 'react';
 import Link from 'next/link';
-import { Eye, Mail, Phone, MoreVertical } from 'lucide-react';
+import { Eye, Mail, Phone } from 'lucide-react';
+import { DataTable } from '@kit/ui/data-table';
+import type { ColumnDef } from '@tanstack/react-table';
+import { getTypeDetails } from '../_data';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@kit/ui/select';
+import {
+  updateInquiry,
+  deleteInquiry,
+  fetchInquiryAssignees,
+  addInquiryAssignee,
+  removeInquiryAssignee,
+} from '~/actions/inquiries';
+import { toast } from 'sonner';
+import { DataTableRowActions } from '@kit/ui/data-table';
+import { Checkbox } from '@kit/ui/checkbox';
+import { Avatar, AvatarFallback } from '@kit/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem,
 } from '@kit/ui/dropdown-menu';
-import { FilterSection } from './filter-section';
-import { Pagination } from './pagination';
-import { getTypeDetails } from '../_data';
+import { useState, useEffect } from 'react';
+import type { Inquiry } from '~/types/inquiries';
+import type { Database } from '@kit/supabase/database';
 
 interface InquiryStatus {
   label: string;
@@ -20,151 +43,427 @@ interface InquiryPriority {
   color: string;
 }
 
-export interface Inquiry {
-  id: string;
-  source: string;
-  type: string;
-  company_name?: string;
-  customer_name: string;
-  customer_email: string;
-  customer_phone?: string;
-  preferred_contact?: string;
-  status: string;
-  priority: string;
-  created_at: string;
-  assigned_to_name?: string | null;
-}
+// 型定義：管理者ユーザー
+type AdminUser = Database['system']['Tables']['admin_users']['Row'];
 
 interface InquiriesTableProps {
   inquiries: Inquiry[];
   getStatusDetails: (status: string) => InquiryStatus;
   getPriorityDetails: (priority: string) => InquiryPriority;
+  adminUsers: AdminUser[];
 }
 
 export function InquiriesTable({
   inquiries,
   getStatusDetails,
   getPriorityDetails,
+  adminUsers,
 }: InquiriesTableProps) {
+  // ローカルステートにコピーして更新を反映
+  const [tableData, setTableData] = React.useState(inquiries);
+  React.useEffect(() => {
+    setTableData(inquiries);
+  }, [inquiries]);
+
+  const columns = React.useMemo<ColumnDef<Inquiry>[]>(
+    () => [
+      {
+        accessorKey: 'id',
+        header: '問い合わせ番号',
+        cell: ({ getValue }) => {
+          const id = getValue<string>();
+          return (
+            <Link
+              href={`/inquiries/${id}`}
+              className="text-gray-900 hover:text-primary"
+              title={id}
+            >
+              {`${id.slice(0, 8)}...`}
+            </Link>
+          );
+        },
+      },
+      {
+        accessorKey: 'source',
+        header: '受付チャネル',
+        cell: ({ getValue }) => getValue<string>(),
+      },
+      {
+        accessorKey: 'type',
+        header: '問い合わせ種別',
+        cell: ({ getValue }) => {
+          const { label } = getTypeDetails(getValue<string>());
+          return label;
+        },
+      },
+      {
+        accessorKey: 'company_name',
+        header: '会社名',
+        cell: ({ getValue }) => getValue<string>() || '-',
+      },
+      {
+        accessorKey: 'customer_name',
+        header: 'お名前',
+        cell: ({ getValue }) => getValue<string>(),
+      },
+      {
+        id: 'contact',
+        header: '連絡先',
+        cell: ({ row }) => {
+          const { customer_email, customer_phone } = row.original;
+          return (
+            <div className="flex flex-col">
+              <span className="flex items-center">
+                <Mail size={14} className="mr-1 text-gray-400" />
+                {customer_email}
+              </span>
+              {customer_phone && (
+                <span className="flex items-center mt-1">
+                  <Phone size={14} className="mr-1 text-gray-400" />
+                  {customer_phone}
+                </span>
+              )}
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: 'status',
+        header: 'ステータス',
+        cell: ({ row }) => {
+          const current = row.original.status;
+          // ステータスに応じたカラーとラベル
+          const { label: statusLabel, color: statusColor } =
+            getStatusDetails(current);
+          return (
+            <Select
+              value={current}
+              onValueChange={async (val) => {
+                const prevVal = current;
+                // string を InquiryStatus にキャスト
+                const newStatus = val as typeof current;
+                // optimistic update
+                setTableData((prev) =>
+                  prev.map((item) =>
+                    item.id === row.original.id
+                      ? { ...item, status: newStatus }
+                      : item
+                  )
+                );
+                try {
+                  await updateInquiry(row.original.id, { status: newStatus });
+                  toast.success('ステータスを更新しました');
+                } catch (error) {
+                  console.error('[Debug] update status error:', error);
+                  // revert on error
+                  setTableData((prev) =>
+                    prev.map((item) =>
+                      item.id === row.original.id
+                        ? { ...item, status: prevVal }
+                        : item
+                    )
+                  );
+                  toast.error(
+                    `ステータスの更新に失敗: ${
+                      error instanceof Error ? error.message : String(error)
+                    }`
+                  );
+                }
+              }}
+            >
+              <SelectTrigger className={`h-8 w-32 text-sm ${statusColor}`}>
+                <SelectValue>{statusLabel}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {['new', 'in_progress', 'waiting', 'resolved', 'closed'].map(
+                  (v) => {
+                    const { label: itemLabel, color: itemColor } =
+                      getStatusDetails(v);
+                    return (
+                      <SelectItem key={v} value={v} className={itemColor}>
+                        {itemLabel}
+                      </SelectItem>
+                    );
+                  }
+                )}
+              </SelectContent>
+            </Select>
+          );
+        },
+      },
+      {
+        accessorKey: 'priority',
+        header: '優先度',
+        cell: ({ row }) => {
+          const current = row.original.priority;
+          // 優先度に応じたカラーとラベル
+          const { label: priorityLabel, color: priorityColor } =
+            getPriorityDetails(current);
+          return (
+            <Select
+              value={current}
+              onValueChange={async (val) => {
+                const prevVal = current;
+                // string を PriorityLevel にキャスト
+                const newPriority = val as typeof current;
+                setTableData((prev) =>
+                  prev.map((item) =>
+                    item.id === row.original.id
+                      ? { ...item, priority: newPriority }
+                      : item
+                  )
+                );
+                try {
+                  await updateInquiry(row.original.id, {
+                    priority: newPriority,
+                  });
+                  toast.success('優先度を更新しました');
+                } catch (error) {
+                  console.error('[Debug] update priority error:', error);
+                  // revert on error
+                  setTableData((prev) =>
+                    prev.map((item) =>
+                      item.id === row.original.id
+                        ? { ...item, priority: prevVal }
+                        : item
+                    )
+                  );
+                  toast.error(
+                    `優先度の更新に失敗: ${
+                      error instanceof Error ? error.message : String(error)
+                    }`
+                  );
+                }
+              }}
+            >
+              <SelectTrigger className={`h-8 w-24 text-sm ${priorityColor}`}>
+                <SelectValue>{priorityLabel}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {['low', 'medium', 'high', 'urgent'].map((v) => {
+                  const { label: itemLabel, color: itemColor } =
+                    getPriorityDetails(v);
+                  return (
+                    <SelectItem key={v} value={v} className={itemColor}>
+                      {itemLabel}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          );
+        },
+      },
+      {
+        accessorKey: 'created_at',
+        header: '日付',
+        cell: ({ getValue }) =>
+          new Date(getValue<string>()).toLocaleDateString('ja-JP'),
+      },
+      {
+        id: 'assigned_to',
+        header: '担当者',
+        cell: ({ row }) => (
+          <AssignmentCell
+            inquiry={row.original}
+            setTableData={setTableData}
+            adminUsers={adminUsers}
+          />
+        ),
+      },
+      {
+        id: 'actions',
+        header: 'アクション',
+        cell: ({ row }) => (
+          <DataTableRowActions
+            row={row.original}
+            onDelete={async (rowData) => {
+              // サーバーアクションがエラーをスローするので成功時のみテーブル更新
+              await deleteInquiry(rowData.id);
+              setTableData((prev) =>
+                prev.filter((item) => item.id !== rowData.id)
+              );
+            }}
+          />
+        ),
+      },
+    ],
+    [getStatusDetails, getPriorityDetails, adminUsers]
+  );
+
+  // Define searchable columns for DataTable toolbar
+  const searchableColumns = React.useMemo(
+    () => [
+      { id: 'customer_name', title: 'お名前' },
+      { id: 'company_name', title: '会社名' },
+      { id: 'contact', title: '連絡先' },
+    ],
+    []
+  );
+
+  // Define filterable columns for DataTable toolbar
+  const filterableColumns = React.useMemo(
+    () => [
+      {
+        id: 'status',
+        title: 'ステータス',
+        options: [
+          { label: '新規', value: 'new' },
+          { label: '対応中', value: 'in_progress' },
+          { label: '回答待ち', value: 'waiting' },
+          { label: '解決済', value: 'resolved' },
+          { label: '完了', value: 'closed' },
+        ],
+      },
+      {
+        id: 'type',
+        title: '問い合わせ種別',
+        options: [
+          { label: '見積依頼', value: 'quote_request' },
+          { label: '製品相談', value: 'product_inquiry' },
+          { label: '注文状況', value: 'order_status' },
+          { label: '苦情・クレーム', value: 'complaint' },
+          { label: 'サポート', value: 'support' },
+          { label: 'その他', value: 'other' },
+        ],
+      },
+      {
+        id: 'priority',
+        title: '優先度',
+        options: [
+          { label: '低', value: 'low' },
+          { label: '中', value: 'medium' },
+          { label: '高', value: 'high' },
+          { label: '緊急', value: 'urgent' },
+        ],
+      },
+    ],
+    []
+  );
+
   return (
     <div className="bg-white p-4 rounded-lg shadow">
-      <FilterSection />
-
-      <div className="overflow-x-auto">
-        <table className="w-full whitespace-nowrap">
-          <thead className="bg-gray-50">
-            <tr className="text-left text-gray-500 text-sm">
-              <th className="px-4 py-3 font-medium w-20">問い合わせ番号</th>
-              <th className="px-4 py-3 font-medium">受付チャネル</th>
-              <th className="px-4 py-3 font-medium">問い合わせ種別</th>
-              <th className="px-4 py-3 font-medium">会社名</th>
-              <th className="px-4 py-3 font-medium">お名前</th>
-              <th className="px-4 py-3 font-medium">連絡先</th>
-              <th className="px-4 py-3 font-medium">ステータス</th>
-              <th className="px-4 py-3 font-medium">優先度</th>
-              <th className="px-4 py-3 font-medium">日付</th>
-              <th className="px-4 py-3 font-medium">担当者</th>
-              <th className="px-4 py-3 font-medium">アクション</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {inquiries.map((inquiry) => {
-              const { label: statusLabel, color: statusColor } =
-                getStatusDetails(inquiry.status);
-              const { label: priorityLabel, color: priorityColor } =
-                getPriorityDetails(inquiry.priority);
-              const { label: typeLabel } = getTypeDetails(inquiry.type);
-
-              return (
-                <tr key={inquiry.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm font-medium w-20">
-                    <Link
-                      href={`/inquiries/${inquiry.id}`}
-                      className="text-gray-900 hover:text-primary"
-                      title={inquiry.id}
-                    >
-                      {`${inquiry.id.slice(0, 8)}...`}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-sm">{inquiry.source}</td>
-                  <td className="px-4 py-3 text-sm">{typeLabel}</td>
-                  <td className="px-4 py-3 text-sm">
-                    {inquiry.company_name || '-'}
-                  </td>
-                  <td className="px-4 py-3 text-sm">{inquiry.customer_name}</td>
-                  <td
-                    className="px-4 py-3 text-sm"
-                    title={inquiry.preferred_contact}
-                  >
-                    <div className="flex flex-col">
-                      <span className="flex items-center">
-                        <Mail size={14} className="mr-1 text-gray-400" />
-                        {inquiry.customer_email}
-                      </span>
-                      {inquiry.customer_phone && (
-                        <span className="flex items-center mt-1">
-                          <Phone size={14} className="mr-1 text-gray-400" />
-                          {inquiry.customer_phone}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full ${statusColor} text-xs`}
-                    >
-                      {statusLabel}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full ${priorityColor} text-xs`}
-                    >
-                      {priorityLabel}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    {new Date(inquiry.created_at).toLocaleDateString('ja-JP')}
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    {inquiry.assigned_to_name || '-'}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          type="button"
-                          className="p-1 text-gray-500 hover:text-gray-700 rounded"
-                        >
-                          <MoreVertical size={16} />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuItem asChild>
-                          <Link
-                            href={`/inquiries/${inquiry.id}`}
-                            className="flex items-center w-full"
-                          >
-                            <Eye size={16} className="mr-2" />
-                            詳細
-                          </Link>
-                        </DropdownMenuItem>
-                        {/* TODO: 他のアクションをここに追加 */}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <Pagination
-        totalItems={inquiries.length}
-        currentPage={1}
-        itemsPerPage={10}
+      <DataTable
+        columns={columns}
+        data={tableData}
+        searchableColumns={searchableColumns}
+        filterableColumns={filterableColumns}
+        editRow={async (row) => {
+          /* インライン更新は不要、個別セルで onStatusChange/onPriorityChange を使用 */
+        }}
       />
     </div>
+  );
+}
+
+// 担当者選択用セルコンポーネント
+function AssignmentCell({
+  inquiry,
+  setTableData,
+  adminUsers,
+}: {
+  inquiry: Inquiry;
+  setTableData: React.Dispatch<React.SetStateAction<Inquiry[]>>;
+  adminUsers: AdminUser[];
+}) {
+  const [openMenu, setOpenMenu] = useState(false);
+  const [assignedIds, setAssignedIds] = useState<string[]>([]);
+  useEffect(() => {
+    if (openMenu) {
+      // no fetching here, adminUsers comes from props
+    }
+  }, [openMenu]);
+  useEffect(() => {
+    if (openMenu) {
+      fetchInquiryAssignees(inquiry.id)
+        .then((ids) => {
+          setAssignedIds(ids ?? []);
+        })
+        .catch(() => {
+          setAssignedIds([]);
+        });
+    }
+  }, [openMenu, inquiry.id]);
+  return (
+    <DropdownMenu open={openMenu} onOpenChange={setOpenMenu}>
+      <DropdownMenuTrigger asChild>
+        <div className="flex items-center space-x-1 cursor-pointer">
+          {assignedIds.length > 0 ? (
+            assignedIds.map((id) => {
+              const user = adminUsers.find((u) => u.id === id);
+              const displayName =
+                `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim() ||
+                user?.email ||
+                '?';
+              return (
+                <Avatar key={id} className="h-6 w-6">
+                  <AvatarFallback>{displayName.charAt(0)}</AvatarFallback>
+                </Avatar>
+              );
+            })
+          ) : (
+            <span className="text-gray-500">未設定</span>
+          )}
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-60 p-2">
+        {adminUsers.map((user: AdminUser) => {
+          const checked = assignedIds.includes(user.id);
+          const displayName =
+            `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim() ||
+            user.email ||
+            '?';
+          return (
+            <div key={user.id} className="flex items-center px-2 py-1">
+              <Checkbox
+                checked={checked}
+                onCheckedChange={async (isChecked) => {
+                  try {
+                    if (isChecked) {
+                      await addInquiryAssignee(inquiry.id, user.id);
+                      setAssignedIds((prev) => [...prev, user.id]);
+                    } else {
+                      await removeInquiryAssignee(inquiry.id, user.id);
+                      setAssignedIds((prev) =>
+                        prev.filter((id) => id !== user.id)
+                      );
+                    }
+                    setTableData((prev) =>
+                      prev.map((item) =>
+                        item.id === inquiry.id
+                          ? {
+                              ...item,
+                              assigned_to_name: adminUsers
+                                .filter((u) =>
+                                  isChecked
+                                    ? [...assignedIds, user.id].includes(u.id)
+                                    : assignedIds
+                                        .filter((id) => id !== user.id)
+                                        .includes(u.id)
+                                )
+                                .map(
+                                  (u) =>
+                                    `${u.first_name ?? ''} ${u.last_name ?? ''}`
+                                )
+                                .join(', '),
+                            }
+                          : item
+                      )
+                    );
+                  } catch (e) {
+                    console.error(e);
+                    toast.error('担当者の更新に失敗しました');
+                  }
+                }}
+              />
+              <Avatar className="ml-2 h-6 w-6">
+                <AvatarFallback>{displayName.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <span className="ml-2">{displayName}</span>
+            </div>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

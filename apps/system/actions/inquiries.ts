@@ -17,6 +17,8 @@ import type {
 
 // inquiries テーブルの Row 型
 type InquiryRow = Database['public']['Tables']['inquiries']['Row'];
+type AssigneeRow = Database['public']['Tables']['inquiry_assignees']['Row'];
+type AdminUser = Database['system']['Tables']['admin_users']['Row'];
 
 /**
  * お問い合わせ一覧を取得します。管理者権限が必要です。
@@ -131,4 +133,135 @@ export async function fetchInquiryById(id: string): Promise<Inquiry | null> {
 export async function fetchAgentWorkloads(): Promise<AgentWorkload[]> {
   // TODO: system.admin_users や responses テーブル等と JOIN して集計
   return [];
+}
+
+/**
+ * DB の InquiryRow をアプリケーションの Inquiry 型にマッピングします
+ */
+function mapRowToInquiry(row: InquiryRow): Inquiry {
+  return {
+    id: row.id,
+    source: row.source as InquirySource,
+    subject: '',
+    content: '',
+    customer_id: row.id,
+    customer_name: row.name,
+    company_name: row.company_name ?? undefined,
+    customer_email: row.email,
+    customer_phone: row.phone ?? undefined,
+    preferred_contact: row.preferred_contact ?? undefined,
+    status: row.status as InquiryStatus,
+    type: row.inquiry_type as InquiryType,
+    priority: row.priority as PriorityLevel,
+    assigned_to: null,
+    assigned_to_name: null,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+    responses: [] as InquiryResponse[],
+    related_quote_id: undefined,
+    related_order_id: undefined,
+    tags: undefined,
+    follow_up_date: undefined,
+  };
+}
+
+/**
+ * お問い合わせを作成します（管理者権限）
+ */
+export async function createInquiry(
+  newInquiry: Omit<InquiryRow, 'id' | 'created_at' | 'updated_at'>
+): Promise<Inquiry> {
+  await checkIsAdmin();
+  const client = getSupabaseServerClient<Database>();
+  const { data, error } = await client
+    .from('inquiries')
+    .insert(newInquiry)
+    .select('*')
+    .single();
+  if (error || !data) {
+    console.error('createInquiry error:', error);
+    throw error;
+  }
+  return mapRowToInquiry(data);
+}
+
+/**
+ * お問い合わせを更新します（管理者権限）
+ */
+export async function updateInquiry(
+  id: string,
+  updates: Partial<InquiryRow>
+): Promise<Inquiry | null> {
+  await checkIsAdmin();
+  const client = getSupabaseServerClient<Database>();
+  const { data, error } = await client
+    .from('inquiries')
+    .update(updates)
+    .eq('id', id)
+    .select('*')
+    .single();
+  if (error || !data) {
+    console.error('updateInquiry error:', error);
+    return null;
+  }
+  return mapRowToInquiry(data);
+}
+
+/**
+ * お問い合わせを削除します（管理者権限）
+ * @throws {Error} 削除に失敗した場合にエラーを投げます
+ */
+export async function deleteInquiry(id: string): Promise<void> {
+  await checkIsAdmin();
+  const client = getSupabaseServerClient<Database>();
+  const { error } = await client.from('inquiries').delete().eq('id', id);
+  if (error) {
+    console.error('deleteInquiry error:', error);
+    throw new Error(error.message || 'お問い合わせの削除に失敗しました');
+  }
+}
+
+// 新規: 特定のお問い合わせに紐づく担当者ID一覧を取得
+export async function fetchInquiryAssignees(
+  inquiryId: string
+): Promise<string[]> {
+  await checkIsAdmin();
+  const client = getSupabaseServerClient<Database>();
+  const { data, error } = await client
+    .from('inquiry_assignees')
+    .select('admin_user_id')
+    .eq('inquiry_id', inquiryId);
+  if (error || !data) {
+    console.error('fetchInquiryAssignees error:', error);
+    return [];
+  }
+  return data.map((row) => row.admin_user_id);
+}
+
+// 新規: お問い合わせに担当者を追加
+export async function addInquiryAssignee(
+  inquiryId: string,
+  adminUserId: string
+): Promise<void> {
+  await checkIsAdmin();
+  const client = getSupabaseServerClient<Database>();
+  const { error } = await client
+    .from('inquiry_assignees')
+    .insert({ inquiry_id: inquiryId, admin_user_id: adminUserId });
+  if (error) throw error;
+}
+
+// 新規: お問い合わせから担当者を削除
+export async function removeInquiryAssignee(
+  inquiryId: string,
+  adminUserId: string
+): Promise<void> {
+  await checkIsAdmin();
+  const client = getSupabaseServerClient<Database>();
+  const { error } = await client
+    .from('inquiry_assignees')
+    .delete()
+    .eq('inquiry_id', inquiryId)
+    .eq('admin_user_id', adminUserId);
+  if (error) throw error;
 }

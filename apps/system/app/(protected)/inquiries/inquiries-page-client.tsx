@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@kit/ui/button';
 import { PageHeader } from '~/components/custom/page-header';
@@ -13,7 +13,7 @@ import {
   SegmentedControlItem,
   SegmentedControlIndicator,
 } from '~/components/custom/segmented-controle';
-import { PlusCircle, Printer, Download } from 'lucide-react';
+import { Printer, Download } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@kit/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@kit/ui/tabs';
 import { InquiryStats as ReportStats } from './_components/inquiry-stats';
@@ -23,10 +23,19 @@ import { ResponseTimeAnalysis } from './_components/response-time-analysis';
 import { InquiryDistribution } from './_components/inquiry-distribution';
 import { InquiryDialog } from './_components/inquiry-dialog';
 import { InquiriesMobileList } from './_components/inquiries-mobile-list';
+import { InquiriesCards } from './_components/inquiries-cards';
+import { InquiriesKanban } from './_components/inquiries-kanban';
+import { InquiriesCalendar } from './_components/inquiries-calendar';
+import type { Database } from '@kit/supabase/database';
+import { useAtom, useAtomValue } from 'jotai';
+import { inquiriesAtom } from '~/store/inquiries';
+// 型定義：管理者ユーザー
+type AdminUser = Database['system']['Tables']['admin_users']['Row'];
 
 interface InquiriesPageClientProps {
   inquiries: Inquiry[];
   stats: InquiryStats;
+  adminUsers: AdminUser[];
 }
 
 /**
@@ -36,26 +45,50 @@ interface InquiriesPageClientProps {
 export default function InquiriesPageClient({
   inquiries,
   stats,
+  adminUsers,
 }: InquiriesPageClientProps) {
-  const [view, setView] = useState<'list' | 'report'>('list');
+  // Jotai で問い合わせ一覧を管理
+  const [inquiriesState, setInquiriesState] = useAtom(inquiriesAtom);
+  useEffect(() => {
+    setInquiriesState(inquiries);
+  }, [inquiries, setInquiriesState]);
+  const currentInquiries = useAtomValue(inquiriesAtom);
+  // toggle between table(list), cards, kanban, calendar, and report
+  const [view, setView] = useState<
+    'list' | 'cards' | 'kanban' | 'calendar' | 'report'
+  >('list');
+
+  // prepare Kanban columns grouped by status (Jotai 管理の state から)
+  const kanbanColumns = useMemo(
+    () =>
+      ['new', 'in_progress', 'waiting', 'resolved', 'closed'].map((status) => ({
+        id: status,
+        title: getStatusDetails(status).label,
+        inquiries: currentInquiries.filter((i) => i.status === status),
+      })),
+    [currentInquiries]
+  );
 
   // SegmentedControl を含むヘッダーアクション
   const headerControls = (
     <SegmentedControl
       value={view}
-      onValueChange={(value) => setView(value as 'list' | 'report')}
+      onValueChange={(val) =>
+        setView(val as 'list' | 'cards' | 'kanban' | 'calendar' | 'report')
+      }
     >
       <SegmentedControlIndicator />
       <SegmentedControlItem value="list">一覧</SegmentedControlItem>
+      <SegmentedControlItem value="cards">カード</SegmentedControlItem>
+      <SegmentedControlItem value="kanban">カンバン</SegmentedControlItem>
+      <SegmentedControlItem value="calendar">カレンダー</SegmentedControlItem>
       <SegmentedControlItem value="report">レポート</SegmentedControlItem>
     </SegmentedControl>
   );
 
   // View に応じて切替えるその他アクションボタン
   const otherActions =
-    view === 'list' ? (
-      <InquiryDialog />
-    ) : (
+    view === 'report' ? (
       <>
         <Button variant="outline" size="sm">
           <Printer className="h-4 w-4 mr-2" />
@@ -66,6 +99,8 @@ export default function InquiriesPageClient({
           エクスポート
         </Button>
       </>
+    ) : (
+      <InquiryDialog />
     );
 
   return (
@@ -87,19 +122,30 @@ export default function InquiriesPageClient({
           <>
             <div className="hidden sm:block">
               <InquiriesTable
-                inquiries={inquiries}
+                inquiries={currentInquiries}
                 getStatusDetails={getStatusDetails}
                 getPriorityDetails={getPriorityDetails}
+                adminUsers={adminUsers}
               />
             </div>
             <div className="block sm:hidden">
               <InquiriesMobileList
-                inquiries={inquiries}
+                inquiries={currentInquiries}
                 getStatusDetails={getStatusDetails}
                 getPriorityDetails={getPriorityDetails}
               />
             </div>
           </>
+        ) : view === 'cards' ? (
+          <InquiriesCards
+            inquiries={currentInquiries}
+            getStatusDetails={getStatusDetails}
+            getPriorityDetails={getPriorityDetails}
+          />
+        ) : view === 'kanban' ? (
+          <InquiriesKanban columns={kanbanColumns} />
+        ) : view === 'calendar' ? (
+          <InquiriesCalendar inquiries={currentInquiries} />
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
