@@ -63,21 +63,21 @@ export const menuItems: MenuItem[] = [
     title: '見積',
     icon: <Calculator className="h-6 w-6" />,
     category: 'sales',
-    status: 'demo',
+    status: 'available',
   },
   {
     href: '/orders',
     title: '受注',
     icon: <FileText className="h-6 w-6" />,
     category: 'sales',
-    status: 'demo',
+    status: 'coming-soon',
   },
   {
     href: '/customers',
     title: '顧客',
     icon: <Users className="h-6 w-6" />,
     category: 'sales',
-    status: 'demo',
+    status: 'coming-soon',
   },
 
   // 制作デザインカテゴリ
@@ -86,14 +86,14 @@ export const menuItems: MenuItem[] = [
     title: 'デザイン',
     icon: <PenTool className="h-6 w-6" />,
     category: 'design',
-    status: 'unavailable',
+    status: 'available',
   },
   {
     href: '/proofing',
     title: '校正',
     icon: <ClipboardCheck className="h-6 w-6" />,
     category: 'design',
-    status: 'unavailable',
+    status: 'available',
   },
   {
     href: '/contents',

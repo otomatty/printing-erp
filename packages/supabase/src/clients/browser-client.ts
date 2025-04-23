@@ -53,12 +53,9 @@ export function getSupabaseBrowserClient<GenericSchema = Database>() {
   if (hostname === 'localhost') {
     // ローカル環境の場合はドメイン設定をしない
     domain = undefined;
-  } else if (hostname.includes('saedgewell.test')) {
-    // Docker環境の場合は明示的に.saedgewell.testを設定
-    domain = '.saedgewell.test';
-  } else if (hostname.includes('saedgewell.net')) {
-    // 本番環境の場合は明示的に.saedgewell.netを設定
-    domain = '.saedgewell.net';
+  } else {
+    // 本番環境は niinuma-kikaku.com ドメインを使う
+    domain = '.niinuma-kikaku.com';
   }
 
   // Cookieオプションを設定

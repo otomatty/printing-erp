@@ -6,7 +6,6 @@ import { RootProviders } from '~/components/root-providers';
 import { heading, sans } from '~/lib/fonts';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import '../styles/globals.css';
-import { FabMenu } from '~/components/custom/fab';
 
 export const metadata: Metadata = {
   title: '印刷業務管理システム | ニイヌマ企画印刷',
@@ -30,7 +29,6 @@ export default async function RootLayout({
       <body suppressHydrationWarning>
         <RootProviders theme={theme} lang={language}>
           {children}
-          <FabMenu />
           <Toaster richColors={true} theme={theme} position="top-center" />
         </RootProviders>
       </body>

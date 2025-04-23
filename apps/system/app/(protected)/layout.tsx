@@ -5,6 +5,7 @@
 import Header from './_components/header';
 import { getUser } from '~/actions/auth';
 import { fetchAdminProfile } from '~/actions/accounts';
+import { FabMenu } from '~/components/custom/fab';
 
 export default async function ProtectedLayout({
   children,
@@ -16,19 +17,22 @@ export default async function ProtectedLayout({
   const { data: adminProfile } = await fetchAdminProfile();
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
-      {/* ヘッダーナビゲーション */}
-      <Header user={user} adminProfile={adminProfile} />
+    <>
+      <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
+        {/* ヘッダーナビゲーション */}
+        <Header user={user} adminProfile={adminProfile} />
 
-      {/* メインコンテンツ */}
-      <main className="flex-1 py-8 lg:py-12">{children}</main>
+        {/* メインコンテンツ */}
+        <main className="flex-1 py-8 lg:py-12">{children}</main>
 
-      {/* フッター */}
-      <footer className="bg-gray-200 dark:bg-gray-800 py-4 text-center text-gray-600 dark:text-gray-400 text-sm">
-        <div className="container mx-auto px-4">
-          © {new Date().getFullYear()} ニイヌマ企画印刷 All Rights Reserved.
-        </div>
-      </footer>
-    </div>
+        {/* フッター */}
+        <footer className="bg-gray-200 dark:bg-gray-800 py-4 text-center text-gray-600 dark:text-gray-400 text-sm">
+          <div className="container mx-auto px-4">
+            © {new Date().getFullYear()} ニイヌマ企画印刷 All Rights Reserved.
+          </div>
+        </footer>
+      </div>
+      <FabMenu />
+    </>
   );
 }

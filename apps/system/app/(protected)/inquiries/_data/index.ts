@@ -2,74 +2,7 @@
 export * from '../../../../types/inquiries';
 
 // モックデータのインポート
-import { mockInquiries } from './mock-inquiries';
 import { mockInquiryStats, mockAgentWorkloads } from './mock-stats';
-
-// お問い合わせデータの取得関数
-export async function fetchInquiries() {
-  // 実際のAPIからのデータ取得を想定
-  return mockInquiries;
-}
-
-// 特定のお問い合わせの取得関数
-export async function fetchInquiryById(id: string) {
-  // 実際のAPIからのデータ取得を想定
-  const inquiry = mockInquiries.find((inq) => inq.id === id);
-  return inquiry || null;
-}
-
-// 絞り込み条件付きのお問い合わせ取得関数
-export async function fetchInquiriesByFilter(filter: {
-  status?: string[];
-  type?: string[];
-  priority?: string[];
-  search?: string;
-  assigned_to?: string;
-}) {
-  // 実際のAPIからのデータ取得を想定
-  let filteredInquiries = [...mockInquiries];
-
-  // ステータスでフィルタリング
-  if (filter.status && filter.status.length > 0) {
-    filteredInquiries = filteredInquiries.filter((inq) =>
-      filter.status?.includes(inq.status)
-    );
-  }
-
-  // 種類でフィルタリング
-  if (filter.type && filter.type.length > 0) {
-    filteredInquiries = filteredInquiries.filter((inq) =>
-      filter.type?.includes(inq.type)
-    );
-  }
-
-  // 優先度でフィルタリング
-  if (filter.priority && filter.priority.length > 0) {
-    filteredInquiries = filteredInquiries.filter((inq) =>
-      filter.priority?.includes(inq.priority)
-    );
-  }
-
-  // 担当者でフィルタリング
-  if (filter.assigned_to) {
-    filteredInquiries = filteredInquiries.filter(
-      (inq) => inq.assigned_to === filter.assigned_to
-    );
-  }
-
-  // 検索語でフィルタリング
-  if (filter.search) {
-    const searchLower = filter.search.toLowerCase();
-    filteredInquiries = filteredInquiries.filter(
-      (inq) =>
-        inq.subject.toLowerCase().includes(searchLower) ||
-        inq.content.toLowerCase().includes(searchLower) ||
-        inq.customer_name.toLowerCase().includes(searchLower)
-    );
-  }
-
-  return filteredInquiries;
-}
 
 // 統計データの取得関数
 export async function fetchInquiryStats() {
@@ -161,7 +94,7 @@ export function getPriorityDetails(priority: string) {
     },
     medium: {
       label: '中',
-      color: 'bg-gray-100 text-gray-800',
+      color: 'bg-green-100 text-green-800',
       icon: 'minus',
     },
     high: {

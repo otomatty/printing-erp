@@ -4,34 +4,22 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { PageHeader } from '~/components/custom/page-header';
 import { Container } from '~/components/custom/container';
-import {
-  SegmentedControl,
-  SegmentedControlItem,
-  SegmentedControlIndicator,
-} from '~/components/custom/segmented-controle';
 import { SimpleEditor } from '~/components/tiptap/tiptap-templates/simple/simple-editor';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@kit/ui/select';
 
 // 定義するテンプレートのプレースホルダー
 const TEMPLATE_CONTENTS: Record<string, string> = {
-  bug: `### バグ報告
-
-**概要**:
-- 発生した操作:
-- 期待する動作:
-- 実際の動作:
-`,
-  improvement: `### 機能改善
-
-**要望内容**:
-- 改善したい点:
-- 理由:
-`,
-  feature: `### 新機能提案
-
-**機能概要**:
-- 提案内容:
-- 利用シナリオ:
-`,
+  bug: '<h3>バグ報告</h3><p><strong>概要</strong>:</p><ul><li>発生した操作:</li><li>期待する動作:</li><li>実際の動作:</li></ul>',
+  improvement:
+    '<h3>機能改善</h3><p><strong>要望内容</strong>:</p><ul><li>改善したい点:</li><li>理由:</li></ul>',
+  feature:
+    '<h3>新機能提案</h3><p><strong>機能概要</strong>:</p><ul><li>提案内容:</li><li>利用シナリオ:</li></ul>',
 };
 
 export default function NewRequestPageClient() {
@@ -84,19 +72,25 @@ export default function NewRequestPageClient() {
         )}
 
         <div className="mb-4">
-          <SegmentedControl
-            value={templateType}
+          <label
+            htmlFor="template-select"
+            className="block text-sm font-medium mb-1"
+          >
+            テンプレートを選択
+          </label>
+          <Select
+            defaultValue={templateType}
             onValueChange={(val) => setTemplateType(val)}
           >
-            <SegmentedControlItem value="bug">バグ報告</SegmentedControlItem>
-            <SegmentedControlItem value="improvement">
-              機能改善
-            </SegmentedControlItem>
-            <SegmentedControlItem value="feature">
-              新機能提案
-            </SegmentedControlItem>
-            <SegmentedControlIndicator />
-          </SegmentedControl>
+            <SelectTrigger id="template-select" className="mt-1 w-full">
+              <SelectValue placeholder="テンプレートを選択" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="bug">バグ報告</SelectItem>
+              <SelectItem value="improvement">機能改善</SelectItem>
+              <SelectItem value="feature">新機能提案</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="mb-6">
