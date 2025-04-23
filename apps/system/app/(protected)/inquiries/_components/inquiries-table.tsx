@@ -68,32 +68,47 @@ export function InquiriesTable({
   const columns = React.useMemo<ColumnDef<Inquiry>[]>(
     () => [
       {
-        accessorKey: 'id',
-        header: '問い合わせID',
+        accessorKey: 'source',
+        header: '受付チャネル',
         cell: ({ getValue }) => {
-          const id = getValue<string>();
-          return (
-            <Link
-              href={`/inquiries/${id}`}
-              className="text-gray-900 hover:text-primary"
-              title={id}
-            >
-              {`${id.slice(0, 8)}...`}
-            </Link>
-          );
+          const val = getValue<string>();
+          const sourceMap: Record<string, string> = {
+            web: 'Web',
+            phone: '電話',
+            email: 'メール',
+            other: 'その他',
+          };
+          return sourceMap[val] || val;
         },
       },
       {
-        accessorKey: 'source',
-        header: '受付チャネル',
-        cell: ({ getValue }) => getValue<string>(),
+        accessorKey: 'type',
+        header: 'サービス',
+        cell: ({ getValue }) => {
+          const val = getValue<string>();
+          const serviceMap: Record<string, string> = {
+            'print-services': '印刷',
+            'digital-services': 'デジタル',
+            'general-inquiry': 'その他',
+            'meeting-reservation': 'ミーティング',
+          };
+          return serviceMap[val] || val;
+        },
       },
       {
-        accessorKey: 'type',
+        accessorKey: 'inquiry_type',
         header: '問い合わせ種別',
         cell: ({ getValue }) => {
-          const { label } = getTypeDetails(getValue<string>());
-          return label;
+          const val = getValue<string>();
+          const subtypeMap: Record<string, string> = {
+            estimate: '見積依頼',
+            order: '注文・発注',
+            question: '相談・質問',
+            none: '未指定',
+            complaint: '苦情・クレーム',
+            other: 'その他',
+          };
+          return subtypeMap[val] || val;
         },
       },
       {
@@ -305,6 +320,38 @@ export function InquiriesTable({
   const filterableColumns = React.useMemo(
     () => [
       {
+        id: 'source',
+        title: '受付チャネル',
+        options: [
+          { label: 'Web', value: 'web' },
+          { label: '電話', value: 'phone' },
+          { label: 'メール', value: 'email' },
+          { label: 'その他', value: 'other' },
+        ],
+      },
+      {
+        id: 'type',
+        title: 'サービス',
+        options: [
+          { label: '印刷', value: 'print-services' },
+          { label: 'デジタル', value: 'digital-services' },
+          { label: 'その他', value: 'general-inquiry' },
+          { label: 'ミーティング', value: 'meeting-reservation' },
+        ],
+      },
+      {
+        id: 'inquiry_type',
+        title: '問い合わせ種別',
+        options: [
+          { label: '見積依頼', value: 'estimate' },
+          { label: '注文・発注', value: 'order' },
+          { label: '相談・質問', value: 'question' },
+          { label: '未指定', value: 'none' },
+          { label: '苦情・クレーム', value: 'complaint' },
+          { label: 'その他', value: 'other' },
+        ],
+      },
+      {
         id: 'status',
         title: 'ステータス',
         options: [
@@ -313,18 +360,6 @@ export function InquiriesTable({
           { label: '回答待ち', value: 'waiting' },
           { label: '解決済', value: 'resolved' },
           { label: '完了', value: 'closed' },
-        ],
-      },
-      {
-        id: 'type',
-        title: '問い合わせ種別',
-        options: [
-          { label: '見積依頼', value: 'quote_request' },
-          { label: '製品相談', value: 'product_inquiry' },
-          { label: '注文状況', value: 'order_status' },
-          { label: '苦情・クレーム', value: 'complaint' },
-          { label: 'サポート', value: 'support' },
-          { label: 'その他', value: 'other' },
         ],
       },
       {

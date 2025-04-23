@@ -55,7 +55,11 @@ export interface Inquiry {
   customer_email: string;
   customer_phone?: string;
   status: InquiryStatus;
+  /** サービスカテゴリ (service_type) */
   type: InquiryType;
+  /** お問い合わせサブ種別 (inquiry_type) */
+  inquiry_type: string;
+  /** 優先度 */
   priority: PriorityLevel;
   assigned_to: string | null; // 担当者ID
   assigned_to_name: string | null; // 担当者名

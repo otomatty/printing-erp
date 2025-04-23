@@ -20,22 +20,23 @@ erDiagram
 ## テーブル定義
 
 ### 1. inquiries（共通：全問い合わせの基本情報）
-| カラム名           | 型            | 説明                                                       | 制約                                                      |
-|--------------------|---------------|------------------------------------------------------------|-----------------------------------------------------------|
-| id                 | uuid          | 問い合わせID                                               | PRIMARY KEY, DEFAULT gen_random_uuid()                    |
-| source             | text          | 受付チャネル (`web`,`phone`,`email`,`other`)               | NOT NULL, CHECK (source IN ('web','phone','email','other')) |
-| inquiry_type       | text          | 問い合わせ種別                                             | NOT NULL                                                 |
-| status             | text          | ステータス (`new`,`in_progress`,`closed`)                  | NOT NULL, DEFAULT 'new', CHECK (status IN ('new','in_progress','closed')) |
-| priority           | text          | 優先度 (`low`,`normal`,`high`)                             | NOT NULL, DEFAULT 'normal', CHECK (priority IN ('low','normal','high')) |
-| name               | text          | 氏名                                                       | NOT NULL                                                 |
-| company_name       | text          | 会社名                                                     |                                                           |
-| email              | text          | メールアドレス                                             | NOT NULL                                                 |
-| phone              | text          | 電話番号                                                   |                                                           |
-| preferred_contact  | text          | 希望連絡方法                                               |                                                           |
-| address            | text          | 住所                                                       |                                                           |
-| postal_code        | text          | 郵便番号                                                   |                                                           |
-| created_at         | timestamptz   | 登録日時                                                   | NOT NULL, DEFAULT now()                                  |
-| updated_at         | timestamptz   | 更新日時                                                   | NOT NULL, DEFAULT now()                                  |
+| カラム名           | 型            | 説明                                                       | 制約                                                                              |
+|--------------------|---------------|------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| id                 | uuid          | 問い合わせID                                               | PRIMARY KEY, DEFAULT gen_random_uuid()                                            |
+| source             | text          | 受付チャネル (`web`,`phone`,`email`,`other`)               | NOT NULL, CHECK (source IN ('web','phone','email','other'))                       |
+| service_type       | text          | サービス種別 (`print-services`,`digital-services`,`general-inquiry`,`meeting-reservation`) | NOT NULL, DEFAULT 'print-services', CHECK (service_type IN ('print-services','digital-services','general-inquiry','meeting-reservation')) |
+| inquiry_type       | text          | 問い合わせサブ種別（印刷: `estimate`,`order`,`question`,`none`） | NOT NULL, DEFAULT 'none', CHECK (inquiry_type IN ('estimate','order','question','none'))                             |
+| status             | text          | ステータス (`new`,`in_progress`,`waiting`,`resolved`,`closed`)  | NOT NULL, DEFAULT 'new', CHECK (status IN ('new','in_progress','waiting','resolved','closed'))                        |
+| priority           | text          | 優先度 (`low`,`medium`,`high`,`urgent`)                    | NOT NULL, DEFAULT 'normal', CHECK (priority IN ('low','medium','high','urgent'))                                       |
+| name               | text          | 氏名                                                       | NOT NULL                                                                         |
+| company_name       | text          | 会社名                                                     |                                                                                   |
+| email              | text          | メールアドレス                                             | NOT NULL                                                                         |
+| phone              | text          | 電話番号                                                   |                                                                                   |
+| preferred_contact  | text          | 希望連絡方法                                               |                                                                                   |
+| address            | text          | 住所                                                       |                                                                                   |
+| postal_code        | text          | 郵便番号                                                   |                                                                                   |
+| created_at         | timestamptz   | 登録日時                                                   | NOT NULL, DEFAULT now()                                                          |
+| updated_at         | timestamptz   | 更新日時                                                   | NOT NULL, DEFAULT now()                                                          |
 
 ---
 

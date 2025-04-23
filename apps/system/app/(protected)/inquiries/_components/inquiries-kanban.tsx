@@ -197,7 +197,32 @@ function SortableItem({ inquiry }: { inquiry: Inquiry }) {
     isDragging,
   } = useSortable({ id: inquiry.id });
   const style = { transform: CSS.Transform.toString(transform), transition };
-  const typeInfo = getTypeDetails(inquiry.type);
+  // service_type mapping
+  const serviceMap: Record<string, string> = {
+    'print-services': '印刷',
+    'digital-services': 'デジタル',
+    'general-inquiry': 'その他',
+    'meeting-reservation': 'ミーティング',
+  };
+  // inquiry_type mapping
+  const subtypeMap: Record<string, string> = {
+    estimate: '見積依頼',
+    order: '注文・発注',
+    question: '相談・質問',
+    none: '未指定',
+    complaint: '苦情・クレーム',
+    other: 'その他',
+  };
+  // source mapping
+  const sourceMap: Record<string, string> = {
+    web: 'Web',
+    phone: '電話',
+    email: 'メール',
+    other: 'その他',
+  };
+  const serviceLabel = serviceMap[inquiry.type] || inquiry.type;
+  const subtypeLabel = subtypeMap[inquiry.inquiry_type] || inquiry.inquiry_type;
+  const sourceLabel = sourceMap[inquiry.source] || inquiry.source;
   const priorityInfo = getPriorityDetails(inquiry.priority);
   // 作成日からの経過日数を計算
   const createdDate = new Date(inquiry.created_at);
@@ -219,7 +244,10 @@ function SortableItem({ inquiry }: { inquiry: Inquiry }) {
           <CardTitle className="text-sm font-semibold">
             {inquiry.company_name || inquiry.customer_name}
           </CardTitle>
-          <p className="text-xs text-gray-500">{typeInfo.label}</p>
+          <p className="text-xs text-gray-500">
+            {serviceLabel} / {subtypeLabel}
+          </p>
+          <p className="text-xs text-gray-500">{sourceLabel}</p>
         </CardHeader>
         <CardContent>
           <p className="text-xs text-gray-700">
