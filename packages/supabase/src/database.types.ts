@@ -129,6 +129,7 @@ export type Database = {
           postal_code: string | null
           preferred_contact: string | null
           priority: string
+          service_type: string
           source: string
           status: string
           updated_at: string
@@ -139,12 +140,13 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
-          inquiry_type: string
+          inquiry_type?: string
           name: string
           phone?: string | null
           postal_code?: string | null
           preferred_contact?: string | null
           priority?: string
+          service_type?: string
           source: string
           status?: string
           updated_at?: string
@@ -161,6 +163,7 @@ export type Database = {
           postal_code?: string | null
           preferred_contact?: string | null
           priority?: string
+          service_type?: string
           source?: string
           status?: string
           updated_at?: string

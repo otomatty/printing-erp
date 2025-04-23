@@ -68,7 +68,7 @@ async function saveContactToDatabase(
       .from('inquiries')
       .insert({
         source: 'web', // 受付チャネル(web)
-        inquiry_type: contactData.inquiryType,
+        service_type: contactData.inquiryType,
         name: contactData.userInfo.name,
         company_name: contactData.userInfo.companyName,
         email: contactData.userInfo.email,

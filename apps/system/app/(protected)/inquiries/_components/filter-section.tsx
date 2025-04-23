@@ -6,7 +6,7 @@ export function FilterSection() {
       <div className="relative flex-1 min-w-[200px]">
         <input
           type="text"
-          placeholder="問い合わせ番号、名前、メールで検索..."
+          placeholder="問い合わせID、名前、メールで検索..."
           className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary"
         />
         <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />

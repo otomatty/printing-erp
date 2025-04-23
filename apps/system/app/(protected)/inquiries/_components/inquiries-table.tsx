@@ -69,7 +69,7 @@ export function InquiriesTable({
     () => [
       {
         accessorKey: 'id',
-        header: '問い合わせ番号',
+        header: '問い合わせID',
         cell: ({ getValue }) => {
           const id = getValue<string>();
           return (

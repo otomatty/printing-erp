@@ -13,7 +13,15 @@ import {
   SegmentedControlItem,
   SegmentedControlIndicator,
 } from '~/components/custom/segmented-controle';
-import { Printer, Download } from 'lucide-react';
+import {
+  Printer,
+  Download,
+  List,
+  Grid,
+  Columns,
+  Calendar,
+  BarChart2,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@kit/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@kit/ui/tabs';
 import { InquiryStats as ReportStats } from './_components/inquiry-stats';
@@ -57,6 +65,18 @@ export default function InquiriesPageClient({
   const [view, setView] = useState<
     'list' | 'cards' | 'kanban' | 'calendar' | 'report'
   >('list');
+  // ビュー別の説明文マッピング
+  const viewDescriptions = {
+    list: 'お問い合わせの一覧を表示しています。',
+    cards:
+      'カードでは、月ごとにどのようなお問い合わせがあったのかがわかります。',
+    kanban:
+      'カンバンでは、カードをドラッグ&ドロップすることでお問い合わせのステータスを変更できます。',
+    calendar:
+      'カレンダーでは、日付ごとにどのようなお問い合わせがあったのかがわかりやすく表示されています。',
+    report:
+      'レポートでは、お問い合わせの傾向や種類別、対応時間分析、分布などを表示しています。',
+  } as const;
 
   // prepare Kanban columns grouped by status (Jotai 管理の state から)
   const kanbanColumns = useMemo(
@@ -78,11 +98,36 @@ export default function InquiriesPageClient({
       }
     >
       <SegmentedControlIndicator />
-      <SegmentedControlItem value="list">一覧</SegmentedControlItem>
-      <SegmentedControlItem value="cards">カード</SegmentedControlItem>
-      <SegmentedControlItem value="kanban">カンバン</SegmentedControlItem>
-      <SegmentedControlItem value="calendar">カレンダー</SegmentedControlItem>
-      <SegmentedControlItem value="report">レポート</SegmentedControlItem>
+      <SegmentedControlItem value="list">
+        <div className="flex items-center space-x-1">
+          <List className="w-4 h-4" />
+          <span>一覧</span>
+        </div>
+      </SegmentedControlItem>
+      <SegmentedControlItem value="cards">
+        <div className="flex items-center space-x-1">
+          <Grid className="w-4 h-4" />
+          <span>カード</span>
+        </div>
+      </SegmentedControlItem>
+      <SegmentedControlItem value="kanban">
+        <div className="flex items-center space-x-1">
+          <Columns className="w-4 h-4" />
+          <span>カンバン</span>
+        </div>
+      </SegmentedControlItem>
+      <SegmentedControlItem value="calendar">
+        <div className="flex items-center space-x-1">
+          <Calendar className="w-4 h-4" />
+          <span>カレンダー</span>
+        </div>
+      </SegmentedControlItem>
+      <SegmentedControlItem value="report">
+        <div className="flex items-center space-x-1">
+          <BarChart2 className="w-4 h-4" />
+          <span>レポート</span>
+        </div>
+      </SegmentedControlItem>
     </SegmentedControl>
   );
 
@@ -107,7 +152,7 @@ export default function InquiriesPageClient({
     <>
       <PageHeader
         title="お問い合わせ"
-        description="お問い合わせを管理することができます。"
+        description={viewDescriptions[view]}
         backLink={{ href: '/', label: 'ホームに戻る' }}
         actions={
           <div className="flex flex-col gap-2 items-end">

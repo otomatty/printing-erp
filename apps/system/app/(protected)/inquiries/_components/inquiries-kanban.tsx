@@ -141,7 +141,7 @@ export function InquiriesKanban({ columns }: InquiriesKanbanProps) {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="flex gap-4 overflow-auto">
+      <div className="flex overflow-auto divide-x divide-gray-300">
         {columns.map((col) => (
           <ColumnDroppable
             key={col.id}
@@ -172,13 +172,8 @@ function ColumnDroppable({
   const { setNodeRef } = useDroppable({ id });
   const status = getStatusDetails(id);
   return (
-    <div
-      ref={setNodeRef}
-      className={`w-64 ${status.color.split(' ')[0]} p-2 rounded`}
-    >
-      <h2 className={`text-sm font-bold mb-2 ${status.color.split(' ')[1]}`}>
-        {title}
-      </h2>
+    <div ref={setNodeRef} className="w-64 p-2">
+      <h2 className={`text-sm font-bold mb-2 p-2 ${status.color}`}>{title}</h2>
       <SortableContext
         items={inquiries.map((inq) => inq.id)}
         strategy={verticalListSortingStrategy}
@@ -219,7 +214,7 @@ function SortableItem({ inquiry }: { inquiry: Inquiry }) {
       {...listeners}
       className={`cursor-grab ${isDragging ? 'opacity-50' : ''}`}
     >
-      <Card className="mb-4 relative hover:cursor-grab">
+      <Card className="mb-2 relative hover:cursor-grab">
         <CardHeader>
           <CardTitle className="text-sm font-semibold">
             {inquiry.company_name || inquiry.customer_name}

@@ -78,6 +78,7 @@ import content from '~/components/tiptap/tiptap-templates/simple/data/content.js
 
 interface SimpleEditorProps {
   initialContent?: JSONContent;
+  templateContent?: string | JSONContent;
 }
 
 const MainToolbarContent = ({
@@ -181,7 +182,10 @@ const MobileToolbarContent = ({
   </>
 );
 
-export function SimpleEditor({ initialContent }: SimpleEditorProps) {
+export function SimpleEditor({
+  initialContent,
+  templateContent,
+}: SimpleEditorProps) {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
   const [mobileView, setMobileView] = React.useState<
@@ -250,6 +254,12 @@ export function SimpleEditor({ initialContent }: SimpleEditorProps) {
     ],
     content: initialContent ?? content,
   });
+
+  React.useEffect(() => {
+    if (editor && templateContent) {
+      editor.commands.setContent(templateContent);
+    }
+  }, [editor, templateContent]);
 
   React.useEffect(() => {
     const checkCursorVisibility = () => {

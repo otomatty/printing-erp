@@ -14,6 +14,7 @@ export type CategoryId =
   | 'production'
   | 'shipping'
   | 'website'
+  | 'development'
   | 'admin'
   | 'google'
   | 'tools';
@@ -69,6 +70,13 @@ export const categories: Record<CategoryId, CategoryInfo> = {
     icon: 'text-indigo-600',
     hover: 'hover:bg-indigo-200',
   },
+  development: {
+    id: 'development',
+    name: '開発',
+    bg: 'bg-teal-100',
+    icon: 'text-teal-600',
+    hover: 'hover:bg-teal-200',
+  },
   admin: {
     id: 'admin',
     name: '管理',
@@ -102,6 +110,7 @@ export const categoryOrder: CategoryId[] = [
   'production',
   'shipping',
   'website',
+  'development',
   'google',
   'tools',
   'admin',

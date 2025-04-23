@@ -89,23 +89,23 @@ export function getStatusDetails(status: string) {
   const statusMap: Record<string, { label: string; color: string }> = {
     new: {
       label: '新規',
-      color: 'bg-blue-100 text-blue-800',
+      color: 'bg-blue-300 text-blue-900',
     },
     in_progress: {
       label: '対応中',
-      color: 'bg-yellow-100 text-yellow-800',
+      color: 'bg-amber-300 text-amber-900',
     },
     waiting: {
       label: '回答待ち',
-      color: 'bg-purple-100 text-purple-800',
+      color: 'bg-purple-300 text-purple-900',
     },
     resolved: {
       label: '解決済',
-      color: 'bg-green-100 text-green-800',
+      color: 'bg-green-300 text-green-900',
     },
     closed: {
       label: '完了',
-      color: 'bg-gray-100 text-gray-800',
+      color: 'bg-gray-300 text-gray-900',
     },
   };
 

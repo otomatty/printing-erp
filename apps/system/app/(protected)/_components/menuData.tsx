@@ -179,6 +179,36 @@ export const menuItems: MenuItem[] = [
     status: 'unavailable',
   },
 
+  // 開発カテゴリ
+  {
+    href: '/development/task-logs',
+    title: '作業記録',
+    icon: <FileText className="h-6 w-6" />,
+    category: 'development',
+    status: 'available',
+  },
+  {
+    href: '/development/milestones',
+    title: 'マイルストーン',
+    icon: <Calendar className="h-6 w-6" />,
+    category: 'development',
+    status: 'available',
+  },
+  {
+    href: '/development/requests',
+    title: '要望',
+    icon: <ClipboardCheck className="h-6 w-6" />,
+    category: 'development',
+    status: 'available',
+  },
+  {
+    href: '/development/costs',
+    title: 'コストと効果',
+    icon: <BarChart className="h-6 w-6" />,
+    category: 'development',
+    status: 'available',
+  },
+
   // Googleカテゴリ (外部リンク、画像アイコン対応)
   {
     href: 'https://calendar.google.com/',

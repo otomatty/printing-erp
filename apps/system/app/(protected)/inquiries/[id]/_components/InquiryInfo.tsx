@@ -30,7 +30,7 @@ export function InquiryInfo({ inquiry }: InquiryInfoProps) {
           <h3 className="font-semibold">基本情報</h3>
           <div className="grid gap-2 text-sm">
             <div className="flex items-start gap-2">
-              <span className="font-medium min-w-[8rem]">問い合わせ番号:</span>
+              <span className="font-medium min-w-[8rem]">問い合わせID:</span>
               <span>{inquiry.id}</span>
             </div>
             <div className="flex items-start gap-2">
