@@ -13,6 +13,7 @@ import {
   type DescriptionExample,
 } from '~/actions/estimate/generateDescriptionExamples';
 import type { EstimateFormData } from '~/types/estimate';
+import FieldBadge from '~/components/custom/field-badge';
 
 export function DescriptionStep() {
   const [formData, setFormData] = useAtom(formDataAtom);
@@ -102,7 +103,7 @@ ${example.references.map((r) => `・${r}`).join('\n')}`;
           placeholder="例：会員制の料理レシピ共有サイトを作りたいと考えています。ユーザーは自分のレシピを投稿でき、他のユーザーのレシピを閲覧・お気に入り登録できるようにしたいです。主なターゲットは20-30代の料理好きの方です。"
           value={formData.description}
           onChange={handleChange}
-          className="min-h-[200px] mb-4"
+          className="bg-white min-h-[200px] mb-4"
         />
       </div>
 

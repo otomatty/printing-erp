@@ -1,11 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Check } from 'lucide-react';
-import { useAtom } from 'jotai';
-import { inquiryTypeAtom, currentFormDataAtom } from '~/store/contact-form';
 import type {
   UserInfo,
-  PrintServicesFormData,
   InquiryType,
   PrintServicesDetails,
   DigitalServicesDetails,

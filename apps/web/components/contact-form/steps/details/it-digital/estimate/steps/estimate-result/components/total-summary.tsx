@@ -41,14 +41,14 @@ export function TotalSummary({
 
   return (
     <Card className="p-4">
-      <div className="flex justify-between items-start mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
           <h3 className="text-lg font-bold mb-1">見積もり合計</h3>
           <p className="text-sm text-muted-foreground">
             選択した機能と追加実装要件の合計金額と想定開発期間
           </p>
         </div>
-        <div className="text-right">
+        <div className="text-left md:text-right">
           <div className="text-base line-through text-muted-foreground mb-1">
             従来価格: {traditionalTotalPrice.toLocaleString()}円
           </div>

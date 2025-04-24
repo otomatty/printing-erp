@@ -56,7 +56,7 @@ export function UserInfoStep() {
           required
           value={formData.customerName || ''}
           onChange={handleInputChange}
-          className="w-full"
+          className="bg-white w-full"
         />
         {!formData.customerName && showValidation && (
           <p className="text-xs text-destructive mt-1">お名前は必須項目です</p>
@@ -73,7 +73,7 @@ export function UserInfoStep() {
           name="companyName"
           value={formData.companyName || ''}
           onChange={handleInputChange}
-          className="w-full"
+          className="bg-white w-full"
         />
       </div>
 
@@ -88,7 +88,7 @@ export function UserInfoStep() {
           value={formData.postalCode || ''}
           onChange={handleInputChange}
           placeholder="1234567（ハイフンなし）"
-          className="w-full"
+          className="bg-white w-full"
         />
       </div>
 
@@ -102,7 +102,7 @@ export function UserInfoStep() {
           name="address"
           value={formData.address || ''}
           onChange={handleInputChange}
-          className="w-full"
+          className="bg-white w-full"
         />
       </div>
 
@@ -117,7 +117,7 @@ export function UserInfoStep() {
           required
           value={formData.email || ''}
           onChange={handleInputChange}
-          className="w-full"
+          className="bg-white w-full"
         />
         {!formData.email && showValidation && (
           <p className="text-xs text-destructive mt-1">
@@ -139,7 +139,7 @@ export function UserInfoStep() {
           value={formData.phone || ''}
           onChange={handleInputChange}
           placeholder="09012345678（ハイフンなし）"
-          className="w-full"
+          className="bg-white w-full"
         />
         {isPhoneRequired && !formData.phone && showValidation && (
           <p className="text-xs text-destructive mt-1">

@@ -143,7 +143,11 @@ export function Header() {
       <div className="container max-w-5xl mx-auto p-4 flex justify-between items-center">
         <Link href="/" className="flex items-center">
           {/* TODO: 会社ロゴを追加 */}
-          <Image src={logo} alt="ニイヌマ企画印刷" className="h-12 w-auto" />
+          <Image
+            src={logo}
+            alt="ニイヌマ企画印刷"
+            className="h-10 md:h-12 w-auto"
+          />
         </Link>
 
         {/* デスクトップ用のコンテナ */}

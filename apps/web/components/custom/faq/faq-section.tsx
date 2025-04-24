@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronDown } from 'lucide-react';
-import Container from '../../custom/container';
+import Container from '../container';
 
 export type FAQItem = {
   question: string;
@@ -123,11 +123,11 @@ export default function FAQSection({
                       <div className="bg-primary text-primary-foreground font-bold w-7 h-7 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                         Q
                       </div>
-                      <h3 className="text-xl font-bold text-gray-800 flex-grow group-hover:text-primary transition-colors">
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-800 flex-grow group-hover:text-primary transition-colors">
                         {faq.question}
                       </h3>
                       <ChevronDown
-                        className={`w-5 h-5 text-gray-500 transition-transform duration-300 ease-in-out group-hover:text-primary mt-1 ${
+                        className={`flex-shrink-0 w-5 h-5 text-gray-500 transition-transform duration-300 ease-in-out group-hover:text-primary mt-1 ${
                           openItems[faq.question] ? 'transform rotate-180' : ''
                         }`}
                       />
@@ -146,7 +146,7 @@ export default function FAQSection({
                     }}
                   >
                     <div
-                      className="pl-12 mt-2 text-gray-600 pb-2"
+                      className="pl-4 mt-2 text-gray-600 pb-2"
                       ref={setContentRef(faq.question)}
                     >
                       {typeof faq.answer === 'string' ? (
@@ -166,11 +166,11 @@ export default function FAQSection({
                     className="flex justify-between items-center w-full py-4 text-left font-medium focus:outline-none focus-visible:ring focus-visible:ring-primary group cursor-pointer hover:bg-gray-50 rounded-md transition-colors px-2 -mx-2"
                     aria-expanded={openItems[faq.question]}
                   >
-                    <span className="text-lg group-hover:text-primary transition-colors">
+                    <span className="text-base sm:text-lg group-hover:text-primary transition-colors">
                       {faq.question}
                     </span>
                     <ChevronDown
-                      className={`w-5 h-5 text-gray-500 transition-transform duration-300 ease-in-out group-hover:text-primary ${
+                      className={`flex-shrink-0 w-5 h-5 text-gray-500 transition-transform duration-300 ease-in-out group-hover:text-primary ${
                         openItems[faq.question] ? 'transform rotate-180' : ''
                       }`}
                     />

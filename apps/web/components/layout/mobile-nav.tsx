@@ -3,8 +3,7 @@
 import type React from 'react';
 import Link from 'next/link';
 import { ChevronDown, Phone } from 'lucide-react';
-import { ThemeToggle } from '@kit/ui/theme-toggle';
-import { ColorThemeToggle } from '~/components/custom/color-theme-toggle';
+import { Button } from '@kit/ui/button';
 
 // 型定義 (DesktopNav.tsx と同じものを使用)
 type NavItemBase = {
@@ -94,21 +93,21 @@ export default function MobileNav({
         ))}
 
         <div className="mt-2 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
-          <a
-            href={telLink}
-            className="flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary py-2 transition-colors"
-            onClick={closeMenu}
-          >
-            <Phone size={16} className="mr-2" />
-            {phoneNumber}
-          </a>
-          <Link
-            href="/contact"
-            className="block bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-2 rounded-md text-center transition-colors"
-            onClick={closeMenu}
-          >
-            お問い合わせ
-          </Link>
+          <Button asChild variant="outline" className="w-full" size="sm">
+            <a
+              href={telLink}
+              onClick={closeMenu}
+              className="flex items-center justify-center space-x-2"
+            >
+              <Phone size={16} />
+              <span className="font-bold">{phoneNumber}</span>
+            </a>
+          </Button>
+          <Button asChild variant="default" className="w-full" size="sm">
+            <Link href="/contact" onClick={closeMenu}>
+              お問い合わせ
+            </Link>
+          </Button>
         </div>
       </div>
     </nav>

@@ -200,7 +200,7 @@ export default function ContactForm() {
         <ContactFormProgressIndicator currentStep={currentStep} />
       )}
 
-      <div className="bg-white rounded-lg p-4 md:p-8">
+      <div>
         {/* エラーメッセージ表示 */}
         {submitError && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md text-red-600">

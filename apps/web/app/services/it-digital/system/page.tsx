@@ -58,7 +58,7 @@ export default function SystemPage() {
       />
 
       {/* モバイル用見積りボタン */}
-      <MobileEstimateButton href="/estimate?type=system" />
+      <MobileEstimateButton href="/contact?type=digital-services" />
     </main>
   );
 }

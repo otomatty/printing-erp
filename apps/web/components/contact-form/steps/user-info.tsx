@@ -3,6 +3,7 @@ import type React from 'react';
 import { Label } from '@kit/ui/label';
 import { Input } from '@kit/ui/input';
 import { RadioGroup, RadioGroupItem } from '@kit/ui/radio-group';
+import FieldBadge from '~/components/custom/field-badge';
 
 import { useAtom } from 'jotai';
 import { userInfoAtom } from '~/store/contact-form';
@@ -42,7 +43,8 @@ export default function StepUserInfo() {
       <div className="space-y-4">
         <div>
           <Label htmlFor="name" className="block text-sm font-medium mb-1">
-            お名前 <span className="text-red-500">*</span>
+            お名前
+            <FieldBadge variant="required" className="ml-2" />
           </Label>
           <Input
             type="text"
@@ -51,7 +53,7 @@ export default function StepUserInfo() {
             required
             value={userInfo.name}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
+            className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
           />
           {!userInfo.name && showValidation && (
             <p className="text-xs text-red-500 mt-1">お名前は必須項目です</p>
@@ -64,6 +66,7 @@ export default function StepUserInfo() {
             className="block text-sm font-medium mb-1"
           >
             会社名・団体名
+            <FieldBadge variant="optional" className="ml-2" />
           </Label>
           <Input
             type="text"
@@ -71,7 +74,7 @@ export default function StepUserInfo() {
             name="companyName"
             value={userInfo.companyName}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
+            className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
           />
         </div>
 
@@ -81,6 +84,7 @@ export default function StepUserInfo() {
             className="block text-sm font-medium mb-1"
           >
             郵便番号
+            <FieldBadge variant="optional" className="ml-2" />
           </Label>
           <Input
             type="text"
@@ -89,13 +93,14 @@ export default function StepUserInfo() {
             value={userInfo.postalCode || ''}
             onChange={handleInputChange}
             placeholder="1234567（ハイフンなし）"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
+            className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
           />
         </div>
 
         <div>
           <Label htmlFor="address" className="block text-sm font-medium mb-1">
             住所
+            <FieldBadge variant="optional" className="ml-2" />
           </Label>
           <Input
             type="text"
@@ -103,13 +108,14 @@ export default function StepUserInfo() {
             name="address"
             value={userInfo.address || ''}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
+            className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
           />
         </div>
 
         <div>
           <Label htmlFor="email" className="block text-sm font-medium mb-1">
-            メールアドレス <span className="text-red-500">*</span>
+            メールアドレス
+            <FieldBadge variant="required" className="ml-2" />
           </Label>
           <Input
             type="email"
@@ -118,7 +124,7 @@ export default function StepUserInfo() {
             required
             value={userInfo.email}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
+            className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
           />
           {!userInfo.email && showValidation && (
             <p className="text-xs text-red-500 mt-1">
@@ -129,8 +135,11 @@ export default function StepUserInfo() {
 
         <div>
           <Label htmlFor="phone" className="block text-sm font-medium mb-1">
-            電話番号{' '}
-            {isPhoneRequired && <span className="text-red-500">*</span>}
+            電話番号
+            <FieldBadge
+              variant={isPhoneRequired ? 'required' : 'optional'}
+              className="ml-2"
+            />
           </Label>
           <Input
             type="tel"
@@ -140,7 +149,7 @@ export default function StepUserInfo() {
             value={userInfo.phone}
             onChange={handleInputChange}
             placeholder="09012345678（ハイフンなし）"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
+            className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary"
           />
           {isPhoneRequired && !userInfo.phone && showValidation && (
             <p className="text-xs text-red-500 mt-1">

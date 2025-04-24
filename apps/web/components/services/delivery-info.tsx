@@ -9,7 +9,7 @@ const DeliveryInfo: React.FC = () => {
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
           納期について
         </h2>
-        <div className="p-8 lg:p-16 border border-gray-300 rounded-lg bg-white dark:bg-gray-800">
+        <div className="p-4 md:p-8 lg:p-16 border border-gray-300 rounded-lg bg-white dark:bg-gray-800">
           <div className="flex items-center mb-4">
             <Clock className="h-6 w-6 text-primary mr-3" />
             <h3 className="text-2xl font-semibold text-gray-700">通常納期</h3>

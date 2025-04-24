@@ -109,7 +109,7 @@ export function EstimateResultActions({
         </div>
       )}
 
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <Button
           onClick={handleDownloadPDF}
           disabled={isPdfGenerating}
@@ -147,7 +147,7 @@ export function EstimateResultActions({
             </>
           )}
         </Button>
-        <Button className="flex-1" onClick={handleSendInquiry}>
+        <Button className="w-full md:flex-1" onClick={handleSendInquiry}>
           <Send className="w-4 h-4 mr-2" />
           問い合わせる
         </Button>

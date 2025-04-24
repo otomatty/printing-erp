@@ -63,7 +63,7 @@ export default function HomepagePage() {
       />
 
       {/* モバイル用見積りボタン */}
-      <MobileEstimateButton href="/estimate?type=homepage" />
+      <MobileEstimateButton href="/contact?type=digital-services" />
     </main>
   );
 }

@@ -18,6 +18,7 @@ import {
   AlertDialogTitle,
 } from '@kit/ui/alert-dialog';
 import { useSearchParams } from 'next/navigation';
+import FieldBadge from '~/components/custom/field-badge';
 
 // 印刷物の種類
 const printingTypes = [
@@ -276,9 +277,10 @@ export default function PrintServicesForm() {
 
       {/* 問い合わせ種類選択 */}
       <div className="mb-6">
-        <h3 className="text-lg font-medium mb-3">
-          お問い合わせの内容を選択してください
-        </h3>
+        <Label className="block text-sm font-medium text-gray-700 mb-3">
+          お問い合わせの内容
+          <FieldBadge variant="required" className="ml-2" />
+        </Label>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
             {
@@ -303,7 +305,7 @@ export default function PrintServicesForm() {
             <button
               key={type.id}
               type="button"
-              className={`border rounded-lg p-4 cursor-pointer transition-all text-left h-full ${
+              className={`bg-white border rounded-lg p-4 cursor-pointer transition-all text-left h-full ${
                 formData.printInquiryType === type.id
                   ? 'border-primary bg-primary/5'
                   : 'border-gray-200 hover:border-gray-300'
@@ -333,7 +335,7 @@ export default function PrintServicesForm() {
           <div className="w-full border-t border-gray-300" />
         </div>
         <div className="relative flex justify-center">
-          <span className="bg-white px-4 text-sm text-gray-500">
+          <span className="bg-background px-4 text-sm text-gray-500">
             印刷物の詳細
           </span>
         </div>
@@ -343,14 +345,15 @@ export default function PrintServicesForm() {
       <div className="mb-6">
         <div className="w-full">
           <Label className="block text-sm font-medium text-gray-700 mb-3">
-            印刷物の種類 <span className="text-red-500">*</span>
+            印刷物の種類
+            <FieldBadge variant="required" className="ml-2" />
           </Label>
           <div className="grid grid-cols-1 sm:grid-cols-2  gap-3">
             {printingTypes.map((type) => (
               <button
                 key={type.value}
                 type="button"
-                className={`border rounded-lg p-3 cursor-pointer transition-all text-left ${
+                className={`bg-white border rounded-lg p-3 cursor-pointer transition-all text-left ${
                   formData.printingType === type.value
                     ? 'border-primary bg-primary/5'
                     : 'border-gray-200 hover:border-gray-300'
@@ -396,10 +399,15 @@ export default function PrintServicesForm() {
               htmlFor="contents"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              {inquiryType === 'question' ? 'ご質問内容' : 'ご依頼内容'}{' '}
-              {(inquiryType === 'order' || inquiryType === 'estimate') && (
-                <span className="text-red-500">*</span>
-              )}
+              {inquiryType === 'question' ? 'ご質問内容' : 'ご依頼内容'}
+              <FieldBadge
+                variant={
+                  inquiryType === 'order' || inquiryType === 'estimate'
+                    ? 'required'
+                    : 'optional'
+                }
+                className="ml-2"
+              />
             </label>
 
             <div>
@@ -414,7 +422,7 @@ export default function PrintServicesForm() {
                     ? 'ご質問内容をご記入ください'
                     : 'ご依頼内容をご記入ください'
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary/50 focus:border-primary"
+                className="bg-white w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary/50 focus:border-primary"
                 required={inquiryType === 'order' || inquiryType === 'estimate'}
               />
               {(inquiryType === 'order' || inquiryType === 'estimate') &&
@@ -434,6 +442,7 @@ export default function PrintServicesForm() {
               className="block text-sm font-medium text-gray-700 mb-1"
             >
               希望納期
+              <FieldBadge variant="optional" className="ml-2" />
             </label>
             <Input
               type="text"
@@ -442,7 +451,7 @@ export default function PrintServicesForm() {
               value={formData.deadline}
               onChange={(e) => updateFormData({ deadline: e.target.value })}
               placeholder="例: 1ヶ月以内、8月末までなど"
-              className="w-full max-w-[400px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary/50 focus:border-primary"
+              className="bg-white w-full max-w-[400px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary/50 focus:border-primary"
             />
           </div>
 
@@ -464,6 +473,7 @@ export default function PrintServicesForm() {
                   className="ml-2 block text-sm text-gray-700"
                 >
                   デザインデータあり
+                  <FieldBadge variant="optional" className="ml-2" />
                 </label>
               </div>
             </div>

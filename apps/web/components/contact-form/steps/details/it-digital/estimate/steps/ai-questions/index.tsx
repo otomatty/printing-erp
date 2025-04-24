@@ -221,7 +221,7 @@ export function AIQuestionsStep() {
               }`}
             >
               <div className="space-y-4">
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col md:flex-row justify-between items-start">
                   <div className="flex items-center gap-2">
                     {question.isAnswered && (
                       <Check className="h-4 w-4 text-green-500 flex-shrink-0" />

@@ -32,7 +32,7 @@ const ServiceIntroduction: React.FC<ServiceIntroductionProps> = ({
             </div>
           )}
           <div
-            className={`w-full ${leftImageUrl ? 'lg:w-1/2' : 'lg:w-full'} p-8 rounded-lg`}
+            className={`w-full ${leftImageUrl ? 'lg:w-1/2' : 'lg:w-full'} md:p-8 rounded-lg`}
             style={{
               backgroundImage: rightBgImageUrl
                 ? `url(${rightBgImageUrl})`

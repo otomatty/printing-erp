@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { isFormValidAtom, digitalServicesFormAtom } from '~/store/contact-form';
+import { Label } from '@kit/ui/label';
+import { Textarea } from '@kit/ui/textarea';
+import FieldBadge from '~/components/custom/field-badge';
 
 export default function DigitalStandardForm() {
   const [formData, setFormData] = useAtom(digitalServicesFormAtom);
@@ -27,20 +30,21 @@ export default function DigitalStandardForm() {
   return (
     <div className="space-y-5">
       <div className="w-full">
-        <label
+        <Label
           htmlFor="projectDescription"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          ご要望内容 <span className="text-red-500">*</span>
-        </label>
-        <textarea
+          ご要望内容
+          <FieldBadge variant="required" className="ml-2" />
+        </Label>
+        <Textarea
           id="projectDescription"
           name="projectDescription"
           rows={8}
           value={formData.projectDescription}
           onChange={handleChange}
           placeholder="ホームページ制作やアプリ開発など、ご検討中のプロジェクトについて詳しくお聞かせください。予算や納期などの希望があればあわせてご記入ください。"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary/50 focus:border-primary"
+          className="bg-white w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primary/50 focus:border-primary"
           required
         />
         {!formData.projectDescription && showValidation && (

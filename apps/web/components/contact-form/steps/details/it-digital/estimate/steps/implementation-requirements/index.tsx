@@ -251,8 +251,8 @@ export function ImplementationRequirementsStep() {
         </p>
       </div>
 
-      <div className="space-y-6">
-        <Card className="p-4">
+      <div className="space-y-4 md:space-y-6">
+        <Card className="p-4 bg-white">
           <Label className="text-base font-medium block mb-2">
             デザインデータはありますか？
           </Label>
@@ -329,7 +329,7 @@ export function ImplementationRequirementsStep() {
           )}
         </Card>
 
-        <Card className="p-4">
+        <Card className="p-4 bg-white">
           <Label className="text-base font-medium block mb-2">
             ブランドガイドラインはありますか？
           </Label>

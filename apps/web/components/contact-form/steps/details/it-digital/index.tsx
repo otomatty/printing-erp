@@ -81,7 +81,7 @@ export default function DigitalServiceOptions({
             <button
               type="button"
               key={option.id}
-              className="border rounded-lg p-4 cursor-pointer transition-all hover:border-primary/30 hover:bg-gray-50"
+              className="bg-white border rounded-lg p-4 cursor-pointer transition-all hover:border-primary/30 hover:bg-gray-50"
               onClick={() =>
                 handleOptionSelect(option.id as 'ai-estimate' | 'standard-form')
               }

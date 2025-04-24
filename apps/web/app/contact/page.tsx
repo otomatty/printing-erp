@@ -1,6 +1,7 @@
 import PageHero from '~/components/custom/page-hero';
 import FAQSection from '~/components/custom/faq/faq-section';
 import { contactFAQs } from '~/components/custom/faq/faq-data';
+import Container from '~/components/custom/container';
 import ContactForm from './contact-form';
 import type { Metadata } from 'next';
 
@@ -19,21 +20,17 @@ export default function ContactPage() {
         subtitle="ご質問やお見積りのご依頼などはこちらからお気軽にお問い合わせください。"
       />
       <div className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
+        <Container>
+          <div className="max-w-3xl mx-auto mb-12">
             {/* 新しいContactFormコンポーネントを使用 */}
             <ContactForm />
-
-            {/* FAQセクションを追加 */}
-            <div className="mt-16">
-              <FAQSection
-                title="よくあるご質問"
-                faqs={contactFAQs}
-                withQAStyle={true}
-              />
-            </div>
           </div>
-        </div>
+        </Container>
+        <FAQSection
+          title="よくあるご質問"
+          faqs={contactFAQs}
+          withQAStyle={true}
+        />
       </div>
     </>
   );

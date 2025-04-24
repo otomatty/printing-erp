@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from '@kit/ui/radio-group';
 import { useSearchParams } from 'next/navigation';
 import type { ProjectType } from '~/types/estimate';
 import type { EstimateFormData } from '~/types/estimate';
+import FieldBadge from '~/components/custom/field-badge';
 
 const projectTypes: {
   value: ProjectType;
@@ -74,7 +75,7 @@ export function ProjectTypeStep() {
     >
       {projectTypes.map((type) => (
         <Label key={type.value} className="cursor-pointer">
-          <Card className="relative p-4 transition-colors hover:bg-muted/50">
+          <Card className="bg-white relative p-4 transition-colors hover:bg-muted/50">
             <RadioGroupItem
               value={type.value}
               className="absolute right-4 top-4"

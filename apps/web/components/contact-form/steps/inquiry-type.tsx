@@ -62,7 +62,7 @@ export default function StepInquiryType() {
           <button
             key={type.id}
             type="button"
-            className={`border rounded-lg p-4 cursor-pointer transition-all text-left w-full ${
+            className={`bg-white border rounded-lg p-4 cursor-pointer transition-all text-left w-full ${
               inquiryType === type.id
                 ? 'border-primary bg-primary/5'
                 : 'border-gray-200 hover:border-gray-300'

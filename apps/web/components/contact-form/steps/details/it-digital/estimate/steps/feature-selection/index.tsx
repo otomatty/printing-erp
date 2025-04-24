@@ -191,7 +191,7 @@ export function FeatureSelectionStep() {
             <div key={categoryKey} className="space-y-4">
               <h4 className="font-medium border-b pb-2">{categoryName}</h4>
               {featuresInCategory.map((feature) => (
-                <Card key={feature.id} className="p-4">
+                <Card key={feature.id} className="p-4 bg-white">
                   <div className="flex items-start gap-4">
                     <Checkbox
                       id={feature.id}
