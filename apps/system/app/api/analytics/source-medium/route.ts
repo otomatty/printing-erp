@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAnalyticsBySourceMedium } from '~/actions/analytics';
+import { getAnalyticsBySourceMedium } from '~/_actions/analytics';
 
 export async function GET() {
   try {

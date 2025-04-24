@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import slugify from 'slugify';
 
-import { createTopic } from '~/actions/topics/index';
+import { createTopic } from '~/_actions/topics/index';
 import { topicFormSchema, type TopicFormData } from '~/types/topics';
 
 import { PageHeader } from '~/components/custom/page-header';

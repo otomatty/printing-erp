@@ -39,7 +39,7 @@ import {
   getAttachmentUploadUrl,
   saveAttachmentMetadata,
   deleteAttachment,
-} from '~/actions/news';
+} from '~/_actions/news';
 import type { AttachmentMetadata } from '~/types/news';
 
 /**

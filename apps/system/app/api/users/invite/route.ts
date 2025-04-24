@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { inviteUserAction } from '~/actions/users/inviteUserAction';
+import { inviteUserAction } from '~/_actions/users/inviteUserAction';
 import type { InviteUserFormData } from '~/types/invite';
 
 /**

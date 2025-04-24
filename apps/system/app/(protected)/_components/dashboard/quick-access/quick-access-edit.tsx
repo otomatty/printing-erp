@@ -23,7 +23,7 @@ import {
   removeQuickAccessItem,
   addQuickAccessItem,
   getUserQuickAccess,
-} from '~/actions/quick-access';
+} from '~/_actions/quick-access';
 import { toast } from 'sonner';
 import {
   SortableQuickAccessItem,

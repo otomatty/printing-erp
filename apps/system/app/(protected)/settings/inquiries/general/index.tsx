@@ -8,7 +8,7 @@ import {
 } from '@kit/ui/card';
 import { AlertCircle } from 'lucide-react';
 import NotificationSettingsTable from './notification-settings-table';
-import { getNotificationSettings } from '~/actions/contact-notification-settings';
+import { getNotificationSettings } from '~/_actions/contact-notification-settings';
 
 export default async function InquirySettingsPage() {
   // サーバーサイドでデータをフェッチ

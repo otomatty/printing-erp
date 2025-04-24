@@ -18,7 +18,7 @@ import {
   AlertDialogTrigger,
 } from '@kit/ui/alert-dialog';
 
-import { deleteCategory } from '~/actions/news';
+import { deleteCategory } from '~/_actions/news';
 
 interface DeleteCategoryButtonProps {
   categoryId: string;

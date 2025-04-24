@@ -6,8 +6,8 @@ import DashboardScheduledTasks from './_components/dashboard/scheduled-tasks';
 import DashboardSalesChart from './_components/dashboard/sales-chart';
 import DashboardCalendar from './_components/dashboard/calendar';
 import { Container } from '~/components/custom/container';
-import { getUserQuickAccess } from '~/actions/quick-access';
-import { fetchInitialCalendarData } from '~/actions/schedules';
+import { getUserQuickAccess } from '~/_actions/quick-access';
+import { fetchInitialCalendarData } from '~/_actions/schedules';
 
 export default async function SystemDashboard() {
   // クイックアクセスデータを取得

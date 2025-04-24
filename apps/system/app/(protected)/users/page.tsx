@@ -2,7 +2,7 @@ import { PlusCircle } from 'lucide-react';
 
 import { Container } from '~/components/custom/container';
 import { PageHeader } from '~/components/custom/page-header';
-import { fetchAllUsersAndInvitations } from '~/actions/users/fetchAllUsersAndInvitations'; // これを使う
+import { fetchAllUsersAndInvitations } from '~/_actions/users/fetchAllUsersAndInvitations'; // これを使う
 import { UsersTable } from './_components/users-table';
 import { InviteUserDialog } from './_components/invite-user-dialog';
 // import { Button } from '@kit/ui/button'; // InviteUserDialog が Button を内包する形にするわ

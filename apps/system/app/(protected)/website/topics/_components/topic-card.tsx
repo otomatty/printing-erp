@@ -27,7 +27,7 @@ import {
   publishTopic,
   unpublishTopic,
   deleteTopic,
-} from '~/actions/topics/index';
+} from '~/_actions/topics/index';
 
 // トピックの公開状態
 export type TopicStatus = 'draft' | 'published' | 'archived';

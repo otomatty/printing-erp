@@ -1,4 +1,4 @@
-import { getCategories } from '~/actions/news';
+import { getCategories } from '~/_actions/news';
 import SortableCategoriesList from './_components/sortable-categories-list';
 import CategoryDialog from './_components/category-dialog';
 import { Container } from '~/components/custom/container';

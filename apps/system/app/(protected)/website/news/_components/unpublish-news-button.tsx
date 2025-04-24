@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { EyeOff } from 'lucide-react';
 import { DropdownMenuItem } from '@kit/ui/dropdown-menu';
 
-import { unpublishNews } from '~/actions/news';
+import { unpublishNews } from '~/_actions/news';
 
 interface UnpublishNewsButtonProps {
   newsId: string;

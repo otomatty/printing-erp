@@ -5,7 +5,7 @@ import { Button } from '@kit/ui/button';
 import { Input } from '@kit/ui/input';
 import { Container } from '~/components/custom/container';
 import { PageHeader } from '~/components/custom/page-header';
-import { fetchAdminProfile, updateAdminProfile } from '~/actions/accounts';
+import { fetchAdminProfile, updateAdminProfile } from '~/_actions/accounts';
 
 export default async function AccountsPage() {
   const { data: profile, error } = await fetchAdminProfile();

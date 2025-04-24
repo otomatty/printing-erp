@@ -19,7 +19,7 @@ import { Input } from '@kit/ui/input';
 import { Textarea } from '@kit/ui/textarea';
 import { DialogClose } from '@kit/ui/dialog';
 
-import { createCategory, updateCategory } from '~/actions/news';
+import { createCategory, updateCategory } from '~/_actions/news';
 import { categoryFormSchema, type CategoryFormData } from '~/types/news';
 import slugify from 'slugify';
 

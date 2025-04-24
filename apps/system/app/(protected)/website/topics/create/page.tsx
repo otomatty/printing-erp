@@ -1,5 +1,5 @@
 import CreateTopicClient from './topics-page-client';
-import { listCategories } from '~/actions/topics/index';
+import { listCategories } from '~/_actions/topics/index';
 
 /**
  * トピック新規作成ページ

@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { Eye } from 'lucide-react';
 import { DropdownMenuItem } from '@kit/ui/dropdown-menu';
 
-import { publishNews } from '~/actions/news';
+import { publishNews } from '~/_actions/news';
 
 interface PublishNewsButtonProps {
   newsId: string;

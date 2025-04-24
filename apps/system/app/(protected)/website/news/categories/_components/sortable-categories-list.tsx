@@ -32,7 +32,7 @@ import {
 
 import CategoryDialog from './category-dialog';
 import DeleteCategoryButton from './delete-category-button';
-import { updateCategoryOrder } from '~/actions/news';
+import { updateCategoryOrder } from '~/_actions/news';
 import type { Category } from '~/types/news';
 
 /**

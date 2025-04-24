@@ -1,5 +1,5 @@
 import EditTopicClient from './topics-page-client';
-import { getTopicById, listCategories } from '~/actions/topics/index';
+import { getTopicById, listCategories } from '~/_actions/topics/index';
 
 /**
  * 特集記事編集ページ

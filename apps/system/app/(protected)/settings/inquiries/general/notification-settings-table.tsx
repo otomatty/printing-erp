@@ -40,7 +40,7 @@ import {
   addNotificationSetting,
   updateNotificationSetting,
   deleteNotificationSetting,
-} from '~/actions/contact-notification-settings';
+} from '~/_actions/contact-notification-settings';
 
 // DBのテーブル型
 type NotificationSetting =

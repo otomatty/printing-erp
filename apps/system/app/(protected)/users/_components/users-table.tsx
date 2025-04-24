@@ -32,8 +32,8 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
-import { resendInvitationAction } from '~/actions/users/resendInvitationAction';
-import { cancelInvitationAction } from '~/actions/users/cancelInvitationAction';
+import { resendInvitationAction } from '~/_actions/users/resendInvitationAction';
+import { cancelInvitationAction } from '~/_actions/users/cancelInvitationAction';
 
 // TODO: ここも本当は any じゃなくて AdminUser 型を使うのよ！
 // import type { AdminUser } from '~/types/adminUser';

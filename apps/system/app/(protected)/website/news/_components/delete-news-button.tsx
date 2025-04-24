@@ -17,7 +17,7 @@ import {
 } from '@kit/ui/alert-dialog';
 import { DropdownMenuItem } from '@kit/ui/dropdown-menu';
 
-import { deleteNews } from '~/actions/news';
+import { deleteNews } from '~/_actions/news';
 
 interface DeleteNewsButtonProps {
   newsId: string;

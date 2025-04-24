@@ -20,7 +20,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@kit/ui/avatar';
 import { UserCog, LogOut, BookOpen } from 'lucide-react';
 import { Button } from '@kit/ui/button';
-import { signOut } from '~/actions/auth';
+import { signOut } from '~/_actions/auth';
 
 interface UserMenuProps {
   user: User | null;

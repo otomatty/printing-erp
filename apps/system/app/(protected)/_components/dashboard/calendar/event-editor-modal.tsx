@@ -13,7 +13,7 @@ import {
   createUserEvent,
   updateUserEvent,
   deleteUserEvent,
-} from '~/actions/schedules';
+} from '~/_actions/schedules';
 
 interface EventEditorModalProps {
   isOpen: boolean;
