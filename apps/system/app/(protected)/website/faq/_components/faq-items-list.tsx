@@ -17,9 +17,21 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Card, CardContent, CardHeader, CardTitle } from '@kit/ui/card';
+import { GripVertical, Edit, MoreVertical, Trash } from 'lucide-react';
 import type { FaqItem } from '~/types/faq';
-import { updateFaqItem } from '~/actions/faq';
+import { updateFaqItem, deleteFaqItem } from '~/actions/faq';
 import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@kit/ui/dropdown-menu';
+import { Button } from '@kit/ui/button';
+import { ResponsiveDialog } from '@kit/ui/responsive-dialog';
+import FaqForm from './faq-form';
+import { FaqItemDeleteDialog } from './faq-item-delete-dialog';
 
 interface FaqItemsListProps {
   faqItems: FaqItem[];
@@ -30,10 +42,14 @@ interface SortableItemProps {
 }
 
 function SortableItem({ item }: SortableItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: item.id,
-    });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: item.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -42,12 +58,67 @@ function SortableItem({ item }: SortableItemProps) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Card className="mb-4">
-        <CardHeader>
+    <div ref={setNodeRef} style={style}>
+      <Card className="mb-4 relative">
+        {/* drag handle inside card, centered vertically */}
+        <div
+          ref={setActivatorNodeRef}
+          {...attributes}
+          {...listeners}
+          className="absolute left-2 top-1/2 transform -translate-y-1/2 cursor-grab text-muted-foreground"
+        >
+          <GripVertical className="h-5 w-5" />
+          <span className="sr-only">並べ替え</span>
+        </div>
+        {/* existing CardHeader, dropdown, and CardContent */}
+        <CardHeader className="pr-10 pl-10">
           <CardTitle>{item.question}</CardTitle>
+          {/* dropdown menu */}
+          <div className="absolute top-2 right-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreVertical className="h-4 w-4" />
+                  <span className="sr-only">メニューを開く</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <ResponsiveDialog
+                    trigger={
+                      <button
+                        className="flex items-center w-full"
+                        type="button"
+                      >
+                        <Edit className="h-4 w-4 mr-2" />
+                        編集
+                      </button>
+                    }
+                    title="FAQ項目編集"
+                    description="FAQ項目を編集します"
+                  >
+                    <FaqForm pageId={item.page_id} defaultValues={item} />
+                  </ResponsiveDialog>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <FaqItemDeleteDialog itemId={item.id}>
+                    <button
+                      className="flex items-center w-full text-destructive"
+                      type="button"
+                    >
+                      <Trash className="h-4 w-4 mr-2" />
+                      削除
+                    </button>
+                  </FaqItemDeleteDialog>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </CardHeader>
-        <CardContent className="prose max-w-none">{item.answer}</CardContent>
+        <CardContent className="prose max-w-none pl-10">
+          {item.answer}
+        </CardContent>
       </Card>
     </div>
   );

@@ -13,6 +13,7 @@ import PageForm from './page-form';
 import { PageDeleteDialog } from './page-delete-dialog';
 import { getPages } from '~/actions/faq';
 import type { Page as PageType } from '~/types/faq';
+import { Card, CardHeader, CardContent } from '@kit/ui/card';
 
 export default async function PageList() {
   const { pages, error } = await getPages();
@@ -28,19 +29,18 @@ export default async function PageList() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {pages.map((page: PageType) => (
-        <div
-          key={page.id}
-          className="border rounded-lg p-4 shadow-sm hover:shadow-md transition"
-        >
-          <div className="flex justify-between items-start">
-            <Link href={`/website/faq/${page.slug}`}>
-              <h3 className="text-lg font-semibold">
-                {page.title || page.slug}
-              </h3>
-              <p className="text-sm text-muted-foreground">{page.slug}</p>
-            </Link>
+        <Card key={page.id} className="overflow-hidden">
+          <CardHeader className="p-4 flex flex-row justify-between items-start">
+            <div className="space-y-1.5">
+              <Link href={`/website/faq/${page.slug}`}>
+                <h3 className="text-lg font-semibold">
+                  {page.title || page.slug}
+                </h3>
+                <p className="text-sm text-muted-foreground">{page.slug}</p>
+              </Link>
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -87,8 +87,13 @@ export default async function PageList() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
-        </div>
+          </CardHeader>
+          {page.description && (
+            <CardContent className="p-4 pt-0 text-sm text-muted-foreground">
+              {page.description}
+            </CardContent>
+          )}
+        </Card>
       ))}
     </div>
   );
