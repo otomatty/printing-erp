@@ -1,0 +1,333 @@
+# 見積もりデータベース設計
+
+このドキュメントでは、見積もり機能で使用するデータベーステーブルの構成とカラム定義を示します。
+これは、業務システムとホームページ制作の見積もり結果についてのテーブルなので印刷サービス関連のテーブルを検討する必要があります。
+
+
+---
+
+## 1. estimates テーブル
+見積もりのメタ情報を保持します。
+
+| カラム名              | データ型                           | 制約                     | 説明                                   |
+|----------------------|-----------------------------------|-------------------------|---------------------------------------|
+| id                   | UUID                              | PRIMARY KEY             | 見積もりの一意識別子                  |
+| estimate_number      | TEXT                              | UNIQUE NOT NULL         | 見積書番号（ユニーク）               |
+| created_at           | TIMESTAMP WITH TIME ZONE          | DEFAULT now()           | 作成日時                              |
+| updated_at           | TIMESTAMP WITH TIME ZONE          | DEFAULT now()           | 更新日時                              |
+| project_type         | TEXT                              | NOT NULL                | プロジェクト種類（website など）     |
+| description          | TEXT                              | NOT NULL                | プロジェクト概要                     |
+| deadline             | TEXT                              | NOT NULL                | 開発期間（asap、flexible など）       |
+| base_cost            | INTEGER                           | NOT NULL                | 基本費用                              |
+| rush_fee             | INTEGER                           | NOT NULL                | 特急料金                              |
+| total_cost           | INTEGER                           | NOT NULL                | 総費用                                |
+| modern_cost          | INTEGER                           |                         | 最新手法適用後の総費用                 |
+| installments         | SMALLINT                          |                         | 分割回数                              |
+| monthly_payment      | INTEGER                           |                         | 月額支払金額                          |
+| total_duration       | NUMERIC                           |                         | 総開発期間（⽇）                      |
+| actual_discount_rate | SMALLINT                          |                         | 実際の割引率（％）                   |
+| customer_name        | TEXT                              |                         | 顧客氏名                              |
+| company_name         | TEXT                              |                         | 顧客会社名                            |
+| email                | TEXT                              |                         | メールアドレス                        |
+| phone                | TEXT                              |                         | 電話番号                              |
+| postal_code          | TEXT                              |                         | 郵便番号                              |
+| address              | TEXT                              |                         | 住所                                  |
+| preferred_contact    | TEXT                              |                         | 希望連絡方法（email / phone / either）|
+| user_id              | UUID                              | REFERENCES auth.users(id) | ユーザーID                            |
+
+```sql
+CREATE TABLE estimates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  estimate_number TEXT UNIQUE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  project_type TEXT NOT NULL,
+  description TEXT NOT NULL,
+  deadline TEXT NOT NULL,
+  base_cost INTEGER NOT NULL,
+  rush_fee INTEGER NOT NULL,
+  total_cost INTEGER NOT NULL,
+  modern_cost INTEGER,
+  installments SMALLINT,
+  monthly_payment INTEGER,
+  total_duration NUMERIC,
+  actual_discount_rate SMALLINT,
+  customer_name TEXT,
+  company_name TEXT,
+  email TEXT,
+  phone TEXT,
+  postal_code TEXT,
+  address TEXT,
+  preferred_contact TEXT,
+  user_id UUID REFERENCES auth.users(id)
+);
+```
+
+---
+
+## 2. estimate_items テーブル
+見積もりごとの明細アイテムを保持します。
+
+| カラム名     | データ型                                | 制約                                | 説明                      |
+|-------------|----------------------------------------|------------------------------------|--------------------------|
+| id          | UUID                                   | PRIMARY KEY                        | アイテムの一意識別子     |
+| estimate_id | UUID                                   | REFERENCES estimates(id) ON DELETE CASCADE | 見積もりとの関連付け |
+| name        | TEXT                                   | NOT NULL                           | 項目名                    |
+| description | TEXT                                   |                                    | 説明                      |
+| unit_price  | INTEGER                                | NOT NULL                           | 単価                      |
+| quantity    | INTEGER                                | NOT NULL                           | 数量                      |
+| amount      | INTEGER                                | NOT NULL                           | 金額                      |
+| duration    | NUMERIC                                |                                    | 工数（日数）              |
+| note        | TEXT                                   |                                    | 備考                      |
+
+```sql
+CREATE TABLE estimate_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  estimate_id UUID REFERENCES estimates(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  unit_price INTEGER NOT NULL,
+  quantity INTEGER NOT NULL,
+  amount INTEGER NOT NULL,
+  duration NUMERIC,
+  note TEXT
+);
+```
+
+---
+
+## 3. implementation_requirements テーブル
+追加実装要件の詳細情報を保持します。
+
+| カラム名                 | データ型 | 説明                             |
+|-------------------------|---------|--------------------------------|
+| id                      | UUID    | PRIMARY KEY                    |
+| estimate_id             | UUID    | UNIQUE REFERENCES estimates(id)|
+| has_design              | TEXT    | デザイン委託・共同などフラグ   |
+| design_format           | TEXT    | デザイン形式（figmaなど）      |
+| has_logo                | TEXT    | ロゴ提供状況                   |
+| has_images              | TEXT    | 画像提供状況                   |
+| has_icons               | TEXT    | アイコン提供状況               |
+| has_custom_fonts        | TEXT    | フォント提供状況               |
+| has_content             | TEXT    | コンテンツ提供状況             |
+| design_cost_amount      | INTEGER | デザイン費用                   |
+| design_cost_duration    | INTEGER | デザイン工数                   |
+| assets_cost_amount      | INTEGER | アセット費用                   |
+| assets_cost_duration    | INTEGER | アセット工数                   |
+| content_cost_amount     | INTEGER | コンテンツ費用                 |
+| content_cost_duration   | INTEGER | コンテンツ工数                 |
+| total_additional_cost   | INTEGER | 合計追加費用                   |
+| additional_duration     | INTEGER | 追加期間（日数）               |
+
+```sql
+CREATE TABLE implementation_requirements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  estimate_id UUID UNIQUE REFERENCES estimates(id) ON DELETE CASCADE,
+  has_design TEXT,
+  design_format TEXT,
+  has_logo TEXT,
+  has_images TEXT,
+  has_icons TEXT,
+  has_custom_fonts TEXT,
+  has_content TEXT,
+  design_cost_amount INTEGER,
+  design_cost_duration INTEGER,
+  assets_cost_amount INTEGER,
+  assets_cost_duration INTEGER,
+  content_cost_amount INTEGER,
+  content_cost_duration INTEGER,
+  total_additional_cost INTEGER,
+  additional_duration INTEGER
+);
+```
+
+---
+
+## 4. cost_breakdowns テーブル
+機能ごとのコスト内訳を保持します。
+
+| カラム名          | データ型 | 説明                     |
+|------------------|---------|-------------------------|
+| id               | UUID    | PRIMARY KEY            |
+| estimate_id      | UUID    | REFERENCES estimates(id)|
+| feature          | TEXT    | 機能名                  |
+| is_necessary     | BOOLEAN | 必須フラグ              |
+| estimated_hours  | NUMERIC | 工数（時間）            |
+| cost             | INTEGER | コスト（円、NULL可）    |
+| estimation_basis | TEXT    | 見積根拠                |
+| reason           | TEXT    | 判断理由（NULL可）      |
+
+```sql
+CREATE TABLE cost_breakdowns (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  estimate_id UUID REFERENCES estimates(id) ON DELETE CASCADE,
+  feature TEXT NOT NULL,
+  is_necessary BOOLEAN NOT NULL,
+  estimated_hours NUMERIC NOT NULL,
+  cost INTEGER,
+  estimation_basis TEXT NOT NULL,
+  reason TEXT
+);
+```
+
+---
+
+## 5. proposed_features テーブル
+AIが提案する機能候補の詳細を保持します。
+
+| カラム名         | データ型 | 説明                    |
+|-----------------|---------|------------------------|
+| id              | UUID    | PRIMARY KEY           |
+| estimate_id     | UUID    | REFERENCES estimates(id)|
+| feature_id      | TEXT    | 機能ID                |
+| name            | TEXT    | 機能名                |
+| description     | TEXT    | 説明                  |
+| price           | INTEGER | 価格                  |
+| duration        | NUMERIC | 工数（日数）          |
+| is_required     | BOOLEAN | 必須フラグ            |
+| category        | TEXT    | カテゴリ              |
+| dependencies    | TEXT[]  | 依存機能リスト        |
+| reason          | TEXT    | 判断理由              |
+| difficulty      | SMALLINT| 実装難易度            |
+| daily_rate      | NUMERIC | 日額レート            |
+| difficulty_reason| TEXT   | 難易度判断理由        |
+
+```sql
+CREATE TABLE proposed_features (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  estimate_id UUID REFERENCES estimates(id) ON DELETE CASCADE,
+  feature_id TEXT,
+  name TEXT,
+  description TEXT,
+  price INTEGER,
+  duration NUMERIC,
+  is_required BOOLEAN,
+  category TEXT,
+  dependencies TEXT[],
+  reason TEXT,
+  difficulty SMALLINT,
+  daily_rate NUMERIC,
+  difficulty_reason TEXT
+);
+```
+
+---
+
+## 6. RLSポリシー
+RLS（Row Level Security）を活用して、認証ユーザーは自分の見積もりのみ参照・更新可能、未認証（anon）はINSERTのみ許可する設定例を示します。
+
+```sql
+-- 1) 見積もりテーブルに user_id カラムを追加 (未認証ユーザーは NULL)
+ALTER TABLE estimates ADD COLUMN user_id UUID REFERENCES auth.users(id);
+
+-- 2) estimates テーブルに対して RLS を有効化
+ALTER TABLE estimates ENABLE ROW LEVEL SECURITY;
+
+-- 認証ユーザー用ポリシー: 自分のレコードのみ SELECT/UPDATE/DELETE を許可
+CREATE POLICY "authenticated_estimates_policy" ON estimates
+  FOR ALL
+  TO authenticated
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
+
+-- 未認証ユーザー(anon)には INSERT のみ許可 (user_id IS NULL)
+CREATE POLICY "anonymous_insert_estimates" ON estimates
+  FOR INSERT
+  TO anon
+  WITH CHECK (user_id IS NULL);
+```
+
+※ 他のテーブル（estimate_items, implementation_requirements, cost_breakdowns, proposed_features）にも、
+親テーブル (`estimate_id`) への参照制約を保持しつつ、同様の RLS ポリシーを設定してください。
+
+```sql
+-- estimate_items テーブルに対する RLS 設定
+ALTER TABLE estimate_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "authenticated_estimate_items_policy" ON estimate_items
+  FOR ALL
+  TO authenticated
+  USING (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id = auth.uid()
+  ))
+  WITH CHECK (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id = auth.uid()
+  ));
+CREATE POLICY "anonymous_insert_estimate_items" ON estimate_items
+  FOR INSERT
+  TO anon
+  WITH CHECK (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id IS NULL
+  ));
+
+-- implementation_requirements テーブルに対する RLS 設定
+ALTER TABLE implementation_requirements ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "authenticated_implementation_requirements_policy" ON implementation_requirements
+  FOR ALL
+  TO authenticated
+  USING (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id = auth.uid()
+  ))
+  WITH CHECK (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id = auth.uid()
+  ));
+CREATE POLICY "anonymous_insert_implementation_requirements" ON implementation_requirements
+  FOR INSERT
+  TO anon
+  WITH CHECK (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id IS NULL
+  ));
+
+-- cost_breakdowns テーブルに対する RLS 設定
+ALTER TABLE cost_breakdowns ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "authenticated_cost_breakdowns_policy" ON cost_breakdowns
+  FOR ALL
+  TO authenticated
+  USING (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id = auth.uid()
+  ))
+  WITH CHECK (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id = auth.uid()
+  ));
+CREATE POLICY "anonymous_insert_cost_breakdowns" ON cost_breakdowns
+  FOR INSERT
+  TO anon
+  WITH CHECK (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id IS NULL
+  ));
+
+-- proposed_features テーブルに対する RLS 設定
+ALTER TABLE proposed_features ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "authenticated_proposed_features_policy" ON proposed_features
+  FOR ALL
+  TO authenticated
+  USING (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id = auth.uid()
+  ))
+  WITH CHECK (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id = auth.uid()
+  ));
+CREATE POLICY "anonymous_insert_proposed_features" ON proposed_features
+  FOR INSERT
+  TO anon
+  WITH CHECK (estimate_id IN (
+    SELECT id FROM estimates WHERE user_id IS NULL
+  ));
+```
+
+---
+
+## 7. インデックス
+頻繁に検索・フィルタリングされるカラムにインデックスを追加し、パフォーマンスを向上させます。
+
+```sql
+-- estimates テーブル注目カラムへのインデックス
+CREATE INDEX idx_estimates_user_id       ON estimates(user_id);
+CREATE INDEX idx_estimates_number        ON estimates(estimate_number);
+CREATE INDEX idx_estimates_created_at    ON estimates(created_at);
+
+-- 子テーブルの外部キー向けインデックス
+CREATE INDEX idx_items_estimate_id             ON estimate_items(estimate_id);
+CREATE INDEX idx_requirements_estimate_id      ON implementation_requirements(estimate_id);
+CREATE INDEX idx_breakdowns_estimate_id        ON cost_breakdowns(estimate_id);
+CREATE INDEX idx_proposed_features_estimate_id ON proposed_features(estimate_id);
+```
