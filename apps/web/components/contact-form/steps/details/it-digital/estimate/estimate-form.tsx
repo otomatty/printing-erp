@@ -1,6 +1,6 @@
 'use client';
 
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import { Button } from '@kit/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
@@ -27,6 +27,7 @@ import { ImplementationRequirementsStep } from './steps/implementation-requireme
 import { ModernEstimateStep } from './steps/modern-estimate';
 import { UserInfoStep } from './steps/user-info';
 import { StepIndicator } from './step-indicator';
+import { indicatorStepAtom } from '~/store/contact-form';
 
 const steps = [
   {
@@ -82,6 +83,7 @@ interface EstimateFormProps {
 
 export function EstimateForm({ onBackToSelection }: EstimateFormProps) {
   const [currentStep, setCurrentStep] = useAtom<StepId>(currentStepAtom);
+  const setIndicatorStep = useSetAtom(indicatorStepAtom);
   const [formData, setFormData] = useAtom(formDataAtom);
   const [aiQuestions, setAiQuestions] = useAtom(aiQuestionsAtom);
   const [answers, setAnswers] = useAtom(aiAnswersAtom);
@@ -91,6 +93,14 @@ export function EstimateForm({ onBackToSelection }: EstimateFormProps) {
   const [, setWorkflowRunId] = useAtom(workflowRunIdAtom);
   const [, setEstimationLoading] = useAtom(estimationLoadingAtom);
   const formRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (currentStep === 'user-info') {
+      setIndicatorStep('user-info');
+    } else {
+      setIndicatorStep('details');
+    }
+  }, [currentStep, setIndicatorStep]);
 
   const currentStepIndex = steps.findIndex((step) => step.id === currentStep);
   const step = steps[currentStepIndex];

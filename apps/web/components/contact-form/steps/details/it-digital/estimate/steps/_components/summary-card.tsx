@@ -129,6 +129,16 @@ export function SummaryCard({
             {calculateTotalPrice().toLocaleString()}円
           </p>
         </div>
+        {/* 折りたたみ時にも次へボタンを表示（モバイルのみ） */}
+        {collapsed && (
+          <Button
+            className="w-full mt-4 lg:hidden"
+            size="lg"
+            onClick={handleNext}
+          >
+            {buttonText}
+          </Button>
+        )}
         {/* 折りたたみ解除時に詳細を表示 */}
         {!collapsed && (
           <>

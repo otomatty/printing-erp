@@ -14,6 +14,7 @@ import {
 import {
   isFormValidAtom,
   currentStepAtom,
+  indicatorStepAtom,
   userInfoAtom,
   isUserInfoValidAtom,
   inquiryTypeAtom,
@@ -37,6 +38,7 @@ export const isAIEstimateShownAtom = atom(false);
 
 export default function ContactForm() {
   const [currentStep, setCurrentStep] = useAtom(currentStepAtom);
+  const [indicatorStep, setIndicatorStep] = useAtom(indicatorStepAtom);
   const [userInfo] = useAtom(userInfoAtom);
   const [isFormValid] = useAtom(isFormValidAtom);
   const [isUserInfoValid] = useAtom(isUserInfoValidAtom);
@@ -46,6 +48,13 @@ export default function ContactForm() {
   );
   // フォームリセット用の setter
   const resetForm = useSetAtom(resetFormAtom);
+
+  // 通常フォーム遷移時にプログレスインジケーター用ステップを同期
+  useEffect(() => {
+    if (!isAIEstimateShown) {
+      setIndicatorStep(currentStep);
+    }
+  }, [currentStep, isAIEstimateShown, setIndicatorStep]);
 
   // フォーム送信状態管理
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -197,7 +206,7 @@ export default function ContactForm() {
     <div>
       {/* 進行状況インジケーター */}
       {currentStep !== 'complete' && (
-        <ContactFormProgressIndicator currentStep={currentStep} />
+        <ContactFormProgressIndicator currentStep={indicatorStep} />
       )}
 
       <div>

@@ -4,7 +4,7 @@ import { generatePdfAction } from '~/actions/estimate/generatePdf';
 import { calculateRushFee } from '../../_utils/calculateRushFee';
 import { calculateImplementationCosts } from '../../_utils/calculateImplementationCosts';
 import { v4 as uuidv4 } from 'uuid';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import {
   formDataAtom,
   proposedFeaturesAtom,
@@ -17,18 +17,24 @@ import type {
   Deadline,
   ImplementationCosts,
 } from '~/types/estimate';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   EstimateSummary,
   FeatureList,
   ImplementationRequirements,
   TotalSummary,
 } from './components';
+import { indicatorStepAtom } from '~/store/contact-form';
 
 /**
  * 見積もり結果表示およびPDFダウンロード/問い合わせを行うステップコンポーネント
  */
 export function EstimateResultStep() {
+  const setIndicatorStep = useSetAtom(indicatorStepAtom);
+  useEffect(() => {
+    setIndicatorStep('confirmation');
+  }, [setIndicatorStep]);
+
   // クライアントサイドでatomから値を取得
   const [formData] = useAtom(formDataAtom);
   const [proposedFeatures] = useAtom(proposedFeaturesAtom);

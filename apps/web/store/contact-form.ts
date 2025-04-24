@@ -104,6 +104,8 @@ export const isUserInfoValidAtom = atom(
 
 // ステップを管理するアトム
 export const currentStepAtom = atom<FormStep>('inquiry-type');
+// プログレスインジケーター用のステップを管理するアトム
+export const indicatorStepAtom = atom<FormStep>('inquiry-type');
 
 // フォームが有効かどうかを判断するアトム (書き込み可能)
 export const isFormValidAtom = atom<boolean>(false);
@@ -112,6 +114,7 @@ export const isFormValidAtom = atom<boolean>(false);
 export const resetFormAtom = atom(null, (_, set) => {
   // フォーム全体の状態を初期化
   set(currentStepAtom, 'inquiry-type');
+  set(indicatorStepAtom, 'inquiry-type');
   set(userInfoAtom, initialUserInfo);
   set(inquiryTypeAtom, 'print-services');
   set(printServicesFormAtom, initialPrintServicesData);

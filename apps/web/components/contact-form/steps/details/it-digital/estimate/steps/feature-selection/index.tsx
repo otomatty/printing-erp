@@ -192,7 +192,7 @@ export function FeatureSelectionStep() {
               <h4 className="font-medium border-b pb-2">{categoryName}</h4>
               {featuresInCategory.map((feature) => (
                 <Card key={feature.id} className="p-4 bg-white">
-                  <div className="flex items-start gap-4">
+                  <div className="flex flex-col md:flex-row items-start gap-4">
                     <Checkbox
                       id={feature.id}
                       checked={selectedFeatureIds.includes(feature.id)}
@@ -226,7 +226,7 @@ export function FeatureSelectionStep() {
                           {feature.reason}
                         </p>
                       )}
-                      <div className="flex gap-4 text-sm text-muted-foreground">
+                      <div className="flex flex-col sm:flex-row gap-4 text-sm text-muted-foreground">
                         <span>開発期間: {feature.duration.toFixed(1)}日</span>
                         <span>
                           費用目安: {feature.price.toLocaleString()}円
