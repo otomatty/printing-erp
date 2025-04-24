@@ -3,12 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronDown } from 'lucide-react';
 import Container from '../container';
-
-export type FAQItem = {
-  question: string;
-  answer: string | React.ReactNode;
-  id?: string;
-};
+import type { FAQItem } from '~/types/faq';
 
 type FAQSectionProps = {
   title?: string;

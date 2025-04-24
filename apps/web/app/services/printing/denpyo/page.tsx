@@ -25,10 +25,7 @@ import {
   sampleItems as workSamplesItems,
   note as workSamplesNote,
 } from './_data/workSamplesData';
-import {
-  faqTitle as denpyoFaqTitle,
-  denpyoSeihonFaqData,
-} from './_data/faqData'; // FAQ データをインポート
+import { getFaqItemsByPageSlug } from '~/actions/faq';
 
 export const metadata: Metadata = {
   title: '伝票印刷・製本 | サービス | ニイヌマ企画印刷', // タイトルを少し修正
@@ -43,7 +40,12 @@ const denpyoSeihonRelatedIds = [
   'print-item-5', // ページ物・冊子
 ];
 
-const DenpyoSeihonPage = () => {
+const DenpyoSeihonPage = async () => {
+  const { faqs, error } = await getFaqItemsByPageSlug(
+    '/services/printing/denpyo'
+  );
+  if (error) console.error('Error fetching FAQs:', error);
+
   return (
     <div>
       <PageHero
@@ -63,11 +65,7 @@ const DenpyoSeihonPage = () => {
       <DeliveryInfo />
       <SubmissionGuide />
       <OrderFlow />
-      <FAQSection
-        faqs={denpyoSeihonFaqData}
-        title={denpyoFaqTitle}
-        withQAStyle={true}
-      />
+      <FAQSection faqs={faqs} title="よくあるご質問" withQAStyle={true} />
       <RelatedServices relatedServiceIds={denpyoSeihonRelatedIds} />
       <CtaSection
         title="伝票印刷・製本のご相談はこちら"

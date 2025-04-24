@@ -1,6 +1,6 @@
 import PageHero from '~/components/custom/page-hero';
 import FAQSection from '~/components/custom/faq/faq-section';
-import { contactFAQs } from '~/components/custom/faq/faq-data';
+import { getFaqItemsByPageSlug } from '~/actions/faq';
 import Container from '~/components/custom/container';
 import ContactForm from './contact-form';
 import type { Metadata } from 'next';
@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   keywords: ['お問い合わせ', 'ニイヌマ企画印刷'],
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { faqs, error } = await getFaqItemsByPageSlug('/contact');
+  if (error) console.error('Error fetching FAQs:', error);
   return (
     <>
       <PageHero
@@ -26,11 +28,7 @@ export default function ContactPage() {
             <ContactForm />
           </div>
         </Container>
-        <FAQSection
-          title="よくあるご質問"
-          faqs={contactFAQs}
-          withQAStyle={true}
-        />
+        <FAQSection title="よくあるご質問" faqs={faqs} withQAStyle={true} />
       </div>
     </>
   );

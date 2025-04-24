@@ -21,7 +21,7 @@ export function AccordionItem({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center w-full py-4 text-left font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        className="flex justify-between items-center w-full py-4 text-left font-medium focus:outline-none focus-visible:ring focus-visible:ring-primary"
         aria-expanded={isOpen}
       >
         <span className="text-lg">{title}</span>

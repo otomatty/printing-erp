@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import DeliveryInfo from '~/components/services/delivery-info';
 import SubmissionGuide from '~/components/services/submission-guide';
 import OrderFlow from '~/components/services/order-flow';
-import FAQSection from '~/components/custom/faq/faq-section'; // 新しいコンポーネントをインポート
+import FAQSection from '~/components/custom/faq/faq-section';
 import RelatedServices from '~/components/services/related-services';
 import CtaSection from '~/components/custom/cta-section'; // CtaSection は使うのでインポートを残す
 import ServiceIntroduction from '../../_components/service-introduction'; // データ渡しに変更
@@ -27,10 +27,7 @@ import {
   sampleItems as workSamplesItems,
   note as workSamplesNote,
 } from './_data/workSamplesData';
-import {
-  faqTitle as meishiFaqTitle,
-  meishiHagakiCardFaqData,
-} from './_data/faqData';
+import { getFaqItemsByPageSlug } from '~/actions/faq';
 // --- データファイルのインポートを追加 ---
 
 export const metadata: Metadata = {
@@ -46,7 +43,15 @@ const meishiHagakiCardRelatedIds = [
   'print-item-4', // チラシ・ポスター
 ];
 
-const MeishiHagakiCardPage = () => {
+const MeishiHagakiCardPage = async () => {
+  // FAQをサーバーアクションから取得
+  const { faqs, error } = await getFaqItemsByPageSlug(
+    '/services/printing/meishi-hagaki-card'
+  );
+  if (error) {
+    console.error('Error fetching FAQs:', error);
+  }
+
   return (
     <div>
       <PageHero
@@ -69,11 +74,7 @@ const MeishiHagakiCardPage = () => {
       <DeliveryInfo />
       <SubmissionGuide />
       <OrderFlow />
-      <FAQSection
-        faqs={meishiHagakiCardFaqData}
-        title={meishiFaqTitle} // データファイルからタイトルを渡す
-        withQAStyle={true}
-      />
+      <FAQSection faqs={faqs} title="よくあるご質問" withQAStyle={true} />
       <RelatedServices relatedServiceIds={meishiHagakiCardRelatedIds} />
       <CtaSection />
     </div>

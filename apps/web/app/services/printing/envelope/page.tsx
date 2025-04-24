@@ -27,7 +27,7 @@ import {
   sampleItems as workSamplesItems,
   note as workSamplesNote,
 } from './_data/workSamplesData';
-import { faqTitle as envelopeFaqTitle, envelopeFaqData } from './_data/faqData'; // FAQ データをインポート ※変更
+import { getFaqItemsByPageSlug } from '~/actions/faq';
 // --- データファイルのインポートを追加 --- ※追加
 
 export const metadata: Metadata = {
@@ -43,7 +43,12 @@ const envelopeRelatedIds = [
   'print-item-5', // ページ物・冊子
 ];
 
-const EnvelopePage = () => {
+const EnvelopePage = async () => {
+  const { faqs, error } = await getFaqItemsByPageSlug(
+    '/services/printing/envelope'
+  );
+  if (error) console.error('Error fetching FAQs:', error);
+
   return (
     <div>
       <PageHero
@@ -75,11 +80,7 @@ const EnvelopePage = () => {
 
       <OrderFlow />
 
-      <FAQSection
-        faqs={envelopeFaqData} // データファイルからインポートしたデータを使用 ※変更
-        title={envelopeFaqTitle} // データファイルからインポートしたタイトルを使用 ※変更
-        withQAStyle={true} // シンプルスタイル
-      />
+      <FAQSection faqs={faqs} title="よくあるご質問" withQAStyle={true} />
 
       <RelatedServices relatedServiceIds={envelopeRelatedIds} />
 

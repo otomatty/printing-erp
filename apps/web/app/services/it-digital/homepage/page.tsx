@@ -12,7 +12,7 @@ import HomepageWorkflowSection from './_components/workflow';
 import HomepagePricingSection from './_components/pricing';
 import MobileEstimateButton from '~/components/custom/mobile-estimate-button';
 import FAQSection from '~/components/custom/faq/faq-section';
-import { homepageFAQs } from './_data/faqData';
+import { getFaqItemsByPageSlug } from '~/actions/faq';
 import CtaSection from '~/components/custom/cta-section';
 
 export const metadata: Metadata = {
@@ -21,7 +21,12 @@ export const metadata: Metadata = {
     'お客様のビジネスを成功に導くホームページ制作をご提供します。デザイン性と機能性を兼ね備えた、集客・売上アップにつながるホームページを制作いたします。',
 };
 
-export default function HomepagePage() {
+export default async function HomepagePage() {
+  const { faqs, error } = await getFaqItemsByPageSlug(
+    '/services/it-digital/homepage'
+  );
+  if (error) console.error('Error fetching FAQs:', error);
+
   return (
     <main>
       {/* 1. ヒーローセクション */}
@@ -49,11 +54,7 @@ export default function HomepagePage() {
       <HomepagePricingSection id="pricing" />
 
       {/* 10. よくあるご質問 - HomepageFaqSection の代わりに FAQSection を直接使用 */}
-      <FAQSection
-        faqs={homepageFAQs}
-        title="よくあるご質問"
-        withQAStyle={true}
-      />
+      <FAQSection faqs={faqs} title="よくあるご質問" withQAStyle={true} />
 
       {/* 11. CTA */}
       <CtaSection

@@ -12,15 +12,21 @@ import SystemWorkflowSection from './_components/workflow';
 import SystemPricingSection from './_components/pricing';
 import MobileEstimateButton from '~/components/custom/mobile-estimate-button';
 import FAQSection from '~/components/custom/faq/faq-section';
-import { systemFAQs } from './_data/faqData';
+import { getFaqItemsByPageSlug } from '~/actions/faq';
 import CtaSection from '~/components/custom/cta-section';
+
 export const metadata: Metadata = {
   title: '業務システム開発 | ニイヌマ企画印刷',
   description:
     'お客様のビジネスに最適な業務システムの開発・導入をサポートします。業務効率化からコスト削減まで、幅広いニーズに対応したシステム開発サービスをご提供します。',
 };
 
-export default function SystemPage() {
+export default async function SystemPage() {
+  const { faqs, error } = await getFaqItemsByPageSlug(
+    '/services/it-digital/system'
+  );
+  if (error) console.error('Error fetching FAQs:', error);
+
   return (
     <main>
       {/* 1. ヒーローセクション */}
@@ -48,7 +54,7 @@ export default function SystemPage() {
       <SystemPricingSection id="pricing" />
 
       {/* 11. よくあるご質問 - SystemFaqSection の代わりに FAQSection を直接使用 */}
-      <FAQSection faqs={systemFAQs} title="よくあるご質問" withQAStyle={true} />
+      <FAQSection faqs={faqs} title="よくあるご質問" withQAStyle={true} />
 
       {/* 12. CTA */}
       <CtaSection

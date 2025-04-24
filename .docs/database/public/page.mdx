@@ -1,0 +1,42 @@
+# pages テーブル設計
+
+## 概要
+`pages` テーブルは、公開サイトのページ情報（URLスラッグとメタデータ）を管理します。フロントエンドからページに紐づくFAQを取得する際に使用されます。
+
+## テーブル構造
+```sql
+CREATE TABLE public.pages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT NOT NULL UNIQUE,           -- ページURL識別子（例: /services/printing/meishi-hagaki-card）
+  title TEXT,                          -- ページタイトル（オプション）
+  description TEXT,                    -- ページ説明（オプション）
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX idx_pages_slug ON public.pages(slug);
+```
+
+## RLSポリシー
+Row Level Security を有効化し、以下のポリシーを設定します。
+
+```sql
+-- RLS 有効化
+ALTER TABLE public.pages ENABLE ROW LEVEL SECURITY;
+
+-- 誰でもページ情報を取得できる
+CREATE POLICY "Public can select pages" 
+  ON public.pages
+  FOR SELECT
+  USING (true);
+
+-- admin_users テーブルに登録されているユーザーのみ、ページの作成・更新・削除が可能
+CREATE POLICY "Admins can manage pages"
+  ON public.pages
+  FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM system.admin_users 
+      WHERE auth_user_id = auth.uid() AND is_active
+    )
+  );
+```

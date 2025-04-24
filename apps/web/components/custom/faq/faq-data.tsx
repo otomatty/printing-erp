@@ -1,4 +1,4 @@
-import type { FAQItem } from './faq-section';
+import type { FAQItem } from '~/types/faq';
 import React from 'react';
 
 // 印刷サービスに関するFAQ

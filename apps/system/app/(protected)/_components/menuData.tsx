@@ -165,13 +165,6 @@ export const menuItems: MenuItem[] = [
     status: 'available',
   },
   {
-    href: '/website/analytics',
-    title: 'アクセス解析',
-    icon: <BarChart className="h-6 w-6" />,
-    category: 'website',
-    status: 'demo',
-  },
-  {
     href: '/website/faq',
     title: 'よくある質問',
     icon: <BarChart className="h-6 w-6" />,
@@ -181,6 +174,13 @@ export const menuItems: MenuItem[] = [
   {
     href: '/website/sample',
     title: '制作事例',
+    icon: <BarChart className="h-6 w-6" />,
+    category: 'website',
+    status: 'demo',
+  },
+  {
+    href: '/website/analytics',
+    title: 'アクセス解析',
     icon: <BarChart className="h-6 w-6" />,
     category: 'website',
     status: 'demo',

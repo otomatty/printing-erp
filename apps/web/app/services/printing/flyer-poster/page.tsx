@@ -32,7 +32,7 @@ import {
   sampleItems as workSamplesItems,
   note as workSamplesNote,
 } from './_data/workSamplesData';
-import { faqTitle as flyerFaqTitle, flyerPosterFaqData } from './_data/faqData'; // FAQ データをインポート ※変更
+import { getFaqItemsByPageSlug } from '~/actions/faq';
 // --- データファイルのインポートを追加 --- ※追加
 
 export const metadata: Metadata = {
@@ -48,7 +48,12 @@ const flyerPosterRelatedIds = [
   'print-item-5', // ページ物・製本
 ];
 
-const FlyerPosterPage = () => {
+const FlyerPosterPage = async () => {
+  const { faqs, error } = await getFaqItemsByPageSlug(
+    '/services/printing/flyer-poster'
+  );
+  if (error) console.error('Error fetching FAQs:', error);
+
   return (
     <div>
       <PageHero
@@ -73,11 +78,7 @@ const FlyerPosterPage = () => {
       <DeliveryInfo />
       <SubmissionGuide />
       <OrderFlow />
-      <FAQSection
-        faqs={flyerPosterFaqData} // データファイルからインポートしたデータを使用 ※変更
-        title={flyerFaqTitle} // データファイルからインポートしたタイトルを使用 ※変更
-        withQAStyle={true} // シンプルスタイル
-      />
+      <FAQSection faqs={faqs} title="よくあるご質問" withQAStyle={true} />
       <RelatedServices relatedServiceIds={flyerPosterRelatedIds} />
       <CtaSection
         title="チラシ・ポスター印刷のご相談"

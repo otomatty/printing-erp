@@ -32,7 +32,7 @@ import {
   sampleItems as workSamplesItems,
   note as workSamplesNote,
 } from './_data/workSamplesData';
-import { faqTitle as pageMonoFaqTitle, pageMonoFaqData } from './_data/faqData'; // FAQ データをインポート ※変更
+import { getFaqItemsByPageSlug } from '~/actions/faq';
 // --- データファイルのインポートを追加 --- ※追加
 
 export const metadata: Metadata = {
@@ -48,7 +48,12 @@ const pageMonoSeihonRelatedIds = [
   'print-item-3', // 伝票印刷・製本
 ];
 
-const PageBookBindingPage = () => {
+const PageBookBindingPage = async () => {
+  const { faqs, error } = await getFaqItemsByPageSlug(
+    '/services/printing/page-bookbinding'
+  );
+  if (error) console.error('Error fetching FAQs:', error);
+
   return (
     <div>
       <PageHero
@@ -74,11 +79,7 @@ const PageBookBindingPage = () => {
       <DeliveryInfo />
       <SubmissionGuide />
       <OrderFlow />
-      <FAQSection
-        faqs={pageMonoFaqData} // データファイルからインポートしたデータを使用 ※変更
-        title={pageMonoFaqTitle} // データファイルからインポートしたタイトルを使用 ※変更
-        withQAStyle={true} // 指示通り true に設定
-      />
+      <FAQSection faqs={faqs} title="よくあるご質問" withQAStyle={true} />
       <RelatedServices relatedServiceIds={pageMonoSeihonRelatedIds} />
       <CtaSection
         title="ページ物・冊子印刷・製本のご相談はこちら"

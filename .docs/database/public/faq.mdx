@@ -1,0 +1,44 @@
+# faq_items テーブル設計
+
+## 概要
+`faq_items` テーブルは、各ページに紐づくFAQ項目を管理します。質問と回答、表示順、公開状態を保持します。
+
+## テーブル構造
+```sql
+CREATE TABLE public.faq_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  page_id UUID NOT NULL REFERENCES public.pages(id) ON DELETE CASCADE,  -- ページID
+  question TEXT NOT NULL,                   -- 質問本文
+  answer TEXT NOT NULL,                     -- 回答本文（マークダウンやHTML）
+  sort_order INTEGER NOT NULL DEFAULT 0,    -- 表示順
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,  -- 公開・非公開フラグ
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX idx_faq_items_page_order ON public.faq_items(page_id, sort_order);
+```
+
+## RLSポリシー
+Row Level Security を有効化し、以下のポリシーを設定します。
+
+```sql
+-- RLS 有効化
+ALTER TABLE public.faq_items ENABLE ROW LEVEL SECURITY;
+
+-- 誰でも公開中のFAQを取得できる
+CREATE POLICY "Public can select active faq_items"
+  ON public.faq_items
+  FOR SELECT
+  USING (is_active);
+
+-- admin_users テーブルに登録されているユーザーのみ、FAQ項目の作成・更新・削除が可能
+CREATE POLICY "Admins can manage faq_items"
+  ON public.faq_items
+  FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM system.admin_users 
+      WHERE auth_user_id = auth.uid() AND is_active
+    )
+  );
+```
