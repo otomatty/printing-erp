@@ -2,7 +2,7 @@
 
 import React, { useState, useTransition, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { deletePage } from '~/actions/faq';
+import { deletePage } from '~/_actions/faq';
 import { toast } from 'sonner';
 import {
   AlertDialog,

@@ -3,7 +3,7 @@
 import { useState, useTransition, type ReactNode } from 'react';
 import { useSetAtom } from 'jotai';
 import { inquiriesAtom } from '~/store/inquiries';
-import { deleteInquiry } from '~/actions/inquiries';
+import { deleteInquiry } from '~/_actions/inquiries';
 import { toast } from 'sonner';
 import {
   AlertDialog,

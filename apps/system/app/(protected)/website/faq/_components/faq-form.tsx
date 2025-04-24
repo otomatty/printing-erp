@@ -17,7 +17,7 @@ import {
 import { Input } from '@kit/ui/input';
 import { Switch } from '@kit/ui/switch';
 import { SimpleEditor } from '~/components/tiptap/tiptap-templates/simple/simple-editor';
-import { createFaqItem, updateFaqItem } from '../../../../actions/faq';
+import { createFaqItem, updateFaqItem } from '../../../../_actions/faq';
 import { faqFormSchema, type FaqFormData } from '~/types/faq';
 
 interface FaqFormProps {

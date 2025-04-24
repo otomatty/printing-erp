@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Search, Mail, Phone, Eye } from 'lucide-react';
-import type { Customer } from '../../../../actions/customers';
+import type { Customer } from '../../../_actions/customers';
 
 interface CustomersTableProps {
   customers: Customer[];

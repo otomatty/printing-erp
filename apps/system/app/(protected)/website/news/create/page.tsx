@@ -1,4 +1,4 @@
-import { getCategories } from '~/actions/news';
+import { getCategories } from '~/_actions/news';
 import NewsForm from '../_components/news-form';
 import { PageHeader } from '~/components/custom/page-header';
 import { Container } from '~/components/custom/container';

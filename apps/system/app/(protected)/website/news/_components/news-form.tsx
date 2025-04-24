@@ -42,7 +42,7 @@ import { Calendar } from '@kit/ui/calendar';
 import { Separator } from '@kit/ui/separator';
 import { cn } from '@kit/ui/utils';
 
-import { createNews, updateNews, getNewsById } from '~/actions/news';
+import { createNews, updateNews, getNewsById } from '~/_actions/news';
 import { newsFormSchema, type NewsFormData } from '~/types/news';
 import AttachmentsManager from './attachments-manager';
 import { RichTextEditor } from './rich-text-editor';

@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import CustomersPageClient from './customers-page-client';
-import { fetchCustomers } from '../../../actions/customers';
+import { fetchCustomers } from '../../_actions/customers';
 
 interface Customer {
   id: string;

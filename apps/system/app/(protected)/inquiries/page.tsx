@@ -1,6 +1,6 @@
 import InquiriesPageClient from './inquiries-page-client';
-import { fetchInquiries, fetchInquiryStats } from '../../actions/inquiries';
-import { fetchAdminUsers } from '../../actions/users/fetchAdminUsers';
+import { fetchInquiries, fetchInquiryStats } from '../../_actions/inquiries';
+import { fetchAdminUsers } from '../../_actions/users/fetchAdminUsers';
 
 export const dynamic = 'force-dynamic';
 

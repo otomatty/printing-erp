@@ -27,7 +27,7 @@ import {
   File,
 } from 'lucide-react';
 
-import { getNewsById } from '~/actions/news';
+import { getNewsById } from '~/_actions/news';
 import DeleteNewsButton from '../_components/delete-news-button';
 import PublishNewsButton from '../_components/publish-news-button';
 import UnpublishNewsButton from '../_components/unpublish-news-button';

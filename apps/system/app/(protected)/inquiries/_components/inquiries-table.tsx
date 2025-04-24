@@ -19,7 +19,7 @@ import {
   fetchInquiryAssignees,
   addInquiryAssignee,
   removeInquiryAssignee,
-} from '~/actions/inquiries';
+} from '~/_actions/inquiries';
 import { toast } from 'sonner';
 import { DataTableRowActions } from '@kit/ui/data-table';
 import { Checkbox } from '@kit/ui/checkbox';

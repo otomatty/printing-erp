@@ -3,8 +3,8 @@
  * 認証済みユーザー向けのレイアウトで、ヘッダーとメインコンテンツを含む
  */
 import Header from './_components/header';
-import { getUser } from '~/actions/auth';
-import { fetchAdminProfile } from '~/actions/accounts';
+import { getUser } from '~/_actions/auth';
+import { fetchAdminProfile } from '~/_actions/accounts';
 import { FabMenu } from '~/components/custom/fab';
 
 export default async function ProtectedLayout({

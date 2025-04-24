@@ -11,7 +11,7 @@ import {
 import { ResponsiveDialog } from '@kit/ui/responsive-dialog';
 import PageForm from './page-form';
 import { PageDeleteDialog } from './page-delete-dialog';
-import { getPages } from '~/actions/faq';
+import { getPages } from '~/_actions/faq';
 import type { Page as PageType } from '~/types/faq';
 import { Card, CardHeader, CardContent } from '@kit/ui/card';
 

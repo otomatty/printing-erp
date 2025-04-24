@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { Plus, Tag } from 'lucide-react';
 import { Button } from '@kit/ui/button';
 import { Pagination } from '@kit/ui/pagination';
-import { searchNews, getCategories } from '~/actions/news';
+import { searchNews, getCategories } from '~/_actions/news';
 import NewsCard from './_components/news-card';
 import NewsFilters from './_components/news-filters';
 import { PageHeader } from '~/components/custom/page-header';

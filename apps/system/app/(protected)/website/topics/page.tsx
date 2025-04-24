@@ -1,5 +1,5 @@
 import TopicsPageClient from './topics-page-client';
-import { listCategories, listTags, listTopics } from '~/actions/topics/index';
+import { listCategories, listTags, listTopics } from '~/_actions/topics/index';
 import type { Topic } from '~/types/topics';
 
 export const dynamic = 'force-dynamic';

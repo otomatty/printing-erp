@@ -16,7 +16,7 @@ import {
   ExternalLink,
   EyeOff,
 } from 'lucide-react';
-import { publishNews, unpublishNews } from '~/actions/news';
+import { publishNews, unpublishNews } from '~/_actions/news';
 import {
   DropdownMenu,
   DropdownMenuContent,

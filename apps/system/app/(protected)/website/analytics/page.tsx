@@ -1,8 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { getAnalyticsData } from '~/actions/analytics';
+import { getAnalyticsData } from '~/_actions/analytics';
 // import type of server action return for typing
-import type { getRealtimeAnalyticsData } from '~/actions/analytics';
+import type { getRealtimeAnalyticsData } from '~/_actions/analytics';
 
 // 型定義: getAnalyticsData の返り値を利用
 type AnalyticsReport = Awaited<ReturnType<typeof getAnalyticsData>>;

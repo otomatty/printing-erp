@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { PageHeader } from '~/components/custom/page-header';
 import { Container } from '~/components/custom/container';
-import { getPageById, getFaqItems } from '~/actions/faq';
+import { getPageById, getFaqItems } from '~/_actions/faq';
 import { Button } from '@kit/ui/button';
 import { Plus } from 'lucide-react';
 import { ResponsiveDialog } from '@kit/ui/responsive-dialog';

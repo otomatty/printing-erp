@@ -2,7 +2,7 @@
 
 import React, { useState, useTransition, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { deleteFaqItem } from '~/actions/faq';
+import { deleteFaqItem } from '~/_actions/faq';
 import { toast } from 'sonner';
 import {
   AlertDialog,

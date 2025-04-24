@@ -19,7 +19,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Card, CardContent, CardHeader, CardTitle } from '@kit/ui/card';
 import { GripVertical, Edit, MoreVertical, Trash } from 'lucide-react';
 import type { FaqItem } from '~/types/faq';
-import { updateFaqItem, deleteFaqItem } from '~/actions/faq';
+import { updateFaqItem, deleteFaqItem } from '~/_actions/faq';
 import { toast } from 'sonner';
 import {
   DropdownMenu,

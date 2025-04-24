@@ -16,7 +16,7 @@ import {
 } from '@kit/ui/form';
 import { Input } from '@kit/ui/input';
 import { Textarea } from '@kit/ui/textarea';
-import { createPage, updatePage } from '~/actions/faq';
+import { createPage, updatePage } from '~/_actions/faq';
 import { pageFormSchema, type PageFormData } from '~/types/faq';
 
 interface PageFormProps {

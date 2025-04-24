@@ -2,7 +2,7 @@
 
 import { atom } from 'jotai';
 import type { Inquiry } from '../types/inquiries';
-import { updateInquiry } from '../actions/inquiries';
+import { updateInquiry } from '../app/_actions/inquiries';
 import { toast } from 'sonner';
 
 /**

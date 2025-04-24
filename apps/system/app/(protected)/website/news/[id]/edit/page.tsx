@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getCategories, getNewsById } from '~/actions/news';
+import { getCategories, getNewsById } from '~/_actions/news';
 import NewsForm from '../../_components/news-form';
 import { PageHeader } from '~/components/custom/page-header';
 import { Container } from '~/components/custom/container';
