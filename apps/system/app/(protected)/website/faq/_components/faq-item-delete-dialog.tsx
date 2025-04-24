@@ -47,7 +47,7 @@ export function FaqItemDeleteDialog({
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>FAQ項目を削除しますか？</AlertDialogTitle>
+          <AlertDialogTitle>よくある質問を削除しますか？</AlertDialogTitle>
           <AlertDialogDescription>
             この操作は取り消せません。
           </AlertDialogDescription>

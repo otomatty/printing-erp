@@ -15,16 +15,16 @@ import {
   FormMessage,
 } from '@kit/ui/form';
 import { Input } from '@kit/ui/input';
-import { Textarea } from '@kit/ui/textarea';
 import { Switch } from '@kit/ui/switch';
-import { createFaqItem } from '~/actions/faq';
+import { SimpleEditor } from '~/components/tiptap/tiptap-templates/simple/simple-editor';
+import { createFaqItem, updateFaqItem } from '../../../../actions/faq';
 import { faqFormSchema, type FaqFormData } from '~/types/faq';
 
 interface FaqFormProps {
   /** ページID */
   pageId: string;
   /** 入力フォームの初期値 */
-  defaultValues?: Partial<FaqFormData>;
+  defaultValues?: Partial<FaqFormData> & { id?: string };
 }
 
 export default function FaqForm({ pageId, defaultValues }: FaqFormProps) {
@@ -44,12 +44,25 @@ export default function FaqForm({ pageId, defaultValues }: FaqFormProps) {
 
   const onSubmit = (data: FaqFormData) => {
     startTransition(async () => {
-      const result = await createFaqItem(data);
-      if (result.success) {
-        toast.success('FAQ項目を作成しました');
-        router.refresh();
-      } else {
-        toast.error(`エラー: ${result.error || '作成中に問題が発生しました'}`);
+      try {
+        const result = defaultValues?.id
+          ? await updateFaqItem(defaultValues.id, data)
+          : await createFaqItem(data);
+        console.log('FAQ create/update result:', result);
+        if (result?.success) {
+          toast.success(
+            defaultValues?.id
+              ? 'FAQ項目を更新しました'
+              : 'FAQ項目を作成しました'
+          );
+          router.refresh();
+        } else {
+          const errMsg: string = result?.error ?? '処理中に問題が発生しました';
+          toast.error(`エラー: ${errMsg}`);
+        }
+      } catch (error) {
+        console.error('FAQ作成・更新エラー:', error);
+        toast.error('サーバーエラーが発生しました');
       }
     });
   };
@@ -77,7 +90,12 @@ export default function FaqForm({ pageId, defaultValues }: FaqFormProps) {
             <FormItem>
               <FormLabel>回答 *</FormLabel>
               <FormControl>
-                <Textarea placeholder="回答を入力" rows={4} {...field} />
+                <SimpleEditor
+                  initialContent={field.value || undefined}
+                  onChange={(content) =>
+                    field.onChange(JSON.stringify(content))
+                  }
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

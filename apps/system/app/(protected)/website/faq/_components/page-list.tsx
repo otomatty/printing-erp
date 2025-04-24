@@ -34,7 +34,7 @@ export default async function PageList() {
         <Card key={page.id} className="overflow-hidden">
           <CardHeader className="p-4 flex flex-row justify-between items-start">
             <div className="space-y-1.5">
-              <Link href={`/website/faq/${page.slug}`}>
+              <Link href={`/website/faq/${page.id}`}>
                 <h3 className="text-lg font-semibold">
                   {page.title || page.slug}
                 </h3>

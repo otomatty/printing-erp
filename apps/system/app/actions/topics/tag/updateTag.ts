@@ -6,7 +6,7 @@ import { ensureAdmin } from '../../ensureAdmin';
 import {
   topicTagFormSchema,
   type TopicTagFormData,
-} from '../../../types/topics';
+} from '../../../../types/topics';
 import { z } from 'zod';
 
 /**

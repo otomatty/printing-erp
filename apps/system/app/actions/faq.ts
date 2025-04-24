@@ -4,8 +4,8 @@ import { revalidatePath } from 'next/cache';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { z } from 'zod';
 import { ensureAdmin } from './ensureAdmin';
-import type { PageFormData, FaqFormData, Page, FaqItem } from '../types/faq';
-import { pageFormSchema, faqFormSchema } from '../types/faq';
+import type { PageFormData, FaqFormData, Page, FaqItem } from '../../types/faq';
+import { pageFormSchema, faqFormSchema } from '../../types/faq';
 
 /**
  * ページ一覧を取得する
@@ -448,5 +448,41 @@ export async function getFaqItemById(id: string) {
   } catch (error) {
     console.error('Error fetching FAQ item by id:', error);
     return { faq: null, error: 'FAQ項目の取得中にエラーが発生しました' };
+  }
+}
+
+/**
+ * ページをIDから取得する
+ */
+export async function getPageById(
+  id: string
+): Promise<{ page: Page | null; error: string | null }> {
+  const { isAdmin, error: authError } = await ensureAdmin();
+  if (!isAdmin) {
+    return { page: null, error: authError };
+  }
+
+  try {
+    const supabase = await getSupabaseServerClient();
+    const { data: page, error } = await supabase
+      .from('pages')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    if (error) {
+      console.error('Error fetching page by ID:', error);
+      return {
+        page: null,
+        error: error.message || 'ページの取得中にエラーが発生しました',
+      };
+    }
+    if (!page) {
+      return { page: null, error: 'ページが見つかりませんでした' };
+    }
+
+    return { page, error: null };
+  } catch (error) {
+    console.error('Error fetching page by ID:', error);
+    return { page: null, error: 'ページの取得中にエラーが発生しました' };
   }
 }

@@ -4,15 +4,15 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { revalidatePath } from 'next/cache';
 import { ensureAdmin } from '../../ensureAdmin';
 import {
-  topicCategoryFormSchema,
-  type TopicCategoryFormData,
-} from '../../../types/topics';
+  topicTagFormSchema,
+  type TopicTagFormData,
+} from '../../../../types/topics';
 import { z } from 'zod';
 
 /**
- * トピックカテゴリを作成する
+ * トピックタグを作成する
  */
-export async function createCategory(formData: TopicCategoryFormData) {
+export async function createTag(formData: TopicTagFormData) {
   // 管理者権限チェック
   const { isAdmin, error: authError } = await ensureAdmin();
   if (!isAdmin) {
@@ -21,13 +21,13 @@ export async function createCategory(formData: TopicCategoryFormData) {
 
   try {
     // 入力バリデーション
-    const validated = topicCategoryFormSchema.parse(formData);
+    const validated = topicTagFormSchema.parse(formData);
 
     const supabase = await getSupabaseServerClient();
 
     // slug の一意性チェック
     const { data: existing } = await supabase
-      .from('topics_categories')
+      .from('topics_tags')
       .select('id')
       .eq('slug', validated.slug)
       .maybeSingle();
@@ -35,14 +35,14 @@ export async function createCategory(formData: TopicCategoryFormData) {
       return { success: false, error: 'このスラッグは既に使用されています' };
     }
 
-    // カテゴリ作成
+    // タグ作成
     const { data, error } = await supabase
-      .from('topics_categories')
+      .from('topics_tags')
       .insert(validated)
       .select()
       .single();
     if (error) {
-      console.error('Error creating topic category:', error);
+      console.error('Error creating topic tag:', error);
       return { success: false, error: error.message };
     }
 
@@ -58,7 +58,7 @@ export async function createCategory(formData: TopicCategoryFormData) {
         validationErrors: error.errors,
       };
     }
-    console.error('Error creating topic category:', error);
-    return { success: false, error: 'カテゴリの作成中にエラーが発生しました' };
+    console.error('Error creating topic tag:', error);
+    return { success: false, error: 'タグの作成中にエラーが発生しました' };
   }
 }

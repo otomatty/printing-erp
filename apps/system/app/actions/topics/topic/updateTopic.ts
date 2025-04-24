@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { z } from 'zod';
 import { ensureAdmin } from '../../ensureAdmin';
-import { topicFormSchema, type TopicFormData } from '../../../types/topics';
+import { topicFormSchema, type TopicFormData } from '../../../../types/topics';
 
 /**
  * トピックを更新する

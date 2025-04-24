@@ -13,7 +13,7 @@ import type {
   InquiryType,
   PriorityLevel,
   InquirySource,
-} from '../types/inquiries';
+} from '../../types/inquiries';
 
 // inquiries テーブルの Row 型
 type InquiryRow = Database['public']['Tables']['inquiries']['Row'];

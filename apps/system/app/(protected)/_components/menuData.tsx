@@ -169,7 +169,7 @@ export const menuItems: MenuItem[] = [
     title: 'よくある質問',
     icon: <BarChart className="h-6 w-6" />,
     category: 'website',
-    status: 'demo',
+    status: 'available',
   },
   {
     href: '/website/sample',

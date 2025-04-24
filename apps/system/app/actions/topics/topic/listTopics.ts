@@ -4,8 +4,8 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import {
   topicSearchParamsSchema,
   type TopicSearchParams,
-} from '../../../types/topics';
-import type { Topic } from '../../../types/topics';
+} from '../../../../types/topics';
+import type { Topic } from '../../../../types/topics';
 
 /**
  * トピック一覧取得（フィルタ・ページネーション対応）

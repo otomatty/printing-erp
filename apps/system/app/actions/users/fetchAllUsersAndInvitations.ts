@@ -7,7 +7,7 @@ import {
   type UserRow,
   mapAdminUserToRowData,
   mapInvitationToRowData,
-} from '../../types/userRow'; // さっき作った統合型とマッパー関数
+} from '../../../types/userRow'; // さっき作った統合型とマッパー関数
 
 // Database 型からスキーマとテーブルの Row 型を抽出
 type AdminUserDatabaseRow = Database['system']['Tables']['admin_users']['Row'];

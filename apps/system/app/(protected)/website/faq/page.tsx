@@ -11,8 +11,8 @@ export default function FaqPage() {
   return (
     <>
       <PageHeader
-        title="FAQページ管理"
-        description="ホームページのFAQページを管理します"
+        title="ページ管理(よくある質問)"
+        description="ホームページのよくある質問が登録されているページを管理します"
         backLink={{ href: '/', label: 'ホームに戻る' }}
         actions={
           <ResponsiveDialog
@@ -22,8 +22,8 @@ export default function FaqPage() {
                 新規ページ
               </Button>
             }
-            title="新規FAQページ作成"
-            description="ホームページに表示するFAQページを作成します"
+            title="新規ページ作成"
+            description="ホームページに表示するページを作成します"
           >
             <PageForm />
           </ResponsiveDialog>

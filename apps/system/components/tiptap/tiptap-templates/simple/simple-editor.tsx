@@ -77,8 +77,9 @@ import '~/components/tiptap/tiptap-templates/simple/simple-editor.scss';
 import content from '~/components/tiptap/tiptap-templates/simple/data/content.json';
 
 interface SimpleEditorProps {
-  initialContent?: JSONContent;
+  initialContent?: string | JSONContent;
   templateContent?: string | JSONContent;
+  onChange?: (content: JSONContent) => void;
 }
 
 const MainToolbarContent = ({
@@ -185,6 +186,7 @@ const MobileToolbarContent = ({
 export function SimpleEditor({
   initialContent,
   templateContent,
+  onChange,
 }: SimpleEditorProps) {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
@@ -221,6 +223,7 @@ export function SimpleEditor({
 
   const editor = useEditor({
     immediatelyRender: false,
+    onUpdate: ({ editor }) => onChange?.(editor.getJSON()),
     editorProps: {
       attributes: {
         autocomplete: 'off',

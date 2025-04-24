@@ -32,6 +32,7 @@ import { Button } from '@kit/ui/button';
 import { ResponsiveDialog } from '@kit/ui/responsive-dialog';
 import FaqForm from './faq-form';
 import { FaqItemDeleteDialog } from './faq-item-delete-dialog';
+import JSXParser from 'react-jsx-parser';
 
 interface FaqItemsListProps {
   faqItems: FaqItem[];
@@ -117,7 +118,11 @@ function SortableItem({ item }: SortableItemProps) {
           </div>
         </CardHeader>
         <CardContent className="prose max-w-none pl-10">
-          {item.answer}
+          <JSXParser
+            jsx={item.answer}
+            components={{}}
+            renderInWrapper={false}
+          />
         </CardContent>
       </Card>
     </div>

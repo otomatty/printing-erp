@@ -8,7 +8,7 @@ import { checkIsAdmin } from '@kit/next/actions';
 import {
   InviteUserFormSchema,
   type InviteUserFormData,
-} from '../../types/invite'; // さっき作った型定義
+} from '../../../types/invite'; // さっき作った型定義
 import type { Database } from '@kit/supabase/database'; // プロジェクト共通の型
 import { sendAdminInvitationEmail } from '../emails/adminInvitation'; // ★ 追加
 

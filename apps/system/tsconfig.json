@@ -8,7 +8,7 @@
       "~/components/*": ["./components/*"],
       "~/types/*": ["./types/*"],
       "~/lib/*": ["./lib/*"],
-      "~/actions/*": ["./actions/*"],
+      "~/actions/*": ["app/actions/*"],
       "~/services/*": ["./services/*"],
       "~/hooks/*": ["./hooks/*"],
       "~/store/*": ["./store/*"],

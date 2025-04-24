@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { PageHeader } from '~/components/custom/page-header';
 import { Container } from '~/components/custom/container';
-import { getPageBySlug, getFaqItems } from '~/actions/faq';
+import { getPageById, getFaqItems } from '~/actions/faq';
 import { Button } from '@kit/ui/button';
 import { Plus } from 'lucide-react';
 import { ResponsiveDialog } from '@kit/ui/responsive-dialog';
@@ -9,13 +9,13 @@ import FaqForm from '../_components/faq-form';
 import FaqItemsList from '../_components/faq-items-list';
 
 interface FaqDetailPageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }
 
 export default async function FaqDetailPage({ params }: FaqDetailPageProps) {
-  const { slug } = await params;
+  const { id } = await params;
   // ページ情報取得
-  const { page, error: pageError } = await getPageBySlug(slug);
+  const { page, error: pageError } = await getPageById(id);
   if (!page || pageError) {
     return notFound();
   }
@@ -37,11 +37,11 @@ export default async function FaqDetailPage({ params }: FaqDetailPageProps) {
             trigger={
               <Button variant="outline">
                 <Plus className="h-4 w-4 mr-1" />
-                新規FAQ項目
+                よくある質問を追加する
               </Button>
             }
-            title="新規FAQ項目作成"
-            description="このページに表示するFAQ項目を作成します"
+            title="よくある質問を追加する"
+            description="よくある質問を追加します"
           >
             <FaqForm pageId={page.id} />
           </ResponsiveDialog>
@@ -51,7 +51,7 @@ export default async function FaqDetailPage({ params }: FaqDetailPageProps) {
       <Container>
         {faqItems.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            FAQ項目がありません。
+            よくある質問の項目がありません。
           </div>
         ) : (
           <FaqItemsList faqItems={faqItems} />
