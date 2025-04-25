@@ -2,10 +2,7 @@ import { notFound } from 'next/navigation';
 import { PageHeader } from '~/components/custom/page-header';
 import { Container } from '~/components/custom/container';
 import { getPageById, getFaqItems } from '~/_actions/faq';
-import { Button } from '@kit/ui/button';
-import { Plus } from 'lucide-react';
-import { ResponsiveDialog } from '@kit/ui/responsive-dialog';
-import FaqForm from '../_components/faq-form';
+import AddFaqDialog from '../_components/add-faq-dialog';
 import FaqItemsList from '../_components/faq-items-list';
 
 interface FaqDetailPageProps {
@@ -32,20 +29,7 @@ export default async function FaqDetailPage({ params }: FaqDetailPageProps) {
         title={page.title || page.slug}
         description={page.description || ''}
         backLink={{ href: '/website/faq', label: 'FAQ一覧' }}
-        actions={
-          <ResponsiveDialog
-            trigger={
-              <Button variant="outline">
-                <Plus className="h-4 w-4 mr-1" />
-                よくある質問を追加する
-              </Button>
-            }
-            title="よくある質問を追加する"
-            description="よくある質問を追加します"
-          >
-            <FaqForm pageId={page.id} />
-          </ResponsiveDialog>
-        }
+        actions={<AddFaqDialog pageId={page.id} />}
       />
 
       <Container>

@@ -77,9 +77,10 @@ import '~/components/tiptap/tiptap-templates/simple/simple-editor.scss';
 import content from '~/components/tiptap/tiptap-templates/simple/data/content.json';
 
 interface SimpleEditorProps {
+  /** 初期表示するHTMLまたはJSONContent */
   initialContent?: string | JSONContent;
-  templateContent?: string | JSONContent;
-  onChange?: (content: JSONContent) => void;
+  /** 更新時にエディタ内のHTML文字列を返却 */
+  onChange?: (content: string) => void;
 }
 
 const MainToolbarContent = ({
@@ -183,11 +184,7 @@ const MobileToolbarContent = ({
   </>
 );
 
-export function SimpleEditor({
-  initialContent,
-  templateContent,
-  onChange,
-}: SimpleEditorProps) {
+export function SimpleEditor({ initialContent, onChange }: SimpleEditorProps) {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
   const [mobileView, setMobileView] = React.useState<
@@ -223,7 +220,7 @@ export function SimpleEditor({
 
   const editor = useEditor({
     immediatelyRender: false,
-    onUpdate: ({ editor }) => onChange?.(editor.getJSON()),
+    onUpdate: ({ editor }) => onChange?.(editor.getHTML()),
     editorProps: {
       attributes: {
         autocomplete: 'off',
@@ -257,12 +254,6 @@ export function SimpleEditor({
     ],
     content: initialContent ?? content,
   });
-
-  React.useEffect(() => {
-    if (editor && templateContent) {
-      editor.commands.setContent(templateContent);
-    }
-  }, [editor, templateContent]);
 
   React.useEffect(() => {
     const checkCursorVisibility = () => {

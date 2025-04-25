@@ -17,7 +17,7 @@ import {
 import { Input } from '@kit/ui/input';
 import { Switch } from '@kit/ui/switch';
 import { SimpleEditor } from '~/components/tiptap/tiptap-templates/simple/simple-editor';
-import { createFaqItem, updateFaqItem } from '../../../../_actions/faq';
+import { createFaqItem, updateFaqItem } from '~/_actions/faq';
 import { faqFormSchema, type FaqFormData } from '~/types/faq';
 
 interface FaqFormProps {
@@ -25,9 +25,15 @@ interface FaqFormProps {
   pageId: string;
   /** 入力フォームの初期値 */
   defaultValues?: Partial<FaqFormData> & { id?: string };
+  /** ダイアログを閉じるコールバック */
+  onSuccess?: () => void;
 }
 
-export default function FaqForm({ pageId, defaultValues }: FaqFormProps) {
+export default function FaqForm({
+  pageId,
+  defaultValues,
+  onSuccess,
+}: FaqFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -45,31 +51,29 @@ export default function FaqForm({ pageId, defaultValues }: FaqFormProps) {
   const onSubmit = (data: FaqFormData) => {
     startTransition(async () => {
       try {
-        const result = defaultValues?.id
-          ? await updateFaqItem(defaultValues.id, data)
-          : await createFaqItem(data);
-        console.log('FAQ create/update result:', result);
-        if (result?.success) {
-          toast.success(
-            defaultValues?.id
-              ? 'FAQ項目を更新しました'
-              : 'FAQ項目を作成しました'
-          );
-          router.refresh();
+        if (defaultValues?.id) {
+          await updateFaqItem(defaultValues.id, data);
+          toast.success('FAQ項目を更新しました');
         } else {
-          const errMsg: string = result?.error ?? '処理中に問題が発生しました';
-          toast.error(`エラー: ${errMsg}`);
+          await createFaqItem(data);
+          toast.success('FAQ項目を作成しました');
         }
+        router.refresh();
+        onSuccess?.();
       } catch (error) {
         console.error('FAQ作成・更新エラー:', error);
-        toast.error('サーバーエラーが発生しました');
+        const errMsg =
+          error instanceof Error
+            ? error.message
+            : 'サーバーエラーが発生しました';
+        toast.error(`エラー: ${errMsg}`);
       }
     });
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
         <FormField
           control={form.control}
           name="question"
@@ -92,23 +96,8 @@ export default function FaqForm({ pageId, defaultValues }: FaqFormProps) {
               <FormControl>
                 <SimpleEditor
                   initialContent={field.value || undefined}
-                  onChange={(content) =>
-                    field.onChange(JSON.stringify(content))
-                  }
+                  onChange={(content) => field.onChange(content)}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="sort_order"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>表示順</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

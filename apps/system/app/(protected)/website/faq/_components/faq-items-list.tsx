@@ -19,7 +19,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Card, CardContent, CardHeader, CardTitle } from '@kit/ui/card';
 import { GripVertical, Edit, MoreVertical, Trash } from 'lucide-react';
 import type { FaqItem } from '~/types/faq';
-import { updateFaqItem, deleteFaqItem } from '~/_actions/faq';
+import { updateFaqItem } from '~/_actions/faq';
 import { toast } from 'sonner';
 import {
   DropdownMenu,
@@ -32,7 +32,8 @@ import { Button } from '@kit/ui/button';
 import { ResponsiveDialog } from '@kit/ui/responsive-dialog';
 import FaqForm from './faq-form';
 import { FaqItemDeleteDialog } from './faq-item-delete-dialog';
-import JSXParser from 'react-jsx-parser';
+import DOMPurify from 'dompurify';
+import parse from 'html-react-parser';
 
 interface FaqItemsListProps {
   faqItems: FaqItem[];
@@ -84,33 +85,46 @@ function SortableItem({ item }: SortableItemProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem
+                  asChild
+                  className="gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                >
                   <ResponsiveDialog
                     trigger={
-                      <button
-                        className="flex items-center w-full"
-                        type="button"
+                      <Button
+                        variant="ghost"
+                        className="w-full flex items-center"
                       >
-                        <Edit className="h-4 w-4 mr-2" />
-                        編集
-                      </button>
+                        <Edit className="h-4 w-4" />
+                        編集する
+                      </Button>
                     }
                     title="FAQ項目編集"
                     description="FAQ項目を編集します"
                   >
-                    <FaqForm pageId={item.page_id} defaultValues={item} />
+                    {({ close }) => (
+                      <FaqForm
+                        pageId={item.page_id}
+                        defaultValues={item}
+                        onSuccess={close}
+                      />
+                    )}
                   </ResponsiveDialog>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem
+                  asChild
+                  className="gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                >
                   <FaqItemDeleteDialog itemId={item.id}>
-                    <button
-                      className="flex items-center w-full text-destructive"
+                    <Button
+                      variant="ghost"
+                      className="w-full flex items-center text-destructive"
                       type="button"
                     >
-                      <Trash className="h-4 w-4 mr-2" />
-                      削除
-                    </button>
+                      <Trash className="h-4 w-4" />
+                      削除する
+                    </Button>
                   </FaqItemDeleteDialog>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -118,11 +132,7 @@ function SortableItem({ item }: SortableItemProps) {
           </div>
         </CardHeader>
         <CardContent className="prose max-w-none pl-10">
-          <JSXParser
-            jsx={item.answer}
-            components={{}}
-            renderInWrapper={false}
-          />
+          {parse(DOMPurify.sanitize(item.answer))}
         </CardContent>
       </Card>
     </div>

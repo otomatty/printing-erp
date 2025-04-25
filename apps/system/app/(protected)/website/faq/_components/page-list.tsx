@@ -52,13 +52,13 @@ export default async function PageList() {
                 <DropdownMenuItem asChild>
                   <ResponsiveDialog
                     trigger={
-                      <button
-                        className="flex w-full items-center"
-                        type="button"
+                      <Button
+                        variant="ghost"
+                        className="w-full flex items-center"
                       >
-                        <Edit className="h-4 w-4 mr-2" />
-                        編集
-                      </button>
+                        <Edit className="h-4 w-4" />
+                        編集する
+                      </Button>
                     }
                     title="FAQページ編集"
                     description={`${page.title || page.slug}を編集します`}
@@ -76,13 +76,10 @@ export default async function PageList() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <PageDeleteDialog pageId={page.id}>
-                    <button
-                      className="flex w-full items-center text-destructive"
-                      type="button"
-                    >
-                      <Trash className="h-4 w-4 mr-2" />
-                      削除
-                    </button>
+                    <Button variant="ghost" className="w-full text-destructive">
+                      <Trash className="h-4 w-4" />
+                      削除する
+                    </Button>
                   </PageDeleteDialog>
                 </DropdownMenuItem>
               </DropdownMenuContent>
