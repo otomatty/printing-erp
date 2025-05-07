@@ -13,16 +13,15 @@ import { z } from 'zod';
  * Zodを使用して型安全な設定オブジェクトを定義
  */
 const PathsSchema = z.object({
+  public: z.object({
+    home: z.string().min(1), // パブリックホームページ
+  }),
   auth: z.object({
-    signIn: z.string().min(1), // サインインページのパス
-    signUp: z.string().min(1), // サインアップページのパス
-    verifyMfa: z.string().min(1), // 多要素認証確認ページのパス
+    login: z.string().min(1), // サインインページのパス
     callback: z.string().min(1), // 認証コールバックページのパス
-    passwordReset: z.string().min(1), // パスワードリセットページのパス
-    passwordUpdate: z.string().min(1), // パスワード更新ページのパス
   }),
   app: z.object({
-    home: z.string().min(1), // アプリケーションのホームページパス
+    dashboard: z.string().min(1), // アプリケーションのホームページパス
     profileSettings: z.string().min(1), // プロフィール設定ページのパス
   }),
 });
@@ -32,17 +31,16 @@ const PathsSchema = z.object({
  * 各パスは一箇所で管理され、アプリケーション全体で参照される
  */
 const pathsConfig = PathsSchema.parse({
+  public: {
+    home: '/', // パブリックホームページ
+  },
   auth: {
-    signIn: '/auth/sign-in', // サインインページ
-    signUp: '/auth/sign-up', // サインアップページ
-    verifyMfa: '/auth/verify', // 多要素認証確認ページ
+    login: '/auth/login', // サインインページ
     callback: '/auth/callback', // 認証コールバックページ
-    passwordReset: '/auth/password-reset', // パスワードリセットページ
-    passwordUpdate: '/update-password', // パスワード更新ページ
   },
   app: {
-    home: '/', // アプリケーションのホームページ
-    profileSettings: '/home/settings', // プロフィール設定ページ
+    dashboard: '/webapp', // アプリケーションのホームページ
+    profileSettings: '/webapp/settings', // プロフィール設定ページ
   },
 } satisfies z.infer<typeof PathsSchema>);
 

@@ -9,22 +9,12 @@ export const runtime = 'nodejs';
  * このルートは認証プロバイダーからのコールバックを受け取り、セッションを確立します
  */
 export async function GET(request: NextRequest) {
-  const url = request.nextUrl.clone(); // URLをクローンして安全に操作
-  console.log(
-    `[AuthCallbackRoute] Received callback request for path: ${url.pathname}${url.search}`
-  );
-
   try {
-    console.log('[AuthCallbackRoute] Calling handleAuthCallback...');
     // パッケージ側の関数を呼び出し
     const result = await handleAuthCallback(
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       request as any, // 型アサーションで型の不一致を解決
-      '/dashboard' // 成功時のデフォルトリダイレクト先
-    );
-
-    console.log(
-      `[AuthCallbackRoute] handleAuthCallback successful. Redirecting to: ${result.nextPath}`
+      '/webapp' // 成功時のデフォルトリダイレクト先
     );
     // 結果に基づいてリダイレクト - Response.redirectを使用
     // リダイレクト先のURLを生成する際は、元のリクエストURLを基準にする
@@ -49,9 +39,6 @@ export async function GET(request: NextRequest) {
     errorRedirectUrl.searchParams.set('error_type', errorType);
     errorRedirectUrl.searchParams.set('error_message', errorMessage);
 
-    console.log(
-      `[AuthCallbackRoute] Redirecting to error page: ${errorRedirectUrl.toString()}`
-    );
     // Response.redirectを使用
     return Response.redirect(errorRedirectUrl, 307);
   }

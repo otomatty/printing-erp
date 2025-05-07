@@ -84,45 +84,8 @@ export default async function DashboardLayout({
         </div>
       </header>
 
-      {/* デスクトップレイアウト */}
-      <div className="flex-1 flex flex-col lg:flex-row">
-        {/* サイドバー (デスクトップのみ) */}
-        <aside className="hidden lg:flex flex-col w-64 border-r shrink-0">
-          <div className="p-6 border-b">
-            <Link
-              href="/dashboard"
-              className="font-bold text-xl flex items-center"
-            >
-              ニイヌマ企画印刷
-            </Link>
-          </div>
-          <nav className="flex-1 overflow-auto py-6 px-4">
-            <ul className="space-y-2">
-              {menuItems.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                  >
-                    <item.icon className="h-5 w-5" />
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <div className="p-4 border-t">
-            <div className="mb-2">
-              <p className="text-sm font-medium">{user.email}</p>
-              <p className="text-xs text-muted-foreground">お客様アカウント</p>
-            </div>
-            <LogoutButton />
-          </div>
-        </aside>
-
-        {/* メインコンテンツ */}
-        <main className="flex-1 overflow-auto">{children}</main>
-      </div>
+      {/* メインコンテンツ */}
+      <main className="flex-1 overflow-auto">{children}</main>
     </div>
   );
 }

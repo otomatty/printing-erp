@@ -12,7 +12,7 @@ import { useUser } from '@kit/supabase/hooks/use-user';
 
 // 分割したコンポーネントをインポート
 import { Logo } from './logo';
-import { Navigation } from './navigation';
+import { Navigation, appNavLinks, publicNavLinks } from './navigation';
 import { AuthUserMenu } from './auth-user-menu';
 import { LoginButton } from './login-button';
 
@@ -37,7 +37,7 @@ export function Header() {
           </div>
 
           {/* デスクトップナビゲーション */}
-          <Navigation />
+          <Navigation items={isAuthenticated ? appNavLinks : publicNavLinks} />
 
           {/* ユーザーメニューまたはログインボタン（デスクトップ） */}
           {isAuthenticated ? <AuthUserMenu /> : <LoginButton />}
@@ -56,8 +56,19 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
-              <Navigation isMobile onItemClick={() => setIsMenuOpen(false)} />
-              <AuthUserMenu isMobile onItemClick={() => setIsMenuOpen(false)} />
+              <Navigation
+                isMobile
+                items={isAuthenticated ? appNavLinks : publicNavLinks}
+                onItemClick={() => setIsMenuOpen(false)}
+              />
+              {isAuthenticated ? (
+                <AuthUserMenu
+                  isMobile
+                  onItemClick={() => setIsMenuOpen(false)}
+                />
+              ) : (
+                <LoginButton />
+              )}
             </div>
           </div>
         )}
