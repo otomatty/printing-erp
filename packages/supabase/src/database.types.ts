@@ -421,6 +421,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          page_type: Database["public"]["Enums"]["page_type"]
           slug: string
           title: string | null
           updated_at: string
@@ -429,6 +430,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          page_type?: Database["public"]["Enums"]["page_type"]
           slug: string
           title?: string | null
           updated_at?: string
@@ -437,6 +439,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          page_type?: Database["public"]["Enums"]["page_type"]
           slug?: string
           title?: string | null
           updated_at?: string
@@ -474,6 +477,74 @@ export type Database = {
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sample_items: {
+        Row: {
+          color_count: number | null
+          color_mode: string | null
+          cost_estimate: number | null
+          created_at: string
+          description: string | null
+          file_url: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          material: string | null
+          name: string
+          page_id: string
+          size_height: number | null
+          size_width: number | null
+          sort_order: number
+          thickness: string | null
+          updated_at: string
+        }
+        Insert: {
+          color_count?: number | null
+          color_mode?: string | null
+          cost_estimate?: number | null
+          created_at?: string
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          material?: string | null
+          name: string
+          page_id: string
+          size_height?: number | null
+          size_width?: number | null
+          sort_order?: number
+          thickness?: string | null
+          updated_at?: string
+        }
+        Update: {
+          color_count?: number | null
+          color_mode?: string | null
+          cost_estimate?: number | null
+          created_at?: string
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          material?: string | null
+          name?: string
+          page_id?: string
+          size_height?: number | null
+          size_width?: number | null
+          sort_order?: number
+          thickness?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sample_items_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
             referencedColumns: ["id"]
           },
         ]
@@ -675,6 +746,7 @@ export type Database = {
         | "expired"
         | "revoked"
         | "verified"
+      page_type: "faq" | "sample"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1033,6 +1105,7 @@ export const Constants = {
         "revoked",
         "verified",
       ],
+      page_type: ["faq", "sample"],
     },
   },
   system: {

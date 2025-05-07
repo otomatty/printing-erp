@@ -101,7 +101,7 @@ export default function DashboardCalendar({
 
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-bold mb-4">スケジュールカレンダー</h2>
+      <h2 className="text-xl font-bold mb-4">スケジュール</h2>
       <div className="bg-white p-6 rounded-lg shadow h-[calc(100vh-10rem)] flex flex-col">
         {/* カレンダー切り替えと同期 */}
         <div className="flex mb-4 items-center justify-between">

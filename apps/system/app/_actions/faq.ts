@@ -20,6 +20,7 @@ export async function getPages() {
     const { data, error } = await supabase
       .from('pages')
       .select('*')
+      .eq('page_type', 'faq')
       .order('slug', { ascending: true });
     if (error) {
       console.error('Error fetching pages:', error);
@@ -400,6 +401,7 @@ export async function getPageBySlug(slug: string) {
     const { data: page, error } = await supabase
       .from('pages')
       .select('*')
+      .eq('page_type', 'faq')
       .eq('slug', filterSlug)
       .maybeSingle();
     if (error) {
@@ -467,6 +469,7 @@ export async function getPageById(
     const { data: page, error } = await supabase
       .from('pages')
       .select('*')
+      .eq('page_type', 'faq')
       .eq('id', id)
       .maybeSingle();
     if (error) {

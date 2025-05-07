@@ -1,0 +1,50 @@
+# sample_items テーブル設計
+
+## 概要
+`sample_items` テーブルは、各ページ（サンプルページ）に紐づく製品サンプル項目を管理します。サンプルの画像、名前、説明に加え、用紙材質やサイズなどの詳細情報を保持します。
+
+## テーブル構造
+```sql
+CREATE TABLE public.sample_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  page_id UUID NOT NULL REFERENCES public.pages(id) ON DELETE CASCADE,  -- サンプルページID
+  name TEXT NOT NULL,                  -- サンプル名
+  description TEXT,                    -- サンプル説明
+  image_url TEXT,                      -- 画像URL
+  material TEXT,                       -- 用紙材質
+  thickness TEXT,                      -- 紙厚
+  color_count INTEGER,                 -- 色数（例: 4）
+  color_mode TEXT,                     -- カラーモード（CMYK／特色）
+  size_width NUMERIC,                  -- 幅(mm)
+  size_height NUMERIC,                 -- 高さ(mm)
+  file_url TEXT,                       -- 原稿ダウンロードリンク(PDF等)
+  cost_estimate NUMERIC(12,2),         -- コスト目安
+  sort_order INTEGER NOT NULL DEFAULT 0, -- 表示順
+  is_active BOOLEAN NOT NULL DEFAULT TRUE, -- 公開フラグ
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX idx_sample_items_page_order ON public.sample_items(page_id, sort_order);
+```
+
+## RLSポリシー
+```sql
+ALTER TABLE public.sample_items ENABLE ROW LEVEL SECURITY;
+
+-- 公開中のサンプルのみ取得可能
+CREATE POLICY "Public can select active sample_items"
+  ON public.sample_items
+  FOR SELECT
+  USING (is_active);
+
+-- 管理者のみサンプル項目の作成・更新・削除が可能
+CREATE POLICY "Admins can manage sample_items"
+  ON public.sample_items
+  FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM system.admin_users
+      WHERE auth_user_id = auth.uid() AND is_active
+    )
+  );
+```

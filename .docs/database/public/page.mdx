@@ -7,13 +7,15 @@
 ```sql
 CREATE TABLE public.pages (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  slug TEXT NOT NULL UNIQUE,           -- ページURL識別子（例: /services/printing/meishi-hagaki-card）
-  title TEXT,                          -- ページタイトル（オプション）
-  description TEXT,                    -- ページ説明（オプション）
+  slug TEXT NOT NULL UNIQUE,           -- ページURL識別子（例: /services/printing/meishi-hagaki-card  または /samples/brochure）
+  title TEXT,                          -- ページタイトル
+  description TEXT,                    -- ページ説明
+  page_type public.page_type NOT NULL DEFAULT 'faq',  -- ページタイプ（'faq' または 'sample'）
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX idx_pages_slug ON public.pages(slug);
+CREATE INDEX idx_pages_page_type ON public.pages(page_type);
 ```
 
 ## RLSポリシー
