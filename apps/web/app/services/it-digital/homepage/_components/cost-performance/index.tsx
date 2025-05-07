@@ -25,7 +25,7 @@ const slides: PresentationSlide[] = [
     id: 'roi',
     title: '投資対効果（ROI）の比較',
     description: '3年間の投資回収シミュレーションで明確な違いが見える',
-    image: '/images/it-digital/homepage/graph.webp', // 仮画像パス
+    image: '/images/it-digital/homepage/roi.webp', // 仮画像パス
     detailContent: <RoiSection />,
   },
   {
@@ -40,7 +40,7 @@ const slides: PresentationSlide[] = [
 
 export const HomepageCostPerformanceSection = () => {
   return (
-    <section className="py-16 md:py-24 bg-background">
+    <section className="py-20 lg:py-32 bg-gradient-to-b from-gray-50 to-white">
       <Container>
         <SectionTitle
           title="低コストで実現する"
@@ -48,23 +48,8 @@ export const HomepageCostPerformanceSection = () => {
           afterHighlightedText="ホームページ"
           description="従来型制作会社の半分以下のコストで、ビジネス効果の高いホームページを実現します。テンプレートサービスの安さと制作会社の品質、それぞれの良いところを組み合わせた最適なホームページ制作を提供します。"
         />
-
-        <PresentationSlider slides={slides} />
-
-        {/* まとめ */}
-        <div className="max-w-3xl mx-auto mt-16 bg-background-subtle p-8 rounded-lg border border-border">
-          <h3 className="text-xl md:text-2xl font-bold mb-4 text-center">
-            高品質×低コストの
-            <span className="text-primary">ベストバランス</span>
-          </h3>
-          <p className="text-center">
-            テンプレートサービスの安さと制作会社の品質、それぞれの良いところだけを組み合わせた
-            当社のホームページ制作サービスなら、コストを抑えながらも目的達成に最適化された
-            ホームページを実現します。ビジネスゴールに合わせたWeb戦略の相談から承りますので、
-            まずはお気軽にご相談ください。
-          </p>
-        </div>
       </Container>
+      <PresentationSlider slides={slides} />
     </section>
   );
 };

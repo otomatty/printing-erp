@@ -74,7 +74,7 @@ const ComparisonSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-gray-50 p-6 lg:p-10 rounded-xl shadow-md">
+    <>
       <h3 className="text-2xl font-bold mb-6 text-center">
         一般的な制作会社との<span className="text-primary">比較</span>
       </h3>
@@ -175,7 +175,7 @@ const ComparisonSection: React.FC = () => {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };
 
