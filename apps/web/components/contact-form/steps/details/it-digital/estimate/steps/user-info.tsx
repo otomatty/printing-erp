@@ -128,7 +128,7 @@ export function UserInfoStep() {
 
       <div>
         <Label htmlFor="phone" className="block text-sm font-medium mb-1">
-          電話番号{' '}
+          電話番号
           {isPhoneRequired && <span className="text-destructive">*</span>}
         </Label>
         <Input
