@@ -55,7 +55,17 @@ function getPaths() {
     '/hojokin',
     '/news',
     '/privacy-policy',
-    '/service',
+    '/services',
+    // '/services/printing', // このページは今のところは作成しない
+    '/services/printing/denpyo',
+    '/services/printing/envelope',
+    '/services/printing/flyer-poster',
+    '/services/printing/meishi-hagaki-card',
+    '/services/printing/page-bookbinding',
+    '/services/it-digital',
+    '/services/it-digital/homepage',
+    '/services/it-digital/system',
+    '/services/it-digital/works',
     '/topics',
     // 他のパスをここに追加
   ];
