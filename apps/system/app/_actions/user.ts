@@ -19,6 +19,7 @@ export async function createAdminUser(data: AdminUserData) {
     first_name: data.firstName,
     last_name: data.lastName,
     role: data.role,
+    is_active: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };

@@ -19,7 +19,7 @@ export async function getUser() {
     role: '',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-  } as any;
+  } as User;
   const mockCustomer:
     | Database['public']['Tables']['user_accounts']['Row']
     | null = null;
