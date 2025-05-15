@@ -1,484 +1,230 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-import { getSupabaseServerClient } from '@kit/supabase/server-client';
-import { z } from 'zod';
-import { ensureAdmin } from './ensureAdmin';
 import type { SampleFormData, SampleItem } from '../../types/sample';
-import { sampleFormSchema } from '../../types/sample';
 import type { PageFormData, Page } from '../../types/faq';
-import { pageFormSchema } from '../../types/faq';
 
-/**
- * 指定ページのサンプル項目を取得する
- */
-export async function getSampleItems(pageId: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { sampleItems: [], error: authError };
-  }
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data, error } = await supabase
-      .from('sample_items')
-      .select('*')
-      .eq('page_id', pageId)
-      .order('sort_order', { ascending: true });
-    if (error) {
-      console.error('Error fetching sample items:', error);
-      return { sampleItems: [], error: error.message };
-    }
-    return { sampleItems: data || [], error: null };
-  } catch (error) {
-    console.error('Error fetching sample items:', error);
-    return {
-      sampleItems: [],
-      error: 'サンプル項目の取得中にエラーが発生しました',
-    };
-  }
+// --- モックデータ ---
+const mockPages: Page[] = [
+  {
+    id: 'page-1',
+    slug: '/sample',
+    title: 'サンプルページ',
+    description: 'サンプル項目の一覧ページ',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'page-2',
+    slug: '/examples',
+    title: '事例ページ',
+    description: 'サンプル事例の紹介',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+];
+
+const mockSampleItems: SampleItem[] = [
+  {
+    id: 'sample-1',
+    page_id: 'page-1',
+    name: 'サンプルA',
+    description: 'これはサンプルAの説明です',
+    image_url: null,
+    material: null,
+    thickness: null,
+    color_count: null,
+    color_mode: null,
+    size_width: null,
+    size_height: null,
+    file_url: null,
+    cost_estimate: null,
+    sort_order: 1,
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'sample-2',
+    page_id: 'page-1',
+    name: 'サンプルB',
+    description: 'これはサンプルBの説明です',
+    image_url: null,
+    material: null,
+    thickness: null,
+    color_count: null,
+    color_mode: null,
+    size_width: null,
+    size_height: null,
+    file_url: null,
+    cost_estimate: null,
+    sort_order: 2,
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+];
+
+// 通知
+function notify(message: string) {
+  alert(message);
 }
 
-/**
- * サンプル項目を作成する
- */
-export async function createSampleItem(formData: SampleFormData) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
-  }
+// --- サーバーアクション ---
 
-  try {
-    const validatedData = sampleFormSchema.parse(formData);
-    const supabase = await getSupabaseServerClient();
-
-    // ページ slug 取得
-    const { data: page, error: pageError } = await supabase
-      .from('pages')
-      .select('slug')
-      .eq('id', validatedData.page_id)
-      .single();
-    if (pageError || !page) {
-      return { success: false, error: 'ページが見つかりませんでした' };
-    }
-
-    const { data, error } = await supabase
-      .from('sample_items')
-      .insert(validatedData)
-      .select()
-      .single();
-    if (error) {
-      console.error('Error creating sample item:', error);
-      return { success: false, error: error.message };
-    }
-
-    revalidatePath(page.slug);
-    return { success: true, data };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: 'バリデーションエラー',
-        validationErrors: error.errors,
-      };
-    }
-    console.error('Error creating sample item:', error);
-    return {
-      success: false,
-      error: 'サンプル項目の作成中にエラーが発生しました',
-    };
-  }
+/** サンプル項目一覧を取得 */
+export async function getSampleItems(
+  pageId: string
+): Promise<{ sampleItems: SampleItem[]; error: null }> {
+  return {
+    sampleItems: mockSampleItems.filter((i) => i.page_id === pageId),
+    error: null,
+  };
 }
 
-/**
- * サンプル項目を更新する
- */
-export async function updateSampleItem(id: string, formData: SampleFormData) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
-  }
-
-  try {
-    const validatedData = sampleFormSchema.parse(formData);
-    const supabase = await getSupabaseServerClient();
-
-    // 既存サンプル取得
-    const { data: existing, error: fetchError } = await supabase
-      .from('sample_items')
-      .select('page_id')
-      .eq('id', id)
-      .single();
-    if (fetchError || !existing) {
-      return { success: false, error: 'サンプル項目が見つかりませんでした' };
-    }
-
-    const { data, error } = await supabase
-      .from('sample_items')
-      .update(validatedData)
-      .eq('id', id)
-      .select()
-      .single();
-    if (error) {
-      console.error('Error updating sample item:', error);
-      return { success: false, error: error.message };
-    }
-
-    // キャッシュ再検証：古いページ
-    const { data: pageOld, error: pageErrorOld } = await supabase
-      .from('pages')
-      .select('slug')
-      .eq('id', existing.page_id)
-      .single();
-    if (!pageErrorOld && pageOld) {
-      revalidatePath(pageOld.slug);
-    }
-
-    // キャッシュ再検証：新しいページ
-    if (existing.page_id !== validatedData.page_id) {
-      const { data: pageNew, error: pageErrorNew } = await supabase
-        .from('pages')
-        .select('slug')
-        .eq('id', validatedData.page_id)
-        .single();
-      if (!pageErrorNew && pageNew) {
-        revalidatePath(pageNew.slug);
-      }
-    } else if (pageOld) {
-      revalidatePath(pageOld.slug);
-    }
-
-    return { success: true, data };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: 'バリデーションエラー',
-        validationErrors: error.errors,
-      };
-    }
-    console.error('Error updating sample item:', error);
-    return {
-      success: false,
-      error: 'サンプル項目の更新中にエラーが発生しました',
-    };
-  }
+/** サンプル項目を作成 */
+export async function createSampleItem(
+  data: SampleFormData
+): Promise<{ success: boolean; error?: string }> {
+  const now = new Date().toISOString();
+  const itemsForPage = mockSampleItems.filter(
+    (i) => i.page_id === data.page_id
+  );
+  const newItem: SampleItem = {
+    id: `sample-${Date.now()}`,
+    page_id: data.page_id,
+    name: data.name,
+    description: data.description ?? null,
+    image_url: data.image_url ?? null,
+    material: data.material ?? null,
+    thickness: data.thickness ?? null,
+    color_count: data.color_count ?? null,
+    color_mode: data.color_mode ?? null,
+    size_width: data.size_width ?? null,
+    size_height: data.size_height ?? null,
+    file_url: data.file_url ?? null,
+    cost_estimate: data.cost_estimate ?? null,
+    sort_order: data.sort_order ?? itemsForPage.length + 1,
+    is_active: data.is_active ?? true,
+    created_at: now,
+    updated_at: now,
+  };
+  mockSampleItems.push(newItem);
+  notify('サンプル項目を作成しました');
+  return { success: true };
 }
 
-/**
- * サンプル項目を削除する
- */
-export async function deleteSampleItem(id: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
+/** サンプル項目を更新 */
+export async function updateSampleItem(
+  id: string,
+  data: SampleFormData
+): Promise<{ success: boolean; error?: string }> {
+  const item = mockSampleItems.find((i) => i.id === id);
+  if (item) {
+    item.page_id = data.page_id;
+    item.name = data.name;
+    item.description = data.description ?? null;
+    item.image_url = data.image_url ?? null;
+    item.material = data.material ?? null;
+    item.thickness = data.thickness ?? null;
+    item.color_count = data.color_count ?? null;
+    item.color_mode = data.color_mode ?? null;
+    item.size_width = data.size_width ?? null;
+    item.size_height = data.size_height ?? null;
+    item.file_url = data.file_url ?? null;
+    item.cost_estimate = data.cost_estimate ?? null;
+    item.sort_order = data.sort_order ?? item.sort_order;
+    item.is_active = data.is_active ?? item.is_active;
+    item.updated_at = new Date().toISOString();
   }
-
-  try {
-    const supabase = await getSupabaseServerClient();
-
-    // 削除前にサンプル取得
-    const { data: item, error: fetchError } = await supabase
-      .from('sample_items')
-      .select('page_id')
-      .eq('id', id)
-      .single();
-    if (fetchError || !item) {
-      return { success: false, error: 'サンプル項目が見つかりませんでした' };
-    }
-
-    const { error } = await supabase.from('sample_items').delete().eq('id', id);
-    if (error) {
-      console.error('Error deleting sample item:', error);
-      return { success: false, error: error.message };
-    }
-
-    const { data: page, error: pageError } = await supabase
-      .from('pages')
-      .select('slug')
-      .eq('id', item.page_id)
-      .single();
-    if (!pageError && page) {
-      revalidatePath(page.slug);
-    }
-
-    return { success: true };
-  } catch (error) {
-    console.error('Error deleting sample item:', error);
-    return {
-      success: false,
-      error: 'サンプル項目の削除中にエラーが発生しました',
-    };
-  }
+  notify('サンプル項目を更新しました');
+  return { success: true };
 }
 
-/**
- * サンプル項目をIDから取得する
- */
-export async function getSampleItemById(id: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { sample: null, error: authError };
-  }
-
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data: sample, error } = await supabase
-      .from('sample_items')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) {
-      console.error('Error fetching sample item by id:', error);
-      return {
-        sample: null,
-        error: error.message || 'サンプル項目の取得中にエラーが発生しました',
-      };
-    }
-    return { sample, error: null };
-  } catch (error) {
-    console.error('Error fetching sample item by id:', error);
-    return {
-      sample: null,
-      error: 'サンプル項目の取得中にエラーが発生しました',
-    };
-  }
+/** サンプル項目を削除 */
+export async function deleteSampleItem(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  const remaining = mockSampleItems.filter((i) => i.id !== id);
+  mockSampleItems.length = 0;
+  mockSampleItems.push(...remaining);
+  notify('サンプル項目を削除しました');
+  return { success: true };
 }
 
-/**
- * サンプルページ一覧を取得する
- */
-export async function getSamplePages() {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { pages: [], error: authError };
-  }
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data, error } = await supabase
-      .from('pages')
-      .select('*')
-      .eq('page_type', 'sample')
-      .order('slug', { ascending: true });
-    if (error) {
-      console.error('Error fetching sample pages:', error);
-      return { pages: [], error: error.message };
-    }
-    return { pages: data || [], error: null };
-  } catch (error) {
-    console.error('Error fetching sample pages:', error);
-    return { pages: [], error: 'サンプルページの取得中にエラーが発生しました' };
-  }
+/** サンプル項目をIDから取得 */
+export async function getSampleItemById(
+  id: string
+): Promise<{ sample: SampleItem | null; error: null }> {
+  const sample = mockSampleItems.find((i) => i.id === id) ?? null;
+  return { sample, error: null };
 }
 
-/**
- * サンプルページを作成する
- */
-export async function createSamplePage(formData: PageFormData) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
-  }
-  try {
-    const validatedData = pageFormSchema.parse(formData);
-    const supabase = await getSupabaseServerClient();
-    const { data: existing } = await supabase
-      .from('pages')
-      .select('id')
-      .eq('slug', validatedData.slug)
-      .eq('page_type', 'sample')
-      .maybeSingle();
-    if (existing) {
-      return { success: false, error: 'このスラッグは既に使用されています' };
-    }
-    const { data, error } = await supabase
-      .from('pages')
-      .insert({ ...validatedData, page_type: 'sample' })
-      .select()
-      .single();
-    if (error) {
-      console.error('Error creating sample page:', error);
-      return { success: false, error: error.message };
-    }
-    revalidatePath(validatedData.slug);
-    return { success: true, data };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: 'バリデーションエラー',
-        validationErrors: error.errors,
-      };
-    }
-    console.error('Error creating sample page:', error);
-    return {
-      success: false,
-      error: 'サンプルページの作成中にエラーが発生しました',
-    };
-  }
+/** サンプルページ一覧を取得 */
+export async function getSamplePages(): Promise<{
+  pages: Page[];
+  error: null;
+}> {
+  return { pages: mockPages, error: null };
 }
 
-/**
- * サンプルページを更新する
- */
-export async function updateSamplePage(id: string, formData: PageFormData) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
-  }
-  try {
-    const validatedData = pageFormSchema.parse(formData);
-    const supabase = await getSupabaseServerClient();
-    const { data: existingPage, error: fetchError } = await supabase
-      .from('pages')
-      .select('slug, page_type')
-      .eq('id', id)
-      .single();
-    if (fetchError || !existingPage || existingPage.page_type !== 'sample') {
-      return { success: false, error: 'サンプルページが見つかりませんでした' };
-    }
-    if (existingPage.slug !== validatedData.slug) {
-      const { data: slugExists } = await supabase
-        .from('pages')
-        .select('id')
-        .eq('slug', validatedData.slug)
-        .eq('page_type', 'sample')
-        .maybeSingle();
-      if (slugExists) {
-        return { success: false, error: 'このスラッグは既に使用されています' };
-      }
-    }
-    const { data, error } = await supabase
-      .from('pages')
-      .update(validatedData)
-      .eq('id', id)
-      .select()
-      .single();
-    if (error) {
-      console.error('Error updating sample page:', error);
-      return { success: false, error: error.message };
-    }
-    revalidatePath(existingPage.slug);
-    revalidatePath(data.slug);
-    return { success: true, data };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: 'バリデーションエラー',
-        validationErrors: error.errors,
-      };
-    }
-    console.error('Error updating sample page:', error);
-    return {
-      success: false,
-      error: 'サンプルページの更新中にエラーが発生しました',
-    };
-  }
+/** サンプルページを作成 */
+export async function createSamplePage(
+  data: PageFormData
+): Promise<{ success: boolean; error?: string }> {
+  const now = new Date().toISOString();
+  const newPage: Page = {
+    id: `page-${Date.now()}`,
+    slug: data.slug.startsWith('/') ? data.slug : `/${data.slug}`,
+    title: data.title ?? null,
+    description: data.description ?? null,
+    created_at: now,
+    updated_at: now,
+  };
+  mockPages.push(newPage);
+  notify('サンプルページを作成しました');
+  return { success: true };
 }
 
-/**
- * サンプルページを削除する
- */
-export async function deleteSamplePage(id: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
+/** サンプルページを更新 */
+export async function updateSamplePage(
+  id: string,
+  data: PageFormData
+): Promise<{ success: boolean; error?: string }> {
+  const page = mockPages.find((p) => p.id === id);
+  if (page) {
+    page.slug = data.slug.startsWith('/') ? data.slug : `/${data.slug}`;
+    page.title = data.title ?? null;
+    page.description = data.description ?? null;
+    page.updated_at = new Date().toISOString();
   }
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data: page, error: fetchError } = await supabase
-      .from('pages')
-      .select('slug, page_type')
-      .eq('id', id)
-      .single();
-    if (fetchError || !page || page.page_type !== 'sample') {
-      return { success: false, error: 'サンプルページが見つかりませんでした' };
-    }
-    const { error } = await supabase.from('pages').delete().eq('id', id);
-    if (error) {
-      console.error('Error deleting sample page:', error);
-      return { success: false, error: error.message };
-    }
-    revalidatePath(page.slug);
-    return { success: true };
-  } catch (error) {
-    console.error('Error deleting sample page:', error);
-    return {
-      success: false,
-      error: 'サンプルページの削除中にエラーが発生しました',
-    };
-  }
+  notify('サンプルページを更新しました');
+  return { success: true };
 }
 
-/**
- * スラッグからサンプルページを取得する
- */
-export async function getSamplePageBySlug(slug: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { page: null, error: authError };
-  }
-  try {
-    const supabase = await getSupabaseServerClient();
-    const filterSlug = slug.startsWith('/') ? slug : `/${slug}`;
-    const { data: page, error } = await supabase
-      .from('pages')
-      .select('*')
-      .eq('page_type', 'sample')
-      .eq('slug', filterSlug)
-      .maybeSingle();
-    if (error) {
-      console.error('Error fetching sample page by slug:', error);
-      return {
-        page: null,
-        error: error.message || 'サンプルページの取得中にエラーが発生しました',
-      };
-    }
-    if (!page) {
-      return { page: null, error: 'サンプルページが見つかりませんでした' };
-    }
-    return { page, error: null };
-  } catch (error) {
-    console.error('Error fetching sample page by slug:', error);
-    return {
-      page: null,
-      error: 'サンプルページの取得中にエラーが発生しました',
-    };
-  }
+/** サンプルページを削除 */
+export async function deleteSamplePage(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  const remaining = mockPages.filter((p) => p.id !== id);
+  mockPages.length = 0;
+  mockPages.push(...remaining);
+  notify('サンプルページを削除しました');
+  return { success: true };
 }
 
-/**
- * IDからサンプルページを取得する
- */
-export async function getSamplePageById(id: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { page: null, error: authError };
-  }
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data: page, error } = await supabase
-      .from('pages')
-      .select('*')
-      .eq('page_type', 'sample')
-      .eq('id', id)
-      .maybeSingle();
-    if (error) {
-      console.error('Error fetching sample page by ID:', error);
-      return {
-        page: null,
-        error: error.message || 'サンプルページの取得中にエラーが発生しました',
-      };
-    }
-    if (!page) {
-      return { page: null, error: 'サンプルページが見つかりませんでした' };
-    }
-    return { page, error: null };
-  } catch (error) {
-    console.error('Error fetching sample page by ID:', error);
-    return {
-      page: null,
-      error: 'サンプルページの取得中にエラーが発生しました',
-    };
-  }
+/** サンプルページをスラッグから取得 */
+export async function getSamplePageBySlug(
+  slug: string
+): Promise<{ page: Page | null; error: null }> {
+  const s = slug.startsWith('/') ? slug : `/${slug}`;
+  const page = mockPages.find((p) => p.slug === s) ?? null;
+  return { page, error: null };
+}
+
+/** サンプルページをIDから取得 */
+export async function getSamplePageById(
+  id: string
+): Promise<{ page: Page | null; error: null }> {
+  const page = mockPages.find((p) => p.id === id) ?? null;
+  return { page, error: null };
 }
