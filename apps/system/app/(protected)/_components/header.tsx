@@ -22,7 +22,7 @@ const defaultUser: User = {
   role: '',
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
-} as any;
+} as User;
 const defaultAdminProfile: Database['system']['Tables']['admin_users']['Row'] =
   {
     id: 'admin1',
@@ -31,6 +31,7 @@ const defaultAdminProfile: Database['system']['Tables']['admin_users']['Row'] =
     first_name: '花子',
     last_name: '佐藤',
     role: 'admin',
+    is_active: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };

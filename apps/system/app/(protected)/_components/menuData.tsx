@@ -183,7 +183,7 @@ export const menuItems: MenuItem[] = [
     title: 'アクセス解析',
     icon: <BarChart className="h-6 w-6" />,
     category: 'website',
-    status: 'available',
+    status: 'unavailable',
   },
   {
     href: '/website/settings',
@@ -199,28 +199,28 @@ export const menuItems: MenuItem[] = [
     title: '作業記録',
     icon: <FileText className="h-6 w-6" />,
     category: 'development',
-    status: 'available',
+    status: 'unavailable',
   },
   {
     href: '/development/milestones',
     title: 'マイルストーン',
     icon: <Calendar className="h-6 w-6" />,
     category: 'development',
-    status: 'available',
+    status: 'unavailable',
   },
   {
     href: '/development/requests',
     title: '要望',
     icon: <ClipboardCheck className="h-6 w-6" />,
     category: 'development',
-    status: 'available',
+    status: 'unavailable',
   },
   {
     href: '/development/costs',
     title: 'コストと効果',
     icon: <BarChart className="h-6 w-6" />,
     category: 'development',
-    status: 'available',
+    status: 'unavailable',
   },
 
   // Googleカテゴリ (外部リンク、画像アイコン対応)
