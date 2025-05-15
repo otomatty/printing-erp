@@ -11,7 +11,7 @@ import { fetchInitialCalendarData } from '~/_actions/schedules';
 
 export default async function SystemDashboard() {
   // クイックアクセスデータを取得
-  const { success, items, error } = await getUserQuickAccess();
+  const { items } = await getUserQuickAccess();
   // 初期表示用のカレンダー情報を取得
   const {
     companyEvents: companyData,
@@ -23,7 +23,7 @@ export default async function SystemDashboard() {
     <Container>
       <div className="space-y-6">
         {/* クイックアクセス */}
-        <DashboardQuickAccess quickAccessItems={success ? items : []} />
+        <DashboardQuickAccess quickAccessItems={items} />
 
         {/* ステータスカード */}
         <DashboardStats />

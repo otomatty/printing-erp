@@ -12,6 +12,29 @@ import UserMenu from './user-menu';
 import { Container } from '~/components/custom/container';
 import logo from '~/public/images/logo/erp-logo-white.png';
 
+// モックデフォルト値
+const defaultUser: User = {
+  id: 'user1',
+  email: 'user@example.com',
+  user_metadata: { first_name: '太郎', last_name: '山田' },
+  app_metadata: { is_admin: true },
+  aud: '',
+  role: '',
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+} as any;
+const defaultAdminProfile: Database['system']['Tables']['admin_users']['Row'] =
+  {
+    id: 'admin1',
+    auth_user_id: 'user1',
+    email: 'admin@example.com',
+    first_name: '花子',
+    last_name: '佐藤',
+    role: 'admin',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+
 interface HeaderProps {
   user: User | null;
   /** admin_usersテーブルのレコード */
@@ -19,6 +42,8 @@ interface HeaderProps {
 }
 
 export default function Header({ user, adminProfile }: HeaderProps) {
+  const displayUser = user ?? defaultUser;
+  const displayAdmin = adminProfile ?? defaultAdminProfile;
   return (
     <header className="sticky top-0 z-50 w-full bg-primary text-primary-foreground shadow-md">
       <Container maxWidth="6xl">
@@ -40,7 +65,7 @@ export default function Header({ user, adminProfile }: HeaderProps) {
             </div>
 
             {/* ユーザーメニュー */}
-            <UserMenu user={user} adminProfile={adminProfile} />
+            <UserMenu user={displayUser} adminProfile={displayAdmin} />
           </div>
         </div>
       </Container>

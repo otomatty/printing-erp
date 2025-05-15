@@ -3,24 +3,42 @@
  * 認証済みユーザー向けのレイアウトで、ヘッダーとメインコンテンツを含む
  */
 import Header from './_components/header';
-import { getUser } from '~/_actions/auth';
-import { fetchAdminProfile } from '~/_actions/accounts';
+import type { User } from '@supabase/supabase-js';
+import type { Database } from '@kit/supabase/database';
 import { FabMenu } from '~/components/custom/fab';
 
-export default async function ProtectedLayout({
+export default function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // サーバーサイドでユーザー情報を取得
-  const { user, customer } = await getUser();
-  const { data: adminProfile } = await fetchAdminProfile();
+  // モックユーザー情報
+  const mockUser: User = {
+    id: 'user1',
+    email: 'user@example.com',
+    user_metadata: { first_name: '太郎', last_name: '山田' },
+    app_metadata: { is_admin: true },
+    aud: '',
+    role: '',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  } as any;
+  const mockAdminProfile: Database['system']['Tables']['admin_users']['Row'] = {
+    id: 'admin1',
+    auth_user_id: mockUser.id,
+    email: 'admin@example.com',
+    first_name: '花子',
+    last_name: '佐藤',
+    role: 'admin',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
 
   return (
     <>
       <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
         {/* ヘッダーナビゲーション */}
-        <Header user={user} adminProfile={adminProfile} />
+        <Header user={mockUser} adminProfile={mockAdminProfile} />
 
         {/* メインコンテンツ */}
         <main className="flex-1 py-8 lg:py-12">{children}</main>
