@@ -32,7 +32,7 @@ export function HomeContact() {
             もっと詳しく知りたいですか？
           </h2>
           <p className="text-lg text-gray-700 mb-6">
-            ニイヌマ企画印刷のオンライン入稿・管理システムについて、詳しい情報をお求めの方はお気軽にお問い合わせください。
+            印刷会社のオンライン入稿・管理システムについて、詳しい情報をお求めの方はお気軽にお問い合わせください。
           </p>
         </div>
         <div className="text-center md:text-right">

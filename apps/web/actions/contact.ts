@@ -430,7 +430,7 @@ async function sendCustomerConfirmation(contactData: ContactFormData) {
     const { error: sendError } = await resend.emails.send({
       from: fromAddress,
       to: contactData.userInfo.email,
-      subject: '【ニイヌマ企画印刷】お問い合わせありがとうございます',
+      subject: '【印刷会社】お問い合わせありがとうございます',
       html: emailHtml,
     });
 

@@ -19,7 +19,7 @@ const AppConfigSchema = z
   .object({
     name: z
       .string({
-        description: 'ニイヌマ企画印刷"',
+        description: '印刷会社"',
         required_error: '環境変数 NEXT_PUBLIC_PRODUCT_NAME を設定してください',
       })
       .min(1),

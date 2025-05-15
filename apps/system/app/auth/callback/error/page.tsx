@@ -5,7 +5,7 @@ import { Button } from '@kit/ui/button';
 import { AlertCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: '認証エラー | ニイヌマ企画印刷',
+  title: '認証エラー | 印刷会社',
   description: '認証処理中にエラーが発生しました',
 };
 

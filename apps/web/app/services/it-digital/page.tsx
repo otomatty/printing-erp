@@ -5,7 +5,7 @@ import CtaSection from '~/components/custom/cta-section';
 import { Laptop, Database, Settings, ChevronRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'IT・デジタルサービス | ニイヌマ企画印刷',
+  title: 'IT・デジタルサービス | 印刷会社',
   description:
     '印刷技術とITの融合による、ビジネスプロセスの効率化と新しい顧客体験の創出',
 };
@@ -48,7 +48,7 @@ export default function ITDigitalServicesPage() {
               長年培った印刷技術とITの融合により、お客様のビジネスプロセスを効率化し、
               新しい顧客体験を創出します。デジタル化の波に乗り遅れることなく、
               伝統的な価値を保ちながら進化するためのパートナーとして、
-              ニイヌマ企画印刷のIT・デジタルサービスがお手伝いします。
+              印刷会社のIT・デジタルサービスがお手伝いします。
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
@@ -137,7 +137,7 @@ export default function ITDigitalServicesPage() {
                   3. 印刷業界特有の課題解決
                 </h3>
                 <p className="text-gray-700">
-                  ニイヌマ企画印刷は印刷業界の課題を熟知しています。その知見を活かし、
+                  印刷会社は印刷業界の課題を熟知しています。その知見を活かし、
                   業界特有の課題を解決するシステムを提供することで、
                   印刷会社だからこそできる効率化と価値創造を実現します。
                   印刷業の未来を見据え、従来の印刷サービスとデジタルサービスを

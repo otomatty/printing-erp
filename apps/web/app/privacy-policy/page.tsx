@@ -3,9 +3,8 @@ import type { Metadata } from 'next';
 import PageHero from '~/components/custom/page-hero'; // ページタイトル表示用に流用
 
 export const metadata: Metadata = {
-  title: 'プライバシーポリシー | ニイヌマ企画印刷',
-  description:
-    'ニイヌマ企画印刷のプライバシーポリシー（個人情報保護方針）について説明します。',
+  title: 'プライバシーポリシー | 印刷会社',
+  description: '印刷会社バシーポリシー（個人情報保護方針）について説明します。',
 };
 
 const PrivacyPolicyPage = () => {
@@ -94,7 +93,7 @@ const PrivacyPolicyPage = () => {
               <p>
                 本ポリシーに関するお問い合わせは、下記の窓口までお願いいたします。
                 <br />
-                事業者名称: ニイヌマ企画印刷
+                事業者名称: 印刷会社
                 <br />
                 所在地: 〒022-0003 岩手県大船渡市盛町字みどり町4-12
                 <br />

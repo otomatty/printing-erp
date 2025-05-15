@@ -8,10 +8,10 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
-  title: '印刷業務管理システム | ニイヌマ企画印刷',
-  description: 'ニイヌマ企画印刷の業務管理システム',
+  title: '印刷業務管理システム | 印刷会社',
+  description: '印刷会社の業務管理システム',
   other: {
-    'apple-mobile-web-app-title': 'ニイヌマ企画印刷 業務管理',
+    'apple-mobile-web-app-title': '印刷会社 業務管理',
   },
 };
 

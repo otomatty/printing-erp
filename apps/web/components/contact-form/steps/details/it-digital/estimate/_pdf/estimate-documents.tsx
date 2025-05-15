@@ -355,10 +355,7 @@ export const EstimateDocument: React.FC<EstimateDocumentProps> = ({
   };
 
   return (
-    <Document
-      title={`見積書_${estimate.estimateNumber}`}
-      author="ニイヌマ企画印刷"
-    >
+    <Document title={`見積書_${estimate.estimateNumber}`} author="印刷会社">
       <Page size="A4" style={styles.page} wrap>
         {/* ヘッダー */}
         <View style={styles.header}>

@@ -28,7 +28,7 @@ export default async function ProtectedLayout({
         {/* フッター */}
         <footer className="bg-gray-200 dark:bg-gray-800 py-4 text-center text-gray-600 dark:text-gray-400 text-sm">
           <div className="container mx-auto px-4">
-            © {new Date().getFullYear()} ニイヌマ企画印刷 All Rights Reserved.
+            © {new Date().getFullYear()} 印刷会社 All Rights Reserved.
           </div>
         </footer>
       </div>

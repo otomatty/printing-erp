@@ -4,14 +4,14 @@ const StrengthsSection: React.FC = () => {
   return (
     <section className="mb-12">
       <h2 className="text-3xl font-bold text-center mb-8">
-        ニイヌマ企画印刷の「低コスト・スクラッチ開発」
+        印刷会社の「低コスト・スクラッチ開発」
       </h2>
       <div className="space-y-4">
         <p className="text-lg text-gray-600">
           「スクラッチ開発は高価だ」と思っていませんか？
         </p>
         <p className="text-lg text-gray-600">
-          ニイヌマ企画印刷では、
+          印刷会社
           <strong className="text-gray-800">
             経験豊富な外部エンジニアとの効率的な連携体制
           </strong>

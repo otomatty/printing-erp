@@ -72,7 +72,7 @@ const subsidyData = {
 // --- 仮の補助金データここまで ---
 
 export const metadata = {
-  title: `${subsidyData.name} | 補助金活用 | ニイヌマ企画印刷`,
+  title: `${subsidyData.name} | 補助金活用 | 印刷会社`,
   description: `${subsidyData.summary}`,
 };
 
@@ -227,7 +227,7 @@ export default function MonodukuriSubsidyPage() {
               補助金申請・システム開発のご相談
             </h3>
             <p className="mb-6 text-lg">
-              「この補助金は使える？」「どんなシステムが作れる？」など、補助金活用やスクラッチ開発に関するご相談は、ニイヌマ企画印刷にお任せください。
+              「この補助金は使える？」「どんなシステムが作れる？」など、補助金活用やスクラッチ開発に関するご相談は、印刷会社ください。
             </p>
             <Link
               href="/contact" // TODO: 正しい問い合わせページパスに修正
@@ -238,7 +238,7 @@ export default function MonodukuriSubsidyPage() {
           </div>
           {/* <CtaSection
             heading="補助金申請・システム開発のご相談"
-            description="「この補助金は使える？」「どんなシステムが作れる？」など、補助金活用やスクラッチ開発に関するご相談は、ニイヌマ企画印刷にお任せください。"
+            description="「この補助金は使える？」「どんなシステムが作れる？」など、補助金活用やスクラッチ開発に関するご相談は、印刷会社ください。"
             buttonText="無料で相談する"
             buttonLink="/contact" // TODO: 正しい問い合わせページパスに修正
           /> */}

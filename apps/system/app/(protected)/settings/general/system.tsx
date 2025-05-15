@@ -27,9 +27,7 @@ import {
 export function SystemSettings() {
   const [timezone, setTimezone] = useState('Asia/Tokyo');
   const [dateFormat, setDateFormat] = useState('yyyy-MM-dd');
-  const [systemName, setSystemName] = useState(
-    'ニイヌマ企画印刷 業務管理システム'
-  );
+  const [systemName, setSystemName] = useState('印刷会社 業務管理システム');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeSegment, setActiveSegment] = useState('basic');
 

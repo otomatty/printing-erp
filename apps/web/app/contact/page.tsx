@@ -6,10 +6,10 @@ import ContactForm from './contact-form';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'お問い合わせ | ニイヌマ企画印刷',
+  title: 'お問い合わせ | 印刷会社',
   description:
     'ご質問やお見積りのご依頼などはこちらからお気軽にお問い合わせください。',
-  keywords: ['お問い合わせ', 'ニイヌマ企画印刷'],
+  keywords: ['お問い合わせ', '印刷会社
 };
 
 export default async function ContactPage() {

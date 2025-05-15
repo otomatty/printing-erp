@@ -143,159 +143,44 @@ function setRequestId(request: Request) {
  * @returns Nextレスポンスオブジェクト
  */
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next();
-  const pathname = request.nextUrl.pathname;
-
-  const supabase = createMiddlewareClient(request, response);
-
-  // セッション更新（これは必要）
-  // getUserの前に実行してセッションを確実に最新にする
-  const { error: sessionError } = await supabase.auth.getSession();
-  if (sessionError) {
-    console.error('[Middleware] Error refreshing session:', sessionError);
-    // セッション取得エラー時の処理 (例: エラーページへリダイレクト)
-    // return NextResponse.redirect(new URL('/error', request.url));
-  }
-
-  // 各リクエストに一意のIDを設定
-  setRequestId(request);
-
-  // 認証が不要なパスはそのまま通す
-  const publicPaths = pathsConfig.publicPaths;
-  if (publicPaths.includes(pathname) || pathname.startsWith('/api/')) {
-    return response; // 認証不要ならここで終了
-  }
-
-  // === 認証情報と権限の取得 ===
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser(); // ここでユーザー情報を取得
-
-  let isAdmin = false;
-  let userId: string | undefined = undefined;
-  let userEmail: string | undefined = undefined;
-
-  if (userError && !user) {
-    // エラーがあり、かつユーザーがnullの場合のみログ出力（エラーハンドリングは改善の余地あり）
+  // Basic Auth implementation: bypass Supabase auth and allow only Basic Auth users
+  const authHeader = request.headers.get('authorization');
+  const BASIC_USER = process.env.BASIC_AUTH_USER;
+  const BASIC_PASS = process.env.BASIC_AUTH_PASSWORD;
+  // Ensure credentials are configured
+  if (!BASIC_USER || !BASIC_PASS) {
     console.error(
-      '[Middleware] Error fetching user and user is null:',
-      userError
+      '[Middleware] BASIC_AUTH_USER or BASIC_AUTH_PASSWORD is not set'
     );
-    // ここでリダイレクトするかどうかは要検討。現状は先に進む
+    return new NextResponse('Server configuration error', { status: 500 });
   }
-
-  if (user) {
-    userId = user.id;
-    userEmail = user.email;
-    try {
-      // --- ★変更点: ここで直接RPCを呼び出す ---
-      // ミドルウェアで作成した supabase クライアントを使用する
-
-      const { data: isAdminResult, error: rpcError } =
-        await supabase.rpc('check_is_admin');
-
-      if (rpcError) {
-        console.error(
-          '[Middleware] Error calling check_is_admin RPC:',
-          rpcError
-        );
-        isAdmin = false; // エラー時は管理者ではないと判断
-      } else {
-        isAdmin = !!isAdminResult; // 結果をbooleanに変換
-      }
-      // --- ★変更点ここまで ---
-    } catch (error) {
-      // rpc呼び出し自体の予期せぬエラー
-      console.error(
-        '[Middleware] Unexpected error checking admin status:',
-        error
-      );
-      isAdmin = false;
-    }
+  // Challenge for missing Authorization header
+  if (!authHeader) {
+    return new NextResponse('Authentication required', {
+      status: 401,
+      headers: { 'WWW-Authenticate': 'Basic realm="Restricted"' },
+    });
   }
-
-  // ユーザー未認証の場合
-  if (!user) {
-    console.log(
-      '[Middleware] User not authenticated (user object is null), redirecting to must-authenticate page'
-    );
-    // 未認証なら認証ページへリダイレクト
-    // リダイレクトループを防ぐために、認証ページ自体へのアクセスは除外する
-    if (pathname !== pathsConfig.auth.mustAuthenticate) {
-      return redirectToMustAuthenticatePage(request);
-    }
-    // 既に認証ページにいる場合は何もしないか、別の処理を行う
-    console.log(
-      '[Middleware] Already on must-authenticate page or loop detected. Returning response.'
-    );
-    return response; // or specific handling
+  const [scheme, credentials] = authHeader.split(' ');
+  if (scheme !== 'Basic' || !credentials) {
+    return new NextResponse('Unauthorized', {
+      status: 401,
+      headers: { 'WWW-Authenticate': 'Basic realm="Restricted"' },
+    });
   }
-
-  // 管理者でない場合
-  if (!isAdmin) {
-    // 管理者以外のユーザーがアクセスしようとしたパスが、
-    // 管理者専用でない共通パス（例: /dashboard）の場合はリダイレクトしないようにする
-    // 必要に応じて、管理者専用パスのリスト `adminOnlyPaths` を定義
-    const adminOnlyPaths = ['/settings']; // 例: /settings 以下は管理者のみ
-
-    // 現在のパスが管理者専用パスに含まれるかチェック
-    const requiresAdmin = adminOnlyPaths.some((p) => pathname.startsWith(p));
-
-    if (requiresAdmin) {
-      return redirectToMainSite(request); // 管理者専用パスへのアクセスならメインサイトへ
-    }
+  let decoded: string;
+  try {
+    decoded = atob(credentials);
+  } catch {
+    return new NextResponse('Invalid authentication token', { status: 400 });
   }
-
-  // --- 認証・権限チェックを通過した場合 ---
-
-  // ホスト名とドメイン設定
-  const host = request.headers.get('host') || '';
-  const domain =
-    process.env.SUPABASE_AUTH_COOKIE_DOMAIN ||
-    process.env.AUTH_COOKIE_DOMAIN ||
-    process.env.COOKIE_DOMAIN;
-
-  // CSRF保護を適用（変更を伴わないリクエストも含む可能性があるため、ここで適用）
-  // withCsrfMiddleware内でGETなどは除外される
-  const csrfResponse = await withCsrfMiddleware(request, response, domain);
-  if (
-    csrfResponse.status !== 200 &&
-    !NextResponse.next().headers.get('x-middleware-next') // Check if it's just passing through
-  ) {
-    console.log(
-      `[Middleware] CSRF middleware returned status ${csrfResponse.status}. Returning CSRF response.`
-    );
-    // CSRFミドルウェアがリダイレクトやエラーレスポンスを返した場合、それを優先する
-    // ただし、NextResponse.next() の場合はヘッダーを設定して続行
-    return csrfResponse;
+  const [username, password] = decoded.split(':');
+  if (username !== BASIC_USER || password !== BASIC_PASS) {
+    return new NextResponse('Unauthorized', {
+      status: 401,
+      headers: { 'WWW-Authenticate': 'Basic realm="Restricted"' },
+    });
   }
-
-  // 取得した認証情報をリクエストヘッダーに設定
-  const requestHeaders = new Headers(request.headers);
-  if (userId) requestHeaders.set('x-user-id', userId);
-  if (userEmail) requestHeaders.set('x-user-email', userEmail);
-  requestHeaders.set('x-is-admin', String(isAdmin));
-
-  // サーバーアクションの場合、パスもヘッダーに追加
-  if (isServerAction(request)) {
-    requestHeaders.set('x-action-path', request.nextUrl.pathname);
-  }
-
-  // 設定したヘッダーを持つレスポンスを返す
-  // csrfResponseから必要なヘッダー（Set-Cookieなど）をマージする
-  const finalHeaders = new Headers(csrfResponse.headers); // Start with headers from CSRF response
-  requestHeaders.forEach((value, key) => {
-    if (!finalHeaders.has(key)) {
-      // Avoid overwriting CSRF headers like Set-Cookie if already set
-      finalHeaders.set(key, value);
-    }
-  });
-
-  return NextResponse.next({
-    request: {
-      headers: requestHeaders, // ユーザー情報を含むヘッダー (これは内部的なリクエスト用)
-    },
-    headers: finalHeaders, // CSRFトークンなどを含むヘッダー (これがブラウザに返る)
-  });
+  // Authenticated: allow all pages
+  return NextResponse.next();
 }

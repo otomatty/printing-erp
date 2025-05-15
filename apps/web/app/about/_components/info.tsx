@@ -59,7 +59,7 @@ export default function CompanyInfo() {
                     <th className="py-4 pr-4 text-left text-gray-600 align-top w-32">
                       会社名
                     </th>
-                    <td className="py-4">ニイヌマ企画印刷</td>
+                    <td className="py-4">印刷会社</td>
                   </motion.tr>
                   <motion.tr
                     className="border-b border-gray-200"
@@ -212,7 +212,7 @@ export default function CompanyInfo() {
                 <div className="relative w-full h-full min-h-[250px] rounded-lg overflow-hidden">
                   <Image
                     src="/images/office.webp"
-                    alt="ニイヌマ企画印刷のオフィス"
+                    alt="印刷会社ス"
                     className="object-cover"
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
@@ -236,7 +236,7 @@ export default function CompanyInfo() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.5 }}
                 >
-                  ニイヌマ企画印刷について
+                  印刷会社
                 </motion.h3>
                 <motion.p
                   className="text-gray-600 mb-4"
@@ -245,7 +245,7 @@ export default function CompanyInfo() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.6 }}
                 >
-                  ニイヌマ企画印刷は1985年の創業以来、お客様のコミュニケーションを支える印刷のプロとして成長してきました。
+                  印刷会社5年の創業以来、お客様のコミュニケーションを支える印刷のプロとして成長してきました。
                   各種印刷・製本、編集・デザインなど、印刷にかかわることならなんでもお受けします。
                 </motion.p>
                 <motion.p

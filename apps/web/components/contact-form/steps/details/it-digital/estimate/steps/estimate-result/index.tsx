@@ -192,7 +192,7 @@ export function EstimateResultStep() {
         description: formData?.description,
         validUntil: new Date(new Date().setMonth(new Date().getMonth() + 1)),
         paymentTerms: '納品後30日以内にお支払いください。',
-        salesPerson: 'ニイヌマ企画印刷',
+        salesPerson: '印刷会社',
         totalAmount: rushFeeCalculation.totalPrice,
         originalPrice: traditionalTotalPrice,
         totalDuration: totalDuration,

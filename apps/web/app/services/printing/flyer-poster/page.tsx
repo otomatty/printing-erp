@@ -36,7 +36,7 @@ import { getFaqItemsByPageSlug } from '~/actions/faq';
 // --- データファイルのインポートを追加 --- ※追加
 
 export const metadata: Metadata = {
-  title: 'チラシ・ポスター印刷 | サービス | ニイヌマ企画印刷', // タイトル微修正
+  title: 'チラシ・ポスター印刷 | サービス | 印刷会社', // タイトル微修正
   description:
     'イベント告知、商品宣伝、店舗案内などに効果的なチラシ、ポスター、リーフレット、パンフレット等のデザイン・印刷サービス。',
 };

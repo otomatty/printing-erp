@@ -49,7 +49,7 @@ export default async function DashboardLayout({
             href="/dashboard"
             className="font-bold text-xl flex items-center"
           >
-            ニイヌマ企画印刷
+            印刷会社
           </Link>
 
           <Sheet>
@@ -62,7 +62,7 @@ export default async function DashboardLayout({
             <SheetContent side="left" className="w-72 p-0">
               <div className="space-y-4 py-4">
                 <div className="px-4 py-2 border-b">
-                  <h2 className="text-lg font-semibold">ニイヌマ企画印刷</h2>
+                  <h2 className="text-lg font-semibold">印刷会社</h2>
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                 </div>
                 <nav className="space-y-1 px-2">

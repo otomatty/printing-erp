@@ -27,9 +27,7 @@ const SystemComparisonTable: React.FC = () => {
                 </th>
                 <th className="px-4 py-3 text-center w-[25%]">従来型の開発</th>
                 <th className="px-4 py-3 text-center w-[25%]">市販ソフト</th>
-                <th className="px-4 py-3 text-center w-[25%]">
-                  ニイヌマ企画印刷
-                </th>
+                <th className="px-4 py-3 text-center w-[25%]">印刷会社</th>
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -206,7 +204,7 @@ const SystemComparisonTable: React.FC = () => {
                       </span>
                     </div>
                   </td>
-                  {/* ニイヌマ企画印刷 */}
+                  {/* 印刷会社 */}
                   <td className="px-4 py-3 text-center">
                     <div className="flex flex-col items-center">
                       <TooltipProvider>

@@ -42,7 +42,7 @@ const SystemWhyChooseUsSection: React.FC = () => {
     <section className="py-16 lg:py-32 bg-primary/5">
       <Container>
         <SectionTitle
-          title="ニイヌマ企画印刷が"
+          title="印刷会社が"
           highlightedText="選ばれる理由"
           description="私たちはただシステムを作るだけでなく、お客様の事業の成功を一緒に考えるパートナーとして選ばれ続けています"
         />

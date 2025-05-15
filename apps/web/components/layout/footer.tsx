@@ -32,7 +32,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* 会社情報 */}
           <div>
-            <h3 className="text-xl font-bold mb-4">ニイヌマ企画印刷</h3>
+            <h3 className="text-xl font-bold mb-4">印刷会社</h3>
             <div className="space-y-2">
               <p className="flex items-start">
                 <MapPin size={18} className="mr-2 flex-shrink-0 mt-1" />
@@ -134,7 +134,7 @@ export function Footer() {
 
         {/* コピーライト */}
         <div className="border-t border-background-foreground mt-8 pt-8 text-center">
-          <p>© {currentYear} ニイヌマ企画印刷 All Rights Reserved.</p>
+          <p>© {currentYear} 印刷会社 All Rights Reserved.</p>
           <div className="mt-4 space-x-4">
             <Link
               href="/privacy-policy"

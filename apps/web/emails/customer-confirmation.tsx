@@ -104,13 +104,13 @@ export default function CustomerConfirmationEmail(
   return (
     <Html>
       <Head />
-      <Preview>【ニイヌマ企画印刷】お問い合わせありがとうございます</Preview>
+      <Preview>【印刷会社】お問い合わせありがとうございます</Preview>
       <Body style={styles.container}>
         <Container>
           <Section style={styles.header}>
             <Img
               src="https://niinuma-kikaku.com/images/logo/site-logo.png"
-              alt="ニイヌマ企画印刷 ロゴ"
+              alt="印刷会社 ロゴ"
               width="180"
               style={{ margin: 'auto' }}
             />
@@ -127,7 +127,7 @@ export default function CustomerConfirmationEmail(
             </Text>
 
             <Text>
-              この度は、ニイヌマ企画印刷に{inquiryTypeLabel}
+              この度は、印刷会社に{inquiryTypeLabel}
               に関するお問い合わせをいただき、誠にありがとうございます。
               {contactId && (
                 <Text style={{ fontSize: '12px', color: '#555' }}>
@@ -158,7 +158,7 @@ export default function CustomerConfirmationEmail(
 
             <Section style={styles.contactInfo}>
               <Text>
-                <strong>ニイヌマ企画印刷</strong>
+                <strong>印刷会社</strong>
                 <br />
                 〒022-0003 岩手県大船渡市盛町字みどり町4-12
                 <br />
@@ -178,7 +178,7 @@ export default function CustomerConfirmationEmail(
               </Text>
             </Section>
 
-            <Text>今後ともニイヌマ企画印刷をよろしくお願いいたします。</Text>
+            <Text>今後とも印刷会社をよろしくお願いいたします。</Text>
           </Section>
 
           <Section style={styles.footer}>

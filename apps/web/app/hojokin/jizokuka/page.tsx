@@ -85,7 +85,7 @@ const subsidyData = {
 // --- 仮の補助金データここまで ---
 
 export const metadata = {
-  title: `${subsidyData.name} | 補助金活用 | ニイヌマ企画印刷`,
+  title: `${subsidyData.name} | 補助金活用 | 印刷会社`,
   description: `小規模事業者の販路開拓や業務効率化を支援する${subsidyData.name}の詳細。対象経費や申請の流れを解説。`,
 };
 
@@ -245,7 +245,7 @@ export default function JizokukaSubsidyPage() {
               補助金活用・ホームページ制作のご相談
             </h3>
             <p className="mb-6 text-lg">
-              持続化補助金を活用したホームページ制作や業務効率化について、ニイヌマ企画印刷がお手伝いします。
+              持続化補助金を活用したホームページ制作や業務効率化について、印刷会社いします。
             </p>
             <Link
               href="/contact" // TODO: 正しい問い合わせページパスに修正

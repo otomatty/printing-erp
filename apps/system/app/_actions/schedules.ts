@@ -41,14 +41,24 @@ async function getCalendarClient(): Promise<calendar_v3.Calendar> {
  * @returns Array of Calendar events
  */
 export async function listCompanyEvents(): Promise<calendar_v3.Schema$Event[]> {
-  const client = await getCalendarClient();
-  const { data } = await client.events.list({
-    calendarId,
-    timeMin: new Date().toISOString(),
-    singleEvents: true,
-    orderBy: 'startTime',
-  });
-  return data.items || [];
+  // モックデータ: 会社カレンダーのイベント (Supabase DB 型定義 calendar_v3.Schema$Event を使用)
+  const mockCompanyEvents: calendar_v3.Schema$Event[] = [
+    {
+      id: '1',
+      summary: '全社ミーティング',
+      description: '月次の全社集会を開催',
+      start: { dateTime: '2025-07-01T10:00:00+09:00' },
+      end: { dateTime: '2025-07-01T11:00:00+09:00' },
+    },
+    {
+      id: '2',
+      summary: '営業戦略会議',
+      description: 'Q3に向けた営業戦略を検討',
+      start: { dateTime: '2025-07-02T14:00:00+09:00' },
+      end: { dateTime: '2025-07-02T15:30:00+09:00' },
+    },
+  ];
+  return mockCompanyEvents;
 }
 
 /**
@@ -136,90 +146,17 @@ export async function deleteCompanyEvent(eventId: string): Promise<void> {
  * Throws if the user is not authenticated.
  */
 export async function listUserEvents(): Promise<calendar_v3.Schema$Event[]> {
-  // クッキーから Google トークンを取得
-  const cookieStore = await cookies();
-  const tokenCookie = cookieStore.get('google_tokens');
-  if (!tokenCookie) {
-    throw new Error('User is not authenticated');
-  }
-  let tokens: Credentials;
-  try {
-    tokens = JSON.parse(tokenCookie.value) as Credentials;
-  } catch {
-    throw new Error('Invalid authentication token');
-  }
-
-  // OAuth2 クライアントをトークンで初期化
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_SCHEDULE_CLIENT_ID,
-    process.env.GOOGLE_SCHEDULE_CLIENT_SECRET,
-    process.env.GOOGLE_SCHEDULE_REDIRECT_URI
-  );
-  oauth2Client.setCredentials(tokens);
-
-  // ユーザー情報取得（メール取得）
-  const oauth2Service = google.oauth2({ version: 'v2', auth: oauth2Client });
-  const { data: userInfo } = await oauth2Service.userinfo.get();
-  const userEmail = userInfo.email;
-  if (!userEmail) {
-    throw new Error('User email is not available');
-  }
-
-  // access_token をリフレッシュ（5分前を目安）
-  const now = Date.now();
-  if (!tokens.expiry_date || tokens.expiry_date - now < 5 * 60 * 1000) {
-    if (!tokens.refresh_token) {
-      throw new Error('No refresh token available');
-    }
-    const { credentials } = await oauth2Client.refreshAccessToken();
-    tokens.access_token = credentials.access_token;
-    tokens.expiry_date = credentials.expiry_date;
-    tokens.refresh_token = credentials.refresh_token ?? tokens.refresh_token;
-    // Ensure refreshed tokens are present
-    if (!tokens.access_token || !tokens.expiry_date) {
-      throw new Error('Failed to refresh Google tokens');
-    }
-    // Supabase と Cookie に書き戻し
-    const supabase = getSupabaseServerAdminClient();
-    await supabase
-      .schema('system')
-      .from('user_google_tokens')
-      .upsert<{
-        user_email: string;
-        access_token: string;
-        refresh_token: string;
-        expiry_date: number;
-      }>(
-        [
-          {
-            user_email: userEmail,
-            access_token: tokens.access_token,
-            refresh_token: tokens.refresh_token,
-            expiry_date: tokens.expiry_date,
-          },
-        ],
-        { onConflict: 'user_email' }
-      );
-    // Cookie 更新
-    const maxAge = Math.floor((tokens.expiry_date - now) / 1000);
-    cookieStore.set('google_tokens', JSON.stringify(tokens), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      maxAge,
-    });
-  }
-
-  // カレンダーイベント取得
-  const client = google.calendar({ version: 'v3', auth: oauth2Client });
-  const { data } = await client.events.list({
-    calendarId: userEmail,
-    timeMin: new Date().toISOString(),
-    singleEvents: true,
-    orderBy: 'startTime',
-  });
-
-  return data.items || [];
+  // モックデータ: 個人カレンダーのイベント (Supabase DB 型定義 calendar_v3.Schema$Event を使用)
+  const mockUserEvents: calendar_v3.Schema$Event[] = [
+    {
+      id: 'u1',
+      summary: '個人タスクチェック',
+      description: 'TODOリストを確認',
+      start: { dateTime: '2025-07-01T09:00:00+09:00' },
+      end: { dateTime: '2025-07-01T09:30:00+09:00' },
+    },
+  ];
+  return mockUserEvents;
 }
 
 /**

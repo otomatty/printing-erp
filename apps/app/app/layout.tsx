@@ -12,12 +12,11 @@ import '../styles/globals.css';
 import { Header } from '../components/layout/header';
 
 export const metadata: Metadata = {
-  title: 'ニイヌマ企画印刷 | オンライン印刷アプリ',
-  description:
-    '印刷業務をスマートに管理するニイヌマ企画印刷のオンラインシステム',
+  title: '印刷会社 | オンライン印刷アプリ',
+  description: '印刷業務をスマートに管理する印刷会社のオンラインシステム',
   keywords: ['印刷'],
   other: {
-    'apple-mobile-web-app-title': 'ニイヌマ企画印刷 アプリ',
+    'apple-mobile-web-app-title': '印刷会社 アプリ',
   },
 };
 
@@ -40,7 +39,7 @@ export default async function RootLayout({
           </RootProviders>
           <footer className="bg-gray-100 py-4 text-center text-gray-600 text-sm">
             <div className="container mx-auto px-4">
-              © {new Date().getFullYear()} ニイヌマ企画印刷 All Rights Reserved.
+              © {new Date().getFullYear()} 印刷会社 All Rights Reserved.
             </div>
           </footer>
         </div>

@@ -48,7 +48,7 @@ const SubmissionGuide: React.FC = () => {
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title="ニイヌマ企画印刷の地図"
+                    title="印刷会社の地図"
                     className="rounded-lg"
                   />
                 </div>
@@ -74,7 +74,7 @@ const SubmissionGuide: React.FC = () => {
               <div className="flex items-center mb-4">
                 <Mail className="w-4 h-4 mr-2 flex-shrink-0" />
                 <a
-                  href={`mailto:nkikaku@crocus.ocn.ne.jp?subject=${encodeURIComponent('印刷データ入稿')}&body=${encodeURIComponent('ニイヌマ企画印刷 御担当者様\n\nお世話になります。\n\n印刷データを入稿いたします。\n\n■お名前:\n■ご連絡先:\n■ファイル名:\n■備考:\n\nご確認よろしくお願いいたします。')}`}
+                  href={`mailto:nkikaku@crocus.ocn.ne.jp?subject=${encodeURIComponent('印刷データ入稿')}&body=${encodeURIComponent('印刷会社 御担当者様\n\nお世話になります。\n\n印刷データを入稿いたします。\n\n■お名前:\n■ご連絡先:\n■ファイル名:\n■備考:\n\nご確認よろしくお願いいたします。')}`}
                   className="text-md md:text-xl font-semibold text-gray-800 hover:underline break-all"
                 >
                   nkikaku@crocus.ocn.ne.jp
@@ -114,7 +114,7 @@ const SubmissionGuide: React.FC = () => {
               <div className="flex items-center mb-4">
                 <Mail className="w-4 h-4 mr-2 flex-shrink-0" />
                 <a
-                  href={`mailto:nkikaku@crocus.ocn.ne.jp?subject=${encodeURIComponent('印刷データ入稿')}&body=${encodeURIComponent('ニイヌマ企画印刷 御担当者様\n\nお世話になります。\n\n印刷データを入稿いたします。\n\n■お名前:\n■ご連絡先:\n■転送サービスURL:\n■ファイル名:\n■備考:\n\nご確認よろしくお願いいたします。')}`}
+                  href={`mailto:nkikaku@crocus.ocn.ne.jp?subject=${encodeURIComponent('印刷データ入稿')}&body=${encodeURIComponent('印刷会社 御担当者様\n\nお世話になります。\n\n印刷データを入稿いたします。\n\n■お名前:\n■ご連絡先:\n■転送サービスURL:\n■ファイル名:\n■備考:\n\nご確認よろしくお願いいたします。')}`}
                   className="text-md md:text-xl font-semibold text-gray-800 hover:underline break-all"
                 >
                   nkikaku@crocus.ocn.ne.jp

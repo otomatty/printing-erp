@@ -36,7 +36,7 @@ import { getFaqItemsByPageSlug } from '~/actions/faq';
 // --- データファイルのインポートを追加 --- ※追加
 
 export const metadata: Metadata = {
-  title: 'ページ物・冊子印刷・製本 | サービス | ニイヌマ企画印刷', // タイトル微修正
+  title: 'ページ物・冊子印刷・製本 | サービス | 印刷会社', // タイトル微修正
   description:
     '報告書、マニュアル、文集、論文、記念誌などのページ物・冊子の印刷・製本サービス。デザイン・編集から、持ち込み原稿の製本まで対応。', // description 微修正
 };

@@ -31,7 +31,7 @@ import { getFaqItemsByPageSlug } from '~/actions/faq';
 // --- データファイルのインポートを追加 ---
 
 export const metadata: Metadata = {
-  title: '名刺・ハガキ・カード類 | サービス | ニイヌマ企画印刷',
+  title: '名刺・ハガキ・カード類 | サービス | 印刷会社',
   description:
     '高品質な名刺、年賀状や挨拶状などの各種ハガキ、ショップカードなどの印刷サービス。',
 };

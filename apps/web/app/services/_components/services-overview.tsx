@@ -72,7 +72,7 @@ export default function ServicesOverview() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            ニイヌマ企画印刷では、デザインから印刷まで一貫した体制で、お客様のご要望に沿った高品質なサービスを提供しています。
+            印刷会社では、デザインから印刷まで一貫した体制で、お客様のご要望に沿った高品質なサービスを提供しています。
             長年の経験と最新の設備を活かし、お客様の課題解決をサポートいたします。
           </motion.p>
         </motion.div>

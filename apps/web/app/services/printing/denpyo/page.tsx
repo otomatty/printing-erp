@@ -28,7 +28,7 @@ import {
 import { getFaqItemsByPageSlug } from '~/actions/faq';
 
 export const metadata: Metadata = {
-  title: '伝票印刷・製本 | サービス | ニイヌマ企画印刷', // タイトルを少し修正
+  title: '伝票印刷・製本 | サービス | 印刷会社', // タイトルを少し修正
   description:
     '納品書、請求書、領収書などの各種伝票印刷や、資料・文集などの製本サービス。オリジナルデザイン、ナンバリング、複写伝票にも対応。', // description も修正
 };

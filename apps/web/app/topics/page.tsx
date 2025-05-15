@@ -55,9 +55,8 @@ export const topics = [
 ];
 
 export const metadata = {
-  title: '特集 | ニイヌマ企画印刷',
-  description:
-    'ニイヌマ企画印刷がお届けする、DX・IT、印刷に関する特集記事一覧です。', // description更新
+  title: '特集 | 印刷会社',
+  description: '印刷会社する、DX・IT、印刷に関する特集記事一覧です。', // description更新
 };
 
 export default function TopicsPage() {
@@ -69,7 +68,7 @@ export default function TopicsPage() {
     <div className="bg-slate-50 min-h-screen">
       <PageHero
         title="特集"
-        subtitle="ニイヌマ企画印刷がお届けする、印刷、IT・デジタルなどビジネスのヒントになる特集記事一覧です。"
+        subtitle="印刷会社する、印刷、IT・デジタルなどビジネスのヒントになる特集記事一覧です。"
       />
 
       <Container className="py-16">

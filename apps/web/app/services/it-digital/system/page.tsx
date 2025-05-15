@@ -16,7 +16,7 @@ import { getFaqItemsByPageSlug } from '~/actions/faq';
 import CtaSection from '~/components/custom/cta-section';
 
 export const metadata: Metadata = {
-  title: '業務システム開発 | ニイヌマ企画印刷',
+  title: '業務システム開発 | 印刷会社',
   description:
     'お客様のビジネスに最適な業務システムの開発・導入をサポートします。業務効率化からコスト削減まで、幅広いニーズに対応したシステム開発サービスをご提供します。',
 };

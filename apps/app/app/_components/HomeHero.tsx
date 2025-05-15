@@ -11,7 +11,7 @@ export function HomeHero() {
           印刷業務をもっとスマートに
         </h1>
         <p className="text-xl mb-8 drop-shadow">
-          ニイヌマ企画印刷のオンライン入稿・管理システムで、印刷業務の効率化を実現します。デザインから入稿、納品までをシームレスに管理。
+          印刷会社のオンライン入稿・管理システムで、印刷業務の効率化を実現します。デザインから入稿、納品までをシームレスに管理。
         </p>
         <div className="flex justify-center gap-4">
           <button

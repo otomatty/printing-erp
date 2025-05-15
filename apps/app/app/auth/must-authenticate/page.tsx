@@ -21,7 +21,7 @@ export default function MustAuthenticatePage() {
 
       <div className="flex flex-col items-center space-y-4">
         <p className="text-center text-sm">
-          ニイヌマ企画印刷のオンライン入稿を利用するには、ログインしてください。
+          印刷会社のオンライン入稿を利用するには、ログインしてください。
           アカウントをお持ちでない場合は、管理者にお問い合わせください。
         </p>
 

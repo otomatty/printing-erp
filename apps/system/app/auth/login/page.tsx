@@ -14,7 +14,7 @@ export default function LoginPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-center mb-2">ログイン</h1>
         <p className="text-center text-muted-foreground">
-          ニイヌマ企画印刷の業務管理システム
+          印刷会社の業務管理システム
         </p>
       </div>
 

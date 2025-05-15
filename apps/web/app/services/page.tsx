@@ -7,9 +7,9 @@ import { FAQSection } from '~/components/custom/faq';
 import { getFaqItemsByPageSlug } from '~/actions/faq';
 
 export const metadata = {
-  title: 'サービス | ニイヌマ企画印刷',
+  title: 'サービス | 印刷会社',
   description:
-    'ニイヌマ企画印刷の提供する印刷サービス、デザイン制作、看板・サイン、販促物制作などのサービス一覧です。',
+    '印刷会社の提供する印刷サービス、デザイン制作、看板・サイン、販促物制作などのサービス一覧です。',
 };
 
 export default async function ServicesPage() {
@@ -20,7 +20,7 @@ export default async function ServicesPage() {
     <div>
       <PageHero
         title="サービス"
-        subtitle="ニイヌマ企画印刷の提供するサービスをご紹介します"
+        subtitle="印刷会社の提供するサービスをご紹介します"
       />
       <ServicesOverview />
       <ServiceDetails />

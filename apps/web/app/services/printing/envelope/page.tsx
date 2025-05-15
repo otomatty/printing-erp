@@ -31,7 +31,7 @@ import { getFaqItemsByPageSlug } from '~/actions/faq';
 // --- データファイルのインポートを追加 --- ※追加
 
 export const metadata: Metadata = {
-  title: '封筒印刷 | サービス | ニイヌマ企画印刷',
+  title: '封筒印刷 | サービス | 印刷会社',
   description:
     '長3、角2などの定型封筒から特殊な不定型封筒まで、高品質な封筒印刷サービス。ロゴやデザインの印刷も可能です。',
 };

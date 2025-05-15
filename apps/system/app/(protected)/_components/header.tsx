@@ -26,11 +26,7 @@ export default function Header({ user, adminProfile }: HeaderProps) {
           {/* ロゴエリア */}
           <div className="flex items-center">
             <Link href="/">
-              <Image
-                src={logo}
-                alt="ニイヌマ企画印刷"
-                className="h-12 w-auto"
-              />
+              <Image src={logo} alt="印刷会社" className="h-12 w-auto" />
             </Link>
           </div>
 

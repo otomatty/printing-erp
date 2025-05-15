@@ -23,7 +23,7 @@ export function CompanyInfo() {
   const [activeSegment, setActiveSegment] = useState('basic');
 
   const [companyData, setCompanyData] = useState({
-    name: 'ニイヌマ企画印刷株式会社',
+    name: '印刷会社株式会社',
     shortName: 'ニイヌマ企画',
     postal: '123-4567',
     prefecture: '東京都',

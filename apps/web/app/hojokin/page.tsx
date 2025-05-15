@@ -86,7 +86,7 @@ const relatedTopics: Topic[] = allTopics.filter((topic: Topic) =>
 );
 
 export const metadata = {
-  title: '補助金活用支援 | ニイヌマ企画印刷',
+  title: '補助金活用支援 | 印刷会社',
   description:
     '各種補助金（持続化・ものづくり・省力化投資・新事業進出(仮)等）を活用したIT導入・DX推進、ホームページ制作などを支援します。申請サポートから開発・導入までお任せください。',
 };
@@ -115,7 +115,7 @@ export default function HojokinTopPage() {
       {/* TODO: 課題提起型のキャッチコピー、共感を呼ぶメッセージ、メインCTAを配置 */}
       <PageHero
         title="IT化・DXのコストにお悩みですか？"
-        subtitle="補助金を活用して、賢くビジネスをアップデートしませんか？ニイヌマ企画印刷が最適な補助金選びから申請、導入までトータルサポートします。"
+        subtitle="補助金を活用して、賢くビジネスをアップデートしませんか？印刷会社補助金選びから申請、導入までトータルサポートします。"
         // TODO: CTAボタンを追加 (例: 無料相談へ)
       />
 
@@ -152,7 +152,7 @@ export default function HojokinTopPage() {
         {/* --- 3. 補助金活用による解決策の提示セクション --- */}
         <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-8 rounded-xl">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-            そのお悩み、<span className="text-primary">ニイヌマ企画印刷</span>
+            そのお悩み、<span className="text-primary">印刷会社an>
             が解決いたします！
           </h2>
           <p className="text-center text-gray-700 max-w-3xl mx-auto mb-10">
@@ -206,7 +206,7 @@ export default function HojokinTopPage() {
         {/* --- 5. 貴社サービスによる具体的な解決プラン提示セクション --- */}
         <section className="bg-slate-100 py-12 px-8 rounded-lg">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-            ニイヌマ企画印刷の
+            印刷会社
             <span className="text-green-600">補助金活用サポート</span>
           </h2>
           <p className="text-center text-gray-700 max-w-3xl mx-auto mb-10">

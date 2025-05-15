@@ -546,7 +546,7 @@ export default async function InvoiceDetailPage({
                   </div>
                   <div className="text-right">
                     <div className="mb-2">
-                      <p className="font-bold text-xl">ニイヌマ企画印刷</p>
+                      <p className="font-bold text-xl">印刷会社</p>
                       <p className="text-sm">
                         〒100-0001 東京都千代田区○○1-1-1
                       </p>

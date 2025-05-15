@@ -64,7 +64,7 @@ const subsidyData = {
 // --- 仮の補助金データここまで ---
 
 export const metadata = {
-  title: `${subsidyData.name} | 補助金活用 | ニイヌマ企画印刷`,
+  title: `${subsidyData.name} | 補助金活用 | 印刷会社`,
   description: `新事業展開を支援する${subsidyData.name}（事業再構築補助金後継）の詳細。対象、要件、申請見込み。`,
 };
 
@@ -226,7 +226,7 @@ export default function ShinjigyoSubsidyPage() {
               新事業展開・補助金活用のご相談
             </h3>
             <p className="mb-6 text-lg">
-              新事業のためのシステム開発や、補助金の最新情報について、ニイヌマ企画印刷にご相談ください。
+              新事業のためのシステム開発や、補助金の最新情報について、印刷会社ください。
             </p>
             <Link
               href="/contact" // TODO: 正しい問い合わせページパスに修正

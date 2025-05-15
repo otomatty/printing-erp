@@ -16,13 +16,13 @@ export async function generateMetadata({ params }: Props) {
 
   if (!news || error) {
     return {
-      title: 'お知らせが見つかりません | ニイヌマ企画印刷',
+      title: 'お知らせが見つかりません | 印刷会社',
       description: 'お探しのお知らせは見つかりませんでした。',
     };
   }
 
   return {
-    title: `${news.title} | ニイヌマ企画印刷`,
+    title: `${news.title} | 印刷会社
     description: news.summary || news.title,
   };
 }

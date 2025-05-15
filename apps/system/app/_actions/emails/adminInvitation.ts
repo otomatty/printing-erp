@@ -14,8 +14,7 @@ if (!process.env.RESEND_FROM_EMAIL) {
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@niinuma-kikaku.com';
-const siteName =
-  process.env.NEXT_PUBLIC_SITE_NAME || 'ニイヌマ企画印刷 業務アプリ';
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME || '印刷会社 業務アプリ';
 
 interface SendAdminInvitationEmailParams {
   email: string;

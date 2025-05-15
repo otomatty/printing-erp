@@ -72,7 +72,7 @@ const RoiSection: React.FC = () => {
         <div className="flex items-center">
           <div className="w-4 h-4 bg-blue-600 rounded-full mr-2" />
           <span>
-            ニイヌマ企画印刷：
+            印刷会社：
             {lastNinumaBalance < 0 ? (
               <>
                 <strong>{lastData.month}後も投資回収できず</strong> (
@@ -142,7 +142,7 @@ const RoiSection: React.FC = () => {
                   const formattedValue = value.toFixed(1);
                   const numericValue = Number.parseFloat(formattedValue);
                   const label =
-                    name === 'traditional' ? '従来型' : 'ニイヌマ企画印刷';
+                    name === 'traditional' ? '従来型' : '印刷会社
                   return [
                     `${numericValue > 0 ? '+' : ''}${formattedValue}万円`,
                     label,
@@ -158,7 +158,7 @@ const RoiSection: React.FC = () => {
                     color: '#ef4444',
                   },
                   {
-                    value: 'ニイヌマ企画印刷',
+                    value: '印刷会社
                     type: 'line',
                     color: '#2563eb',
                   },
@@ -204,7 +204,7 @@ const RoiSection: React.FC = () => {
             <ul className="list-disc pl-5 space-y-1">
               <li>
                 初期投資: 従来型{defaultRoiParams.traditional.initialCost}
-                万円 vs ニイヌマ企画印刷
+                万円 vs 印刷会社
                 {defaultRoiParams.ninuma.initialCost}万円（
                 {Math.round(
                   (1 -
@@ -216,7 +216,7 @@ const RoiSection: React.FC = () => {
               </li>
               <li>
                 月額運用費: 従来型{defaultRoiParams.traditional.monthlyCost}
-                万円/月 vs ニイヌマ企画印刷
+                万円/月 vs 印刷会社
                 {defaultRoiParams.ninuma.monthlyCost}万円/月
               </li>
               <li>月間効果（業務効率化・売上増加）:</li>
@@ -228,7 +228,7 @@ const RoiSection: React.FC = () => {
                   {defaultRoiParams.traditional.maxEffect}万円/月まで増加
                 </li>
                 <li>
-                  ニイヌマ企画印刷: 初期
+                  印刷会社
                   {defaultRoiParams.ninuma.initialEffect}万円/月から最大
                   {defaultRoiParams.ninuma.maxEffect}
                   万円/月まで増加（継続的改善により）

@@ -15,9 +15,9 @@ import RelatedTopicLink from '~/components/custom/related-topic-link';
 
 // TODO: Set metadata (title, description)
 export const metadata = {
-  title: '補助金活用で実現！オーダーメイドDX | ニイヌマ企画印刷 特集',
+  title: '補助金活用で実現！オーダーメイドDX | 印刷会社 特集',
   description:
-    'スクラッチ開発のホームページ・業務システム導入に活用できる補助金と、ニイヌマ企画印刷の低コスト開発について解説します。',
+    'スクラッチ開発のホームページ・業務システム導入に活用できる補助金と、印刷会社ト開発について解説します。',
 };
 
 export default function HojokinScratchDevPage() {

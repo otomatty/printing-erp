@@ -23,9 +23,9 @@ import type { ColorTheme } from '~/components/color-theme-provider';
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
-  title: 'ニイヌマ企画印刷 | 確かな技術と対応力の総合印刷',
+  title: '印刷会社 | 確かな技術と対応力の総合印刷',
   description:
-    'ニイヌマ企画印刷は、各種印刷・製本、編集・デザインなど、印刷にかかわることなら何でもお受けします。1985年創業の印刷会社です。',
+    '印刷会社は、各種印刷・製本、編集・デザインなど、印刷にかかわることなら何でもお受けします。1985年創業の印刷会社です。',
   keywords: [
     '印刷会社',
     '岩手',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     'デザイン',
   ],
   other: {
-    'apple-mobile-web-app-title': 'ニイヌマ企画印刷',
+    'apple-mobile-web-app-title': '印刷会社',
   },
 };
 

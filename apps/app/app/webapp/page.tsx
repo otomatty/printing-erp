@@ -22,8 +22,8 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'ダッシュボード | ニイヌマ企画印刷',
-  description: 'ニイヌマ企画印刷のお客様ダッシュボード',
+  title: 'ダッシュボード | 印刷会社',
+  description: '印刷会社のお客様ダッシュボード',
 };
 
 export default async function DashboardPage() {

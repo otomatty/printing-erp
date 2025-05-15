@@ -87,7 +87,7 @@ const SampleInfo: React.FC<SampleInfoProps> = ({
                 〒022-0003 岩手県大船渡市盛町字みどり町4-12
               </p>
               <a
-                href="https://maps.google.com/maps?q=ニイヌマ企画印刷+大船渡市"
+                href="https://maps.google.com/maps?q=印刷会社+大船渡市"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline text-xs mt-1 inline-flex items-center"

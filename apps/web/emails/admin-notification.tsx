@@ -234,7 +234,7 @@ export default function AdminNotificationEmail(
         <div style={styles.header}>
           <Img
             src="https://niinuma-kikaku.com/images/logo/site-logo.png"
-            alt="ニイヌマ企画印刷 ロゴ"
+            alt="印刷会社 ロゴ"
             width="180"
             style={{ margin: 'auto' }}
           />
