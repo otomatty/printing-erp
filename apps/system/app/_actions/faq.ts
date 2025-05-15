@@ -1,491 +1,200 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-import { getSupabaseServerClient } from '@kit/supabase/server-client';
-import { z } from 'zod';
-import { ensureAdmin } from './ensureAdmin';
 import type { PageFormData, FaqFormData, Page, FaqItem } from '../../types/faq';
-import { pageFormSchema, faqFormSchema } from '../../types/faq';
 
-/**
- * ページ一覧を取得する
- */
-export async function getPages() {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { pages: [], error: authError };
-  }
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data, error } = await supabase
-      .from('pages')
-      .select('*')
-      .eq('page_type', 'faq')
-      .order('slug', { ascending: true });
-    if (error) {
-      console.error('Error fetching pages:', error);
-      return { pages: [], error: error.message };
-    }
-    return { pages: data || [], error: null };
-  } catch (error) {
-    console.error('Error fetching pages:', error);
-    return { pages: [], error: 'ページの取得中にエラーが発生しました' };
-  }
+// --- モックデータ ---
+const mockPages: Page[] = [
+  {
+    id: 'page-1',
+    slug: '/faq',
+    title: 'よくある質問',
+    description: 'システムに関するよくある質問と回答',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'page-2',
+    slug: '/support',
+    title: 'サポート',
+    description: 'サポートに関する問い合わせと回答',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+];
+
+const mockFaqItems: FaqItem[] = [
+  {
+    id: 'faq-1',
+    page_id: 'page-1',
+    question: 'システムのログイン方法は？',
+    answer: 'ユーザー名とパスワードを入力してログインしてください。',
+    sort_order: 1,
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'faq-2',
+    page_id: 'page-1',
+    question: 'パスワードを忘れた場合は？',
+    answer: 'パスワード再設定ページからリセットしてください。',
+    sort_order: 2,
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'faq-3',
+    page_id: 'page-2',
+    question: '問い合わせ先はどこですか？',
+    answer: 'support@example.comまでご連絡ください。',
+    sort_order: 1,
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+];
+
+// 通知
+function notify(message: string) {
+  alert(message);
 }
 
-/**
- * ページを作成する
- */
-export async function createPage(formData: PageFormData) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
-  }
+// --- サーバーアクション ---
 
-  try {
-    const validatedData = pageFormSchema.parse(formData);
-    const supabase = await getSupabaseServerClient();
-
-    // スラッグの一意性チェック
-    const { data: existing } = await supabase
-      .from('pages')
-      .select('id')
-      .eq('slug', validatedData.slug)
-      .maybeSingle();
-
-    if (existing) {
-      return { success: false, error: 'このスラッグは既に使用されています' };
-    }
-
-    const { data, error } = await supabase
-      .from('pages')
-      .insert(validatedData)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error creating page:', error);
-      return { success: false, error: error.message };
-    }
-
-    revalidatePath(validatedData.slug);
-
-    return { success: true, data };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: 'バリデーションエラー',
-        validationErrors: error.errors,
-      };
-    }
-    console.error('Error creating page:', error);
-    return { success: false, error: 'ページの作成中にエラーが発生しました' };
-  }
+/** ページ一覧を取得 */
+export async function getPages(): Promise<{ pages: Page[]; error: null }> {
+  return { pages: mockPages, error: null };
 }
 
-/**
- * ページを更新する
- */
-export async function updatePage(id: string, formData: PageFormData) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
-  }
-
-  try {
-    const validatedData = pageFormSchema.parse(formData);
-    const supabase = await getSupabaseServerClient();
-
-    // 既存ページ取得
-    const { data: existingPage, error: fetchError } = await supabase
-      .from('pages')
-      .select('slug')
-      .eq('id', id)
-      .single();
-
-    if (fetchError || !existingPage) {
-      return { success: false, error: 'ページが見つかりませんでした' };
-    }
-
-    // スラッグ変更時の一意性チェック
-    if (existingPage.slug !== validatedData.slug) {
-      const { data: slugExists } = await supabase
-        .from('pages')
-        .select('id')
-        .eq('slug', validatedData.slug)
-        .maybeSingle();
-      if (slugExists) {
-        return { success: false, error: 'このスラッグは既に使用されています' };
-      }
-    }
-
-    const { data, error } = await supabase
-      .from('pages')
-      .update(validatedData)
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error updating page:', error);
-      return { success: false, error: error.message };
-    }
-
-    // キャッシュ再検証
-    revalidatePath(existingPage.slug);
-    revalidatePath(data.slug);
-
-    return { success: true, data };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: 'バリデーションエラー',
-        validationErrors: error.errors,
-      };
-    }
-    console.error('Error updating page:', error);
-    return { success: false, error: 'ページの更新中にエラーが発生しました' };
-  }
+/** ページを作成 */
+export async function createPage(
+  data: PageFormData
+): Promise<{ success: boolean; error?: string }> {
+  const now = new Date().toISOString();
+  const newPage: Page = {
+    id: `page-${Date.now()}`,
+    slug: data.slug.startsWith('/') ? data.slug : `/${data.slug}`,
+    title: data.title ?? null,
+    description: data.description ?? null,
+    created_at: now,
+    updated_at: now,
+  };
+  mockPages.push(newPage);
+  notify('ページを作成しました');
+  return { success: true };
 }
 
-/**
- * ページを削除する
- */
-export async function deletePage(id: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
+/** ページを更新 */
+export async function updatePage(
+  id: string,
+  data: PageFormData
+): Promise<{ success: boolean; error?: string }> {
+  const page = mockPages.find((p) => p.id === id);
+  if (page) {
+    page.slug = data.slug.startsWith('/') ? data.slug : `/${data.slug}`;
+    page.title = data.title ?? null;
+    page.description = data.description ?? null;
+    page.updated_at = new Date().toISOString();
   }
-
-  try {
-    const supabase = await getSupabaseServerClient();
-
-    // 削除前にスラッグ取得
-    const { data: page, error: fetchError } = await supabase
-      .from('pages')
-      .select('slug')
-      .eq('id', id)
-      .single();
-
-    if (fetchError || !page) {
-      return { success: false, error: 'ページが見つかりませんでした' };
-    }
-
-    const { error } = await supabase.from('pages').delete().eq('id', id);
-
-    if (error) {
-      console.error('Error deleting page:', error);
-      return { success: false, error: error.message };
-    }
-
-    revalidatePath(page.slug);
-
-    return { success: true };
-  } catch (error) {
-    console.error('Error deleting page:', error);
-    return { success: false, error: 'ページの削除中にエラーが発生しました' };
-  }
+  notify('ページを更新しました');
+  return { success: true };
 }
 
-/**
- * 指定ページのFAQを取得する
- */
-export async function getFaqItems(pageId: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { faqItems: [], error: authError };
-  }
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data, error } = await supabase
-      .from('faq_items')
-      .select('*')
-      .eq('page_id', pageId)
-      .order('sort_order', { ascending: true });
-    if (error) {
-      console.error('Error fetching FAQ items:', error);
-      return { faqItems: [], error: error.message };
-    }
-    return { faqItems: data || [], error: null };
-  } catch (error) {
-    console.error('Error fetching FAQ items:', error);
-    return { faqItems: [], error: 'FAQ項目の取得中にエラーが発生しました' };
-  }
+/** ページを削除 */
+export async function deletePage(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  const remaining = mockPages.filter((p) => p.id !== id);
+  mockPages.length = 0;
+  mockPages.push(...remaining);
+  // 関連するFAQ項目も削除
+  const filteredFaq = mockFaqItems.filter((f) => f.page_id !== id);
+  mockFaqItems.length = 0;
+  mockFaqItems.push(...filteredFaq);
+  notify('ページを削除しました');
+  return { success: true };
 }
 
-/**
- * FAQ項目を作成する
- */
-export async function createFaqItem(formData: FaqFormData) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
-  }
-
-  try {
-    const validatedData = faqFormSchema.parse(formData);
-    const supabase = await getSupabaseServerClient();
-
-    // ページslug取得
-    const { data: page, error: pageError } = await supabase
-      .from('pages')
-      .select('slug')
-      .eq('id', validatedData.page_id)
-      .single();
-
-    if (pageError || !page) {
-      return { success: false, error: 'ページが見つかりませんでした' };
-    }
-
-    const { data, error } = await supabase
-      .from('faq_items')
-      .insert(validatedData)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error creating FAQ item:', error);
-      return { success: false, error: error.message };
-    }
-
-    revalidatePath(page.slug);
-
-    return { success: true, data };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: 'バリデーションエラー',
-        validationErrors: error.errors,
-      };
-    }
-    console.error('Error creating FAQ item:', error);
-    return { success: false, error: 'FAQ項目の作成中にエラーが発生しました' };
-  }
+/** 指定ページのFAQを取得 */
+export async function getFaqItems(
+  pageId: string
+): Promise<{ faqItems: FaqItem[]; error: null }> {
+  const items = mockFaqItems.filter((f) => f.page_id === pageId);
+  return { faqItems: items, error: null };
 }
 
-/**
- * FAQ項目を更新する
- */
-export async function updateFaqItem(id: string, formData: FaqFormData) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
-  }
-  try {
-    const validatedData = faqFormSchema.parse(formData);
-    const supabase = await getSupabaseServerClient();
-
-    // 既存FAQ取得
-    const { data: existingFaq, error: fetchError } = await supabase
-      .from('faq_items')
-      .select('page_id')
-      .eq('id', id)
-      .single();
-
-    if (fetchError || !existingFaq) {
-      return { success: false, error: 'FAQ項目が見つかりませんでした' };
-    }
-
-    const { data, error } = await supabase
-      .from('faq_items')
-      .update(validatedData)
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error updating FAQ item:', error);
-      return { success: false, error: error.message };
-    }
-
-    // キャッシュ再検証：古いページ
-    const { data: pageOld, error: pageErrorOld } = await supabase
-      .from('pages')
-      .select('slug')
-      .eq('id', existingFaq.page_id)
-      .single();
-    if (!pageErrorOld && pageOld) {
-      revalidatePath(pageOld.slug);
-    }
-
-    // キャッシュ再検証：新しいページ
-    if (existingFaq.page_id !== validatedData.page_id) {
-      const { data: pageNew, error: pageErrorNew } = await supabase
-        .from('pages')
-        .select('slug')
-        .eq('id', validatedData.page_id)
-        .single();
-      if (!pageErrorNew && pageNew) {
-        revalidatePath(pageNew.slug);
-      }
-    } else if (pageOld) {
-      revalidatePath(pageOld.slug);
-    }
-
-    return { success: true, data };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: 'バリデーションエラー',
-        validationErrors: error.errors,
-      };
-    }
-    console.error('Error updating FAQ item:', error);
-    return { success: false, error: 'FAQ項目の更新中にエラーが発生しました' };
-  }
+/** FAQ項目を作成 */
+export async function createFaqItem(
+  data: FaqFormData
+): Promise<{ success: boolean; error?: string }> {
+  const now = new Date().toISOString();
+  const itemsForPage = mockFaqItems.filter((f) => f.page_id === data.page_id);
+  const newItem: FaqItem = {
+    id: `faq-${Date.now()}`,
+    page_id: data.page_id,
+    question: data.question,
+    answer: data.answer,
+    sort_order: data.sort_order ?? itemsForPage.length + 1,
+    is_active: data.is_active ?? true,
+    created_at: now,
+    updated_at: now,
+  };
+  mockFaqItems.push(newItem);
+  notify('FAQ項目を作成しました');
+  return { success: true };
 }
 
-/**
- * FAQ項目を削除する
- */
-export async function deleteFaqItem(id: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { success: false, error: authError };
+/** FAQ項目を更新 */
+export async function updateFaqItem(
+  id: string,
+  data: FaqFormData
+): Promise<{ success: boolean; error?: string }> {
+  const item = mockFaqItems.find((f) => f.id === id);
+  if (item) {
+    item.page_id = data.page_id;
+    item.question = data.question;
+    item.answer = data.answer;
+    item.sort_order = data.sort_order ?? item.sort_order;
+    item.is_active = data.is_active ?? item.is_active;
+    item.updated_at = new Date().toISOString();
   }
-  try {
-    const supabase = await getSupabaseServerClient();
-
-    // 削除前にFAQ取得
-    const { data: faq, error: fetchError } = await supabase
-      .from('faq_items')
-      .select('page_id')
-      .eq('id', id)
-      .single();
-
-    if (fetchError || !faq) {
-      return { success: false, error: 'FAQ項目が見つかりませんでした' };
-    }
-
-    const { error } = await supabase.from('faq_items').delete().eq('id', id);
-
-    if (error) {
-      console.error('Error deleting FAQ item:', error);
-      return { success: false, error: error.message };
-    }
-
-    const { data: page, error: pageError } = await supabase
-      .from('pages')
-      .select('slug')
-      .eq('id', faq.page_id)
-      .single();
-    if (!pageError && page) {
-      revalidatePath(page.slug);
-    }
-
-    return { success: true };
-  } catch (error) {
-    console.error('Error deleting FAQ item:', error);
-    return { success: false, error: 'FAQ項目の削除中にエラーが発生しました' };
-  }
+  notify('FAQ項目を更新しました');
+  return { success: true };
 }
 
-/**
- * スラッグからページを取得する
- */
-export async function getPageBySlug(slug: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { page: null, error: authError };
-  }
-
-  try {
-    const supabase = await getSupabaseServerClient();
-    // Ensure slug starts with '/'
-    const filterSlug = slug.startsWith('/') ? slug : `/${slug}`;
-    // Use maybeSingle to avoid error when no rows found
-    const { data: page, error } = await supabase
-      .from('pages')
-      .select('*')
-      .eq('page_type', 'faq')
-      .eq('slug', filterSlug)
-      .maybeSingle();
-    if (error) {
-      console.error('Error fetching page by slug:', error);
-      return {
-        page: null,
-        error: error.message || 'ページの取得中にエラーが発生しました',
-      };
-    }
-    if (!page) {
-      // No matching page
-      return { page: null, error: 'ページが見つかりませんでした' };
-    }
-
-    return { page, error: null };
-  } catch (error) {
-    console.error('Error fetching page by slug:', error);
-    return { page: null, error: 'ページの取得中にエラーが発生しました' };
-  }
+/** FAQ項目を削除 */
+export async function deleteFaqItem(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  const remaining = mockFaqItems.filter((f) => f.id !== id);
+  mockFaqItems.length = 0;
+  mockFaqItems.push(...remaining);
+  notify('FAQ項目を削除しました');
+  return { success: true };
 }
 
-/**
- * FAQ項目をIDから取得する
- */
-export async function getFaqItemById(id: string) {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { faq: null, error: authError };
-  }
-
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data: faq, error } = await supabase
-      .from('faq_items')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) {
-      console.error('Error fetching FAQ item by id:', error);
-      return {
-        faq: null,
-        error: error.message || 'FAQ項目の取得中にエラーが発生しました',
-      };
-    }
-    return { faq, error: null };
-  } catch (error) {
-    console.error('Error fetching FAQ item by id:', error);
-    return { faq: null, error: 'FAQ項目の取得中にエラーが発生しました' };
-  }
+/** スラッグからページを取得 */
+export async function getPageBySlug(
+  slug: string
+): Promise<{ page: Page | null; error: null }> {
+  const filterSlug = slug.startsWith('/') ? slug : `/${slug}`;
+  const page = mockPages.find((p) => p.slug === filterSlug) ?? null;
+  return { page, error: null };
 }
 
-/**
- * ページをIDから取得する
- */
+/** FAQ項目をIDから取得 */
+export async function getFaqItemById(
+  id: string
+): Promise<{ faq: FaqItem | null; error: null }> {
+  const item = mockFaqItems.find((f) => f.id === id) ?? null;
+  return { faq: item, error: null };
+}
+
+/** ページをIDから取得 */
 export async function getPageById(
   id: string
-): Promise<{ page: Page | null; error: string | null }> {
-  const { isAdmin, error: authError } = await ensureAdmin();
-  if (!isAdmin) {
-    return { page: null, error: authError };
-  }
-
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data: page, error } = await supabase
-      .from('pages')
-      .select('*')
-      .eq('page_type', 'faq')
-      .eq('id', id)
-      .maybeSingle();
-    if (error) {
-      console.error('Error fetching page by ID:', error);
-      return {
-        page: null,
-        error: error.message || 'ページの取得中にエラーが発生しました',
-      };
-    }
-    if (!page) {
-      return { page: null, error: 'ページが見つかりませんでした' };
-    }
-
-    return { page, error: null };
-  } catch (error) {
-    console.error('Error fetching page by ID:', error);
-    return { page: null, error: 'ページの取得中にエラーが発生しました' };
-  }
+): Promise<{ page: Page | null; error: null }> {
+  const page = mockPages.find((p) => p.id === id) ?? null;
+  return { page, error: null };
 }
