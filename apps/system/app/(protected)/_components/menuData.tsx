@@ -59,11 +59,11 @@ export const menuItems: MenuItem[] = [
     status: 'available',
   },
   {
-    href: '/quotes',
+    href: '/estimates',
     title: '見積',
     icon: <Calculator className="h-6 w-6" />,
     category: 'sales',
-    status: 'demo',
+    status: 'available',
   },
   {
     href: '/orders',
@@ -135,7 +135,7 @@ export const menuItems: MenuItem[] = [
     status: 'unavailable',
   },
   {
-    href: '/billing',
+    href: '/invoices',
     title: '請求',
     icon: <CreditCard className="h-6 w-6" />,
     category: 'shipping',
@@ -176,14 +176,14 @@ export const menuItems: MenuItem[] = [
     title: '制作事例',
     icon: <BarChart className="h-6 w-6" />,
     category: 'website',
-    status: 'demo',
+    status: 'available',
   },
   {
     href: '/website/analytics',
     title: 'アクセス解析',
     icon: <BarChart className="h-6 w-6" />,
     category: 'website',
-    status: 'demo',
+    status: 'available',
   },
   {
     href: '/website/settings',

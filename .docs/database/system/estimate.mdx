@@ -1,0 +1,463 @@
+はい、承知いたしました。印刷会社向け業務システムにおける「見積もり管理機能」の製品要件定義書（PRD）を、データベース設計と機能要件を中心に作成します。パフォーマンス要件と技術要件は含めません。
+
+---
+
+**製品要件定義書: 見積もり管理機能**
+
+**1. はじめに**
+
+*   **1.1 プロジェクト概要**:
+    本プロジェクトは、印刷会社向けの業務システム内に、見積もり作成、管理、および過去データ活用を目的とした「見積もり管理機能」を開発するものである。この機能は、従来の印刷業務の見積もりに加え、ホームページ制作や業務システム開発など、同社が展開する多角的なサービスに対応し、将来的な事業拡張にも柔軟に対応できることを目指す。
+*   **1.2 目的**:
+    *   見積もり作成業務の効率化と標準化。
+    *   過去の見積もりデータを活用し、新規見積もり作成時の精度向上と時間短縮を実現。
+    *   顧客や時期に応じた柔軟な価格設定を記録・管理し、価格決定の透明性を確保。
+    *   多様なサービス（印刷、Web制作、システム開発等）の見積もりを一元管理。
+*   **1.3 対象ユーザー**:
+    *   営業担当者
+    *   見積もり作成担当者
+    *   経営層・管理者（データ分析・レポート閲覧）
+*   **1.4 スコープ**:
+    *   **スコープ内**:
+        *   見積もりデータの新規作成、編集、閲覧、削除機能。
+        *   見積もり明細の追加、編集、削除機能。
+        *   過去の見積もりデータの検索機能（キーワード、タグ、類似度）。
+        *   見積もりデータのPDF出力機能（基本的なテンプレート）。
+        *   顧客情報の簡易的な管理または連携。
+        *   価格調整理由の記録機能。
+    *   **スコープ外**:
+        *   顧客管理システム（CRM）の本格的な開発（既存システム連携は検討）。
+        *   請求書発行機能（本機能とは別）。
+        *   高度なAIによる自動見積もり額算出機能（提案は行うが、最終決定は担当者）。
+        *   ワークフロー承認機能（将来的な拡張として検討）。
+
+**2. データベース設計**
+
+*   **2.1 主要エンティティとリレーションシップ**:
+    *   **`estimates` (見積書テーブル)**: 見積もり全体の情報を格納。
+    *   **`estimate_items` (見積もり明細テーブル)**: 各見積もりに含まれる個々の品目や作業項目を格納。`estimates` テーブルとは一対多の関係。
+    *   (将来的には `customers`, `users` (担当者) テーブルとの連携も考慮)
+*   **2.2 `estimates` テーブル定義**:
+    *   **id (UUID, PK)**: 一意識別子。
+    *   **estimate_number (TEXT, UNIQUE)**: 見積番号（例: EST20240515-001）。
+    *   **status (estimate_status_enum)**: 見積もりステータス（DRAFT, SENT, APPROVED, REJECTED, EXPIRED, ORDERED）。
+    *   **issue_date (DATE)**: 発行日。
+    *   **valid_until_date (DATE, NULLABLE)**: 見積有効期限。
+    *   **project_name (TEXT, NULLABLE)**: プロジェクト名/件名。
+    *   **customer (JSONB, NULLABLE)**: 顧客情報オブジェクト（会社名、部署名、担当者名、連絡先等）。
+    *   **sales_representative (JSONB, NULLABLE)**: 営業担当者情報オブジェクト。
+    *   **main_service_category (estimate_service_category_enum)**: 見積もり全体の主要サービスカテゴリ（PRINTING, WEBSITE_PRODUCTION, SYSTEM_DEVELOPMENT, APPLICATION_DEVELOPMENT, OTHER_SERVICES）。
+    *   **project_type (project_type_enum, NULLABLE)**: デジタル系プロジェクトの種類（website, business_system, application, other）。
+    *   **subtotal_amount (NUMERIC)**: 小計（税抜）。
+    *   **discount_type (discount_type_enum, NULLABLE)**: 値引き種別（percentage, fixed_amount）。
+    *   **discount_value (NUMERIC, NULLABLE)**: 値引率または値引額。
+    *   **discount_amount (NUMERIC)**: 計算後の値引額。
+    *   **discount_reason (TEXT, NULLABLE)**: 見積もり全体の割引に関する理由。
+    *   **taxable_amount (NUMERIC)**: 課税対象額。
+    *   **tax_rate (NUMERIC)**: 消費税率。
+    *   **tax_amount (NUMERIC)**: 消費税額。
+    *   **total_amount (NUMERIC)**: 合計金額（税込）。
+    *   **currency (VARCHAR(3))**: 通貨コード (例: JPY)。
+    *   **expected_deadline (deadline_enum, NULLABLE)**: 希望納期（asap, 1month等）。
+    *   **delivery_date (DATE, NULLABLE)**: 納品予定日。
+    *   **delivery_location (TEXT, NULLABLE)**: 納品場所。
+    *   **payment_terms (TEXT, NULLABLE)**: 支払条件。
+    *   **general_notes (TEXT, NULLABLE)**: 全体備考。
+    *   **pricing_context_notes (TEXT, NULLABLE)**: 価格設定に関する特記事項や背景。
+    *   **tags (TEXT[], NULLABLE)**: 検索用フリーテキストタグ配列。
+    *   **project_overview (TEXT, NULLABLE)**: デジタルサービスの場合のプロジェクト概要。
+    *   **implementation_requirements (JSONB, NULLABLE)**: デジタルサービスの実装要件（既存型定義に基づく）。
+    *   **rush_fee_details (JSONB, NULLABLE)**: デジタルサービスの特急料金詳細（既存型定義に基づく）。
+    *   **original_price_before_modern_tech (NUMERIC, NULLABLE)**: 最新開発手法適用前の価格。
+    *   **total_estimated_duration_days (INTEGER, NULLABLE)**: プロジェクト全体の総見込み日数。
+    *   **ai_questions_and_answers (JSONB, NULLABLE)**: AI質問と回答のペア配列（既存型定義に基づく）。
+    *   **modern_development_options (JSONB, NULLABLE)**: 最新開発手法オプション（既存型定義に基づく）。
+    *   **attachments (JSONB, NULLABLE)**: 添付ファイル情報配列（ファイル名, URL等）。
+    *   **created_at (TIMESTAMP WITH TIME ZONE)**: 作成日時。
+    *   **updated_at (TIMESTAMP WITH TIME ZONE)**: 最終更新日時。
+    *   **created_by_user_id (UUID, NULLABLE)**: 作成ユーザーID。
+    *   **updated_by_user_id (UUID, NULLABLE)**: 更新ユーザーID。
+    *   **source_estimate_id (UUID, NULLABLE, FK -> estimates.id)**: 参考元の過去見積もりID。
+    *   **project_name_embedding (VECTOR(1536), NULLABLE)**: プロジェクト名用ベクトル。
+    *   **project_overview_embedding (VECTOR(1536), NULLABLE)**: プロジェクト概要用ベクトル。
+    *   **notes_embedding (VECTOR(1536), NULLABLE)**: 各種備考欄結合用ベクトル。
+*   **2.3 `estimate_items` テーブル定義**:
+    *   **id (UUID, PK)**: 一意識別子。
+    *   **estimate_id (UUID, FK -> estimates.id, NOT NULL)**: 関連する見積書ID。
+    *   **sort_order (INTEGER, NOT NULL)**: 表示順。
+    *   **name (TEXT, NOT NULL)**: 品名、機能名、タスク名。
+    *   **quantity (NUMERIC, NOT NULL)**: 数量。
+    *   **unit (TEXT, NOT NULL)**: 単位（部, 式, 件, 人時など）。
+    *   **unit_price (NUMERIC, NOT NULL)**: 単価。
+    *   **amount (NUMERIC, NOT NULL)**: 金額（数量 * 単価）。
+    *   **description (TEXT, NULLABLE)**: 摘要、詳細説明。
+    *   **item_service_category (estimate_service_category_enum, NOT NULL)**: 明細のサービスカテゴリ。
+    *   **print_details (JSONB, NULLABLE)**: 印刷物関連の詳細情報オブジェクト（用紙種類, サイズ, 色数, 加工等）。
+    *   **digital_details (JSONB, NULLABLE)**: デジタルサービス関連の詳細情報オブジェクト（サービスタイプ, 工数, 関連機能ID等）。
+    *   **duration_days (INTEGER, NULLABLE)**: このアイテムにかかるおおよその日数。
+    *   **price_adjustment_reason (TEXT, NULLABLE)**: この明細の単価や金額が調整された場合の理由。
+    *   **item_name_desc_embedding (VECTOR(1536), NULLABLE)**: 品名・摘要結合用ベクトル。
+    *   **item_specific_details_embedding (VECTOR(1536), NULLABLE)**: 詳細情報結合用ベクトル。
+*   **2.4 ENUM型**:
+    *   `estimate_service_category_enum`: PRINTING, WEBSITE_PRODUCTION, SYSTEM_DEVELOPMENT, APPLICATION_DEVELOPMENT, OTHER_SERVICES
+    *   `estimate_status_enum`: DRAFT, SENT, APPROVED, REJECTED, EXPIRED, ORDERED
+    *   `project_type_enum`: website, business_system, application, other
+    *   `deadline_enum`: asap, 1month, 3months, 6months, flexible
+    *   `discount_type_enum`: percentage, fixed_amount
+    *   `contact_method_enum`: email, phone, either
+    *   `digital_service_item_type_enum`: feature, task, license, maintenance, consulting, other
+
+**3. 機能要件**
+
+*   **3.1 見積もり作成・編集機能 (CRUD)**
+    *   **3.1.1 新規見積もり作成**:
+        *   ユーザーは、基本情報（顧客情報、プロジェクト名、発行日、主要サービスカテゴリ等）を入力して新しい見積もりを作成できる。
+        *   見積もり番号はシステムが自動採番する。
+        *   顧客情報は、既存顧客リストからの選択または新規入力が可能であること。
+        *   サービスカテゴリに応じて、入力フォームの項目が動的に変化すること（例: 印刷なら用紙詳細、Webならプロジェクト概要など）。
+    *   **3.1.2 見積もり情報編集**:
+        *   既存の見積もりの各情報を編集できる。
+        *   合計金額、税額などは明細や割引に応じて自動計算される。
+    *   **3.1.3 見積もり閲覧**:
+        *   見積もりの詳細情報を閲覧できる。
+    *   **3.1.4 見積もり削除**:
+        *   見積もりを削除できる（論理削除を推奨、ステータス変更等）。
+    *   **3.1.5 見積もり複製**:
+        *   既存の見積もりを複製して新しい見積もりを作成できる。
+*   **3.2 見積もり明細管理機能**
+    *   **3.2.1 明細追加**:
+        *   見積もりに新しい明細行を追加できる。
+        *   明細ごとに品名、数量、単位、単価を入力し、金額は自動計算される。
+        *   明細のサービスカテゴリを選択し、それに応じた詳細情報（印刷詳細、デジタルサービス詳細）を入力できる。
+        *   単価や金額を調整した場合、その理由 (`price_adjustment_reason`) を記録できる。
+    *   **3.2.2 明細編集**:
+        *   既存の明細行を編集できる。
+    *   **3.2.3 明細削除**:
+        *   明細行を削除できる。
+    *   **3.2.4 明細並び替え**:
+        *   明細行の表示順をドラッグ＆ドロップ等で変更できる。
+*   **3.3 過去データ活用機能**
+    *   **3.3.1 過去見積もり検索**:
+        *   キーワード（プロジェクト名、顧客名、品名、備考など）による全文検索。
+        *   タグによる絞り込み検索。
+        *   発行日、ステータス、サービスカテゴリなどの条件によるフィルタリング検索。
+    *   **3.3.2 類似見積もり提案**:
+        *   新規見積もり作成時、入力されたプロジェクト概要や選択された品目に基づき、システムが過去の類似見積もり（または類似明細）をベクトル検索により提示する。
+        *   提示された過去の見積もりや明細情報を、新しい見積もりに取り込む（コピーする）ことができる。
+        *   類似度スコアや、類似と判断された理由（共通キーワードなど）を簡易的に表示できると望ましい。
+*   **3.4 価格設定・割引機能**
+    *   **3.4.1 単価入力**:
+        *   明細ごとに単価を自由に入力できる。
+    *   **3.4.2 全体割引設定**:
+        *   見積もり全体に対して、割合（%）または固定額での割引を設定できる。
+        *   割引を適用した理由 (`discount_reason`) を記録できる。
+    *   **3.4.3 価格調整理由記録**:
+        *   明細レベル (`price_adjustment_reason`) および見積もり全体レベル (`pricing_context_notes`, `discount_reason`) で、価格決定や調整に関する背景・理由をテキストで記録できる。
+*   **3.5 見積もりステータス管理**
+    *   ユーザーは見積もりのステータス（DRAFT, SENT, APPROVED 等）を変更できる。
+    *   ステータスに応じて、編集可否などの制御が行われること。
+*   **3.6 PDF出力機能**
+    *   作成された見積もりデータを、定義されたテンプレートに基づいてPDFファイルとして出力できる。
+    *   PDFには、見積もりヘッダー情報、明細、合計金額、備考などが含まれる。
+*   **3.7 その他**
+    *   **3.7.1 タグ管理**:
+        *   見積もりに複数のフリーテキストタグを付与できる。
+        *   タグ入力時には、既存タグのサジェスト機能があると望ましい。
+    *   **3.7.2 既存型定義の活用**:
+        *   `ProjectType`, `Deadline`, `ImplementationRequirements`, `RushFeeCalculation`, `QuestionAnswer`, `FeatureProposal` などの提供された型定義を、関連するデータ入力や表示に適切に活用する。
+
+**4. データ移行・連携（該当する場合）**
+
+*   （もし既存システムからのデータ移行が必要な場合、その方法と対象データを記述）
+*   （もしCRMなど他システムとの連携が必要な場合、その連携方法とインターフェースを記述）
+
+**5. 将来的な拡張性**
+
+*   顧客別・商品別の標準単価マスタの導入と、それに基づく価格計算補助。
+*   承認ワークフロー機能の追加。
+*   より高度な分析・レポーティング機能。
+*   請求書発行機能との連携。
+
+---
+
+このPRDが、具体的な開発を進める上での指針となれば幸いです。特に、ベクトル検索を活用した類似見積もり提案機能は、ユーザーにとって価値の高いものになるでしょう。
+
+```sql
+-- 拡張機能の有効化 (Supabaseでは通常有効になっているか、ダッシュボードから有効化可能)
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- ENUM型の定義 (前回と同様のため省略、必要であれば前回の定義を再度実行してください)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'estimate_service_category_enum') THEN
+        CREATE TYPE estimate_service_category_enum AS ENUM (
+            'PRINTING',
+            'WEBSITE_PRODUCTION',
+            'SYSTEM_DEVELOPMENT',
+            'APPLICATION_DEVELOPMENT',
+            'OTHER_SERVICES'
+        );
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'estimate_status_enum') THEN
+        CREATE TYPE estimate_status_enum AS ENUM (
+            'DRAFT',
+            'SENT',
+            'APPROVED',
+            'REJECTED',
+            'EXPIRED',
+            'ORDERED'
+        );
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'project_type_enum') THEN
+        CREATE TYPE project_type_enum AS ENUM (
+            'website',
+            'business_system',
+            'application',
+            'other'
+        );
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'deadline_enum') THEN
+        CREATE TYPE deadline_enum AS ENUM (
+            'asap',
+            '1month',
+            '3months',
+            '6months',
+            'flexible'
+        );
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'discount_type_enum') THEN
+        CREATE TYPE discount_type_enum AS ENUM (
+            'percentage',
+            'fixed_amount'
+        );
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'contact_method_enum') THEN
+        CREATE TYPE contact_method_enum AS ENUM (
+            'email',
+            'phone',
+            'either'
+        );
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'digital_service_item_type_enum') THEN
+        CREATE TYPE digital_service_item_type_enum AS ENUM (
+            'feature',
+            'task',
+            'license',
+            'maintenance',
+            'consulting',
+            'other'
+        );
+    END IF;
+END
+$$;
+
+
+-- 見積書テーブル (ComprehensiveEstimateDocument)
+CREATE TABLE IF NOT EXISTS estimates (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    estimate_number TEXT NOT NULL UNIQUE,
+    status estimate_status_enum NOT NULL DEFAULT 'DRAFT',
+    issue_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    valid_until_date DATE,
+    project_name TEXT,
+
+    customer JSONB,
+    sales_representative JSONB,
+
+    main_service_category estimate_service_category_enum NOT NULL,
+    project_type project_type_enum,
+
+    subtotal_amount NUMERIC(15, 2) NOT NULL DEFAULT 0.00,
+    discount_type discount_type_enum,
+    discount_value NUMERIC(10, 2),
+    discount_amount NUMERIC(15, 2) NOT NULL DEFAULT 0.00,
+    discount_reason TEXT,
+    taxable_amount NUMERIC(15, 2) NOT NULL DEFAULT 0.00,
+    tax_rate NUMERIC(5, 4) NOT NULL DEFAULT 0.10,
+    tax_amount NUMERIC(15, 2) NOT NULL DEFAULT 0.00,
+    total_amount NUMERIC(15, 2) NOT NULL DEFAULT 0.00,
+    currency VARCHAR(3) NOT NULL DEFAULT 'JPY',
+
+    expected_deadline deadline_enum,
+    delivery_date DATE,
+    delivery_location TEXT,
+    payment_terms TEXT,
+
+    general_notes TEXT,
+    pricing_context_notes TEXT,
+    tags TEXT[],
+
+    project_overview TEXT,
+    implementation_requirements JSONB,
+    rush_fee_details JSONB,
+    original_price_before_modern_tech NUMERIC(15, 2),
+    total_estimated_duration_days INTEGER,
+
+    ai_questions_and_answers JSONB,
+    modern_development_options JSONB,
+    attachments JSONB,
+
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by_user_id UUID,
+    updated_by_user_id UUID,
+
+    source_estimate_id UUID REFERENCES estimates(id) ON DELETE SET NULL,
+
+    -- ベクトルカラム (1536次元に指定)
+    project_name_embedding VECTOR(1536),
+    project_overview_embedding VECTOR(1536),
+    notes_embedding VECTOR(1536)
+);
+
+-- 見積もり明細テーブル (CustomEstimateLineItem)
+CREATE TABLE IF NOT EXISTS estimate_items (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    estimate_id UUID NOT NULL REFERENCES estimates(id) ON DELETE CASCADE,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+
+    name TEXT NOT NULL,
+    quantity NUMERIC(10, 2) NOT NULL,
+    unit TEXT NOT NULL,
+    unit_price NUMERIC(15, 2) NOT NULL,
+    amount NUMERIC(15, 2) NOT NULL,
+    description TEXT,
+
+    item_service_category estimate_service_category_enum NOT NULL,
+    print_details JSONB,
+    digital_details JSONB,
+
+    duration_days INTEGER,
+    price_adjustment_reason TEXT,
+
+    -- ベクトルカラム (1536次元に指定)
+    item_name_desc_embedding VECTOR(1536),
+    item_specific_details_embedding VECTOR(1536)
+);
+
+-- インデックスの作成 (前回と同様)
+-- estimates テーブル
+CREATE INDEX IF NOT EXISTS idx_estimates_status ON estimates (status);
+CREATE INDEX IF NOT EXISTS idx_estimates_main_service_category ON estimates (main_service_category);
+CREATE INDEX IF NOT EXISTS idx_estimates_issue_date ON estimates (issue_date);
+CREATE INDEX IF NOT EXISTS idx_estimates_tags ON estimates USING GIN (tags);
+CREATE INDEX IF NOT EXISTS idx_estimates_customer_company_name ON estimates ((customer->>'companyName'));
+
+-- estimate_items テーブル
+CREATE INDEX IF NOT EXISTS idx_estimate_items_estimate_id ON estimate_items (estimate_id);
+CREATE INDEX IF NOT EXISTS idx_estimate_items_item_service_category ON estimate_items (item_service_category);
+
+-- ベクトルカラムのインデックス (pgvector の HNSW または IVFFlat)
+-- HNSW (推奨)
+-- CREATE INDEX IF NOT EXISTS idx_estimates_project_name_embedding_hnsw ON estimates USING hnsw (project_name_embedding vector_l2_ops);
+-- CREATE INDEX IF NOT EXISTS idx_estimates_project_overview_embedding_hnsw ON estimates USING hnsw (project_overview_embedding vector_l2_ops);
+-- CREATE INDEX IF NOT EXISTS idx_estimates_notes_embedding_hnsw ON estimates USING hnsw (notes_embedding vector_l2_ops);
+-- CREATE INDEX IF NOT EXISTS idx_estimate_items_item_name_desc_embedding_hnsw ON estimate_items USING hnsw (item_name_desc_embedding vector_l2_ops);
+-- CREATE INDEX IF NOT EXISTS idx_estimate_items_item_specific_details_embedding_hnsw ON estimate_items USING hnsw (item_specific_details_embedding vector_l2_ops);
+
+-- IVFFlat
+-- CREATE INDEX IF NOT EXISTS idx_estimates_project_name_embedding_ivfflat ON estimates USING ivfflat (project_name_embedding vector_l2_ops) WITH (lists = 100);
+-- ... 他のベクトルカラムも同様に (インデックス名は重複しないように注意)
+
+
+-- トリガー: updated_at を自動更新する (前回と同様)
+CREATE OR REPLACE FUNCTION trigger_set_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'set_timestamp_estimates') THEN
+        CREATE TRIGGER set_timestamp_estimates
+        BEFORE UPDATE ON estimates
+        FOR EACH ROW
+        EXECUTE FUNCTION trigger_set_timestamp();
+    END IF;
+END
+$$;
+
+-- RLS (Row Level Security) ポリシーの設定
+ALTER TABLE estimates ENABLE ROW LEVEL SECURITY;
+
+-- 既存のポリシーを削除 (もし存在すれば)
+DROP POLICY IF EXISTS "Allow individual read access" ON estimates;
+DROP POLICY IF EXISTS "Allow read access based on estimate ownership" ON estimate_items;
+
+-- admin_users に存在するユーザーのみアクセス可能
+CREATE POLICY "Allow access only to admin users" ON estimates
+    FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM system.admin_users au
+            WHERE au.auth_user_id = auth.uid() AND au.is_active = true
+        )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1
+            FROM system.admin_users au
+            WHERE au.auth_user_id = auth.uid() AND au.is_active = true
+        )
+    );
+
+-- 見積書作成者のみアクセス許可
+CREATE POLICY "Allow estimate owners to access their estimates" ON estimates
+    FOR ALL
+    USING (auth.uid() = created_by_user_id)
+    WITH CHECK (auth.uid() = created_by_user_id);
+
+ALTER TABLE estimate_items ENABLE ROW LEVEL SECURITY;
+
+-- 既存のポリシーを削除 (もし存在すれば)
+DROP POLICY IF EXISTS "Allow individual read access" ON estimate_items;
+DROP POLICY IF EXISTS "Allow read access based on estimate ownership" ON estimate_items;
+
+-- admin_users に存在するユーザーのみアクセス可能
+CREATE POLICY "Allow access only to admin users" ON estimate_items
+    FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM system.admin_users au
+            WHERE au.auth_user_id = auth.uid() AND au.is_active = true
+        )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1
+            FROM system.admin_users au
+            WHERE au.auth_user_id = auth.uid() AND au.is_active = true
+        )
+    );
+
+-- 見積書所有者のみ明細アクセス許可
+CREATE POLICY "Allow estimate owners to access items of their estimates" ON estimate_items
+    FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM estimates e
+            WHERE e.id = estimate_items.estimate_id AND e.created_by_user_id = auth.uid()
+        )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1
+            FROM estimates e
+            WHERE e.id = estimate_items.estimate_id AND e.created_by_user_id = auth.uid()
+        )
+    );
+```
+

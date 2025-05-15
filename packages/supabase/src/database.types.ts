@@ -93,6 +93,227 @@ export type Database = {
           },
         ]
       }
+      estimate_items: {
+        Row: {
+          amount: number
+          description: string | null
+          digital_details: Json | null
+          duration_days: number | null
+          estimate_id: string
+          id: string
+          item_name_desc_embedding: string | null
+          item_service_category: Database["public"]["Enums"]["estimate_service_category_enum"]
+          item_specific_details_embedding: string | null
+          name: string
+          price_adjustment_reason: string | null
+          print_details: Json | null
+          quantity: number
+          sort_order: number
+          unit: string
+          unit_price: number
+        }
+        Insert: {
+          amount: number
+          description?: string | null
+          digital_details?: Json | null
+          duration_days?: number | null
+          estimate_id: string
+          id?: string
+          item_name_desc_embedding?: string | null
+          item_service_category: Database["public"]["Enums"]["estimate_service_category_enum"]
+          item_specific_details_embedding?: string | null
+          name: string
+          price_adjustment_reason?: string | null
+          print_details?: Json | null
+          quantity: number
+          sort_order?: number
+          unit: string
+          unit_price: number
+        }
+        Update: {
+          amount?: number
+          description?: string | null
+          digital_details?: Json | null
+          duration_days?: number | null
+          estimate_id?: string
+          id?: string
+          item_name_desc_embedding?: string | null
+          item_service_category?: Database["public"]["Enums"]["estimate_service_category_enum"]
+          item_specific_details_embedding?: string | null
+          name?: string
+          price_adjustment_reason?: string | null
+          print_details?: Json | null
+          quantity?: number
+          sort_order?: number
+          unit?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estimate_items_estimate_id_fkey"
+            columns: ["estimate_id"]
+            isOneToOne: false
+            referencedRelation: "estimates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      estimates: {
+        Row: {
+          ai_questions_and_answers: Json | null
+          attachments: Json | null
+          created_at: string
+          created_by_user_id: string | null
+          currency: string
+          customer: Json | null
+          delivery_date: string | null
+          delivery_location: string | null
+          discount_amount: number
+          discount_reason: string | null
+          discount_type:
+            | Database["public"]["Enums"]["discount_type_enum"]
+            | null
+          discount_value: number | null
+          estimate_number: string
+          expected_deadline: Database["public"]["Enums"]["deadline_enum"] | null
+          general_notes: string | null
+          id: string
+          implementation_requirements: Json | null
+          issue_date: string
+          main_service_category: Database["public"]["Enums"]["estimate_service_category_enum"]
+          modern_development_options: Json | null
+          notes_embedding: string | null
+          original_price_before_modern_tech: number | null
+          payment_terms: string | null
+          pricing_context_notes: string | null
+          project_name: string | null
+          project_name_embedding: string | null
+          project_overview: string | null
+          project_overview_embedding: string | null
+          project_type: Database["public"]["Enums"]["project_type_enum"] | null
+          rush_fee_details: Json | null
+          sales_representative: Json | null
+          source_estimate_id: string | null
+          status: Database["public"]["Enums"]["estimate_status_enum"]
+          subtotal_amount: number
+          tags: string[] | null
+          tax_amount: number
+          tax_rate: number
+          taxable_amount: number
+          total_amount: number
+          total_estimated_duration_days: number | null
+          updated_at: string
+          updated_by_user_id: string | null
+          valid_until_date: string | null
+        }
+        Insert: {
+          ai_questions_and_answers?: Json | null
+          attachments?: Json | null
+          created_at?: string
+          created_by_user_id?: string | null
+          currency?: string
+          customer?: Json | null
+          delivery_date?: string | null
+          delivery_location?: string | null
+          discount_amount?: number
+          discount_reason?: string | null
+          discount_type?:
+            | Database["public"]["Enums"]["discount_type_enum"]
+            | null
+          discount_value?: number | null
+          estimate_number: string
+          expected_deadline?:
+            | Database["public"]["Enums"]["deadline_enum"]
+            | null
+          general_notes?: string | null
+          id?: string
+          implementation_requirements?: Json | null
+          issue_date?: string
+          main_service_category: Database["public"]["Enums"]["estimate_service_category_enum"]
+          modern_development_options?: Json | null
+          notes_embedding?: string | null
+          original_price_before_modern_tech?: number | null
+          payment_terms?: string | null
+          pricing_context_notes?: string | null
+          project_name?: string | null
+          project_name_embedding?: string | null
+          project_overview?: string | null
+          project_overview_embedding?: string | null
+          project_type?: Database["public"]["Enums"]["project_type_enum"] | null
+          rush_fee_details?: Json | null
+          sales_representative?: Json | null
+          source_estimate_id?: string | null
+          status?: Database["public"]["Enums"]["estimate_status_enum"]
+          subtotal_amount?: number
+          tags?: string[] | null
+          tax_amount?: number
+          tax_rate?: number
+          taxable_amount?: number
+          total_amount?: number
+          total_estimated_duration_days?: number | null
+          updated_at?: string
+          updated_by_user_id?: string | null
+          valid_until_date?: string | null
+        }
+        Update: {
+          ai_questions_and_answers?: Json | null
+          attachments?: Json | null
+          created_at?: string
+          created_by_user_id?: string | null
+          currency?: string
+          customer?: Json | null
+          delivery_date?: string | null
+          delivery_location?: string | null
+          discount_amount?: number
+          discount_reason?: string | null
+          discount_type?:
+            | Database["public"]["Enums"]["discount_type_enum"]
+            | null
+          discount_value?: number | null
+          estimate_number?: string
+          expected_deadline?:
+            | Database["public"]["Enums"]["deadline_enum"]
+            | null
+          general_notes?: string | null
+          id?: string
+          implementation_requirements?: Json | null
+          issue_date?: string
+          main_service_category?: Database["public"]["Enums"]["estimate_service_category_enum"]
+          modern_development_options?: Json | null
+          notes_embedding?: string | null
+          original_price_before_modern_tech?: number | null
+          payment_terms?: string | null
+          pricing_context_notes?: string | null
+          project_name?: string | null
+          project_name_embedding?: string | null
+          project_overview?: string | null
+          project_overview_embedding?: string | null
+          project_type?: Database["public"]["Enums"]["project_type_enum"] | null
+          rush_fee_details?: Json | null
+          sales_representative?: Json | null
+          source_estimate_id?: string | null
+          status?: Database["public"]["Enums"]["estimate_status_enum"]
+          subtotal_amount?: number
+          tags?: string[] | null
+          tax_amount?: number
+          tax_rate?: number
+          taxable_amount?: number
+          total_amount?: number
+          total_estimated_duration_days?: number | null
+          updated_at?: string
+          updated_by_user_id?: string | null
+          valid_until_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estimates_source_estimate_id_fkey"
+            columns: ["source_estimate_id"]
+            isOneToOne: false
+            referencedRelation: "estimates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       faq_items: {
         Row: {
           answer: string
@@ -733,13 +954,128 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      binary_quantize: {
+        Args: { "": string } | { "": unknown }
+        Returns: unknown
+      }
       check_is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      halfvec_avg: {
+        Args: { "": number[] }
+        Returns: unknown
+      }
+      halfvec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      halfvec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      halfvec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
+      hnsw_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_sparsevec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnswhandler: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflat_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflat_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflathandler: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      l2_norm: {
+        Args: { "": unknown } | { "": unknown }
+        Returns: number
+      }
+      l2_normalize: {
+        Args: { "": string } | { "": unknown } | { "": unknown }
+        Returns: string
+      }
+      sparsevec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      sparsevec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      sparsevec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
+      vector_avg: {
+        Args: { "": number[] }
+        Returns: string
+      }
+      vector_dims: {
+        Args: { "": string } | { "": unknown }
+        Returns: number
+      }
+      vector_norm: {
+        Args: { "": string }
+        Returns: number
+      }
+      vector_out: {
+        Args: { "": string }
+        Returns: unknown
+      }
+      vector_send: {
+        Args: { "": string }
+        Returns: string
+      }
+      vector_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
     }
     Enums: {
       admin_role: "admin" | "staff"
+      contact_method_enum: "email" | "phone" | "either"
+      deadline_enum: "asap" | "1month" | "3months" | "6months" | "flexible"
+      digital_service_item_type_enum:
+        | "feature"
+        | "task"
+        | "license"
+        | "maintenance"
+        | "consulting"
+        | "other"
+      discount_type_enum: "percentage" | "fixed_amount"
+      estimate_service_category_enum:
+        | "PRINTING"
+        | "WEBSITE_PRODUCTION"
+        | "SYSTEM_DEVELOPMENT"
+        | "APPLICATION_DEVELOPMENT"
+        | "OTHER_SERVICES"
+      estimate_status_enum:
+        | "DRAFT"
+        | "SENT"
+        | "APPROVED"
+        | "REJECTED"
+        | "EXPIRED"
+        | "ORDERED"
       invitation_status:
         | "pending"
         | "accepted"
@@ -747,6 +1083,7 @@ export type Database = {
         | "revoked"
         | "verified"
       page_type: "faq" | "sample"
+      project_type_enum: "website" | "business_system" | "application" | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1098,6 +1435,32 @@ export const Constants = {
   public: {
     Enums: {
       admin_role: ["admin", "staff"],
+      contact_method_enum: ["email", "phone", "either"],
+      deadline_enum: ["asap", "1month", "3months", "6months", "flexible"],
+      digital_service_item_type_enum: [
+        "feature",
+        "task",
+        "license",
+        "maintenance",
+        "consulting",
+        "other",
+      ],
+      discount_type_enum: ["percentage", "fixed_amount"],
+      estimate_service_category_enum: [
+        "PRINTING",
+        "WEBSITE_PRODUCTION",
+        "SYSTEM_DEVELOPMENT",
+        "APPLICATION_DEVELOPMENT",
+        "OTHER_SERVICES",
+      ],
+      estimate_status_enum: [
+        "DRAFT",
+        "SENT",
+        "APPROVED",
+        "REJECTED",
+        "EXPIRED",
+        "ORDERED",
+      ],
       invitation_status: [
         "pending",
         "accepted",
@@ -1106,6 +1469,7 @@ export const Constants = {
         "verified",
       ],
       page_type: ["faq", "sample"],
+      project_type_enum: ["website", "business_system", "application", "other"],
     },
   },
   system: {
