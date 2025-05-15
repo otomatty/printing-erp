@@ -8,6 +8,7 @@ import DashboardCalendar from './_components/dashboard/calendar';
 import { Container } from '~/components/custom/container';
 import { getUserQuickAccess } from '~/_actions/quick-access';
 import { fetchInitialCalendarData } from '~/_actions/schedules';
+import type { QuickAccessItem } from './_components/dashboard/quick-access/sortable-quick-access-item';
 
 export default async function SystemDashboard() {
   // クイックアクセスデータを取得
@@ -23,7 +24,11 @@ export default async function SystemDashboard() {
     <Container>
       <div className="space-y-6">
         {/* クイックアクセス */}
-        <DashboardQuickAccess quickAccessItems={items} />
+        <DashboardQuickAccess
+          quickAccessItems={
+            items.filter((item) => item !== null) as QuickAccessItem[]
+          }
+        />
 
         {/* ステータスカード */}
         <DashboardStats />
